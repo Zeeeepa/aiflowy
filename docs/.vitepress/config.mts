@@ -66,8 +66,8 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
       text: 'AI 相关',
       collapsed: false,
       items: [
-        { text: '大语言模型', link: 'mpa-mode' },
-        { text: 'Bot 应用', link: 'sitemap-generation' },
+        { text: '大语言模型', link: '/ai/language-model' },
+        { text: 'Bot 应用', link: '/ai/bot-application' },
         { text: '插件', link: 'sitemap-generation' },
         { text: '知识库', link: 'sitemap-generation' },
         { text: 'Ollama', link: 'sitemap-generation' },
