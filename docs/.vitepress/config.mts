@@ -31,23 +31,23 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
       text: '快速开始',
       collapsed: false,
       items: [
-        { text: '快速开始', link: '/zh/product/info/what-is-aiflowy' },
-        { text: '目录结构', link: 'getting-started' },
-        { text: '配置文件', link: 'routing' },
-        { text: '项目部署', link: 'deploy' },
-        { text: '常见问题', link: 'deploy' }
+        { text: '快速开始', link: 'getting-started/getting-started' },
+        { text: '目录结构', link: 'getting-started/directory-structure' },
+        { text: '配置文件', link: 'getting-started/config-file' },
+        { text: '项目部署', link: 'getting-started/deploy' },
+        { text: '常见问题', link: 'getting-started/questions' }
       ]
     },
     {
       text: '前端相关',
       collapsed: false,
       items: [
-        { text: '前端目录结构', link: 'markdown' },
-        { text: '路由管理', link: 'asset-handling' },
-        { text: '状态管理', link: 'frontmatter' },
-        { text: 'Hooks', link: 'using-vue' },
-        { text: '组件使用', link: 'i18n' },
-        { text: '国际化', link: 'i18n' }
+        { text: '前端目录结构', link: 'front/front-structure' },
+        { text: '路由管理', link: 'front/routes' },
+        { text: '状态管理', link: 'front/state' },
+        { text: 'Hooks', link: 'front/hooks' },
+        { text: '组件使用', link: 'front/components' },
+        { text: '国际化', link: 'front/locales' }
       ]
     },
     {
