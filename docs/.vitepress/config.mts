@@ -4,7 +4,15 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "AIFlowy",
   description: "AIFlowy Site",
+  head: [
+      ['link', { rel: 'icon', href: '/logo.png' }],
+  ],
   themeConfig: {
+    logo: '/logo.png',
+    outline: {
+      label: '当前页导航',
+      level: 'deep'
+    },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '开发文档', link: '/zh/development/info/what-is-aiflowy' },
@@ -42,12 +50,14 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
       text: '前端相关',
       collapsed: false,
       items: [
-        { text: '前端目录结构', link: 'front/front-structure' },
-        { text: '路由管理', link: 'front/routes' },
-        { text: '状态管理', link: 'front/state' },
-        { text: 'Hooks', link: 'front/hooks' },
-        { text: '组件使用', link: 'front/components' },
-        { text: '国际化', link: 'front/locales' }
+        { text: 'React', collapsed: false, items: [
+            { text: '路由管理', link: 'front/routes' },
+            { text: '状态管理', link: 'front/state' },
+            { text: 'Hooks', link: 'front/hooks' },
+            { text: '组件使用', link: 'front/components' },
+            { text: '国际化', link: 'front/locales' }
+          ] },
+        { text: 'Vue', collapsed: false },
       ]
     },
     {

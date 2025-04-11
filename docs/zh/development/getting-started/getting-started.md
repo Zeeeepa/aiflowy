@@ -73,6 +73,8 @@ spring:
 
 ## 运行 AIFlowy 前端部分
 
+### React 版本
+
 在运行前端程序之前，需要您的电脑安装好 Node 环境，注意版本为 v20+ ，我们进入到 `aiflowy-ui-react` 目录下，通过执行 npm install 命令来安装前端所需的依赖。
 
 若在执行 npm install 出现网络问题（400 Bad Request 等错误），可以通过尝试使用如下方案解决：
@@ -100,5 +102,6 @@ npm config set registry https://registry.npmmirror.com
 
 到此，AIFlowy 正常启动，关于其更多的信息请阅读其他章节文档或者技术交流群里交流。
 
+### Vue 版本
 
-
+> 敬请期待...
