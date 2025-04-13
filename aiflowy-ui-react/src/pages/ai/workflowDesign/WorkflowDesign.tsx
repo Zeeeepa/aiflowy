@@ -1,4 +1,4 @@
-import  {useEffect, useState, useRef} from 'react';
+import {useEffect, useState, useRef} from 'react';
 
 
 import {useLayout} from '../../../hooks/useLayout.tsx';
@@ -6,7 +6,7 @@ import {App, Button, Drawer, Form, Input} from "antd";
 import {useParams} from "react-router-dom";
 import {useDetail, useGet, useGetManual, usePostManual, useUpdate} from "../../../hooks/useApis.ts";
 import {FormOutlined, SendOutlined} from "@ant-design/icons";
-import { Tinyflow, TinyflowHandle } from '@tinyflow-ai/react';
+import {Tinyflow, TinyflowHandle} from '@tinyflow-ai/react';
 import '@tinyflow-ai/react/dist/index.css'
 
 
@@ -15,7 +15,7 @@ export const WorkflowDesign = () => {
     const {message} = App.useApp()
     const params = useParams();
 
-    const {result: workflow} = useDetail("aiWorkflow", params.id);
+    const {result: workflow, doGet: reGetWorkflow} = useDetail("aiWorkflow", params.id);
     const {doUpdate} = useUpdate("aiWorkflow");
     const {result: llms} = useGet('/api/v1/aiLlm/list')
     const {result: knowledge} = useGet('/api/v1/aiKnowledge/list')
@@ -29,11 +29,12 @@ export const WorkflowDesign = () => {
         }
         return [];
     };
+
     const [executeResult, setExecuteResult] = useState<string>('')
 
     const provider = {
-        llm: ()  => getOptions(llms?.data),
-        knowledge: () : any => getOptions(knowledge?.data)
+        llm: () => getOptions(llms?.data),
+        knowledge: (): any => getOptions(knowledge?.data)
     }
     const {setOptions} = useLayout();
     useEffect(() => {
@@ -43,16 +44,17 @@ export const WorkflowDesign = () => {
 
     const tinyflowRef = useRef<TinyflowHandle>(null);
 
-
     const saveHandler = () => {
+        console.log("data: ",tinyflowRef.current!.getData())
         doUpdate({
             data: {
                 id: params.id,
                 content: tinyflowRef.current!.getData()
             }
-        }).then(() => {
-            message.success('保存成功')
-        })
+        }).then(reGetWorkflow)
+            .then(() => {
+                message.success('保存成功')
+            })
     }
 
     const onKeydown = (event: KeyboardEvent) => {
@@ -198,9 +200,19 @@ export const WorkflowDesign = () => {
                             <Button type={"primary"} onClick={saveHandler}>保存 (Ctrl + s)</Button>
                         </div>
                     </div>
-                    <Tinyflow ref={tinyflowRef} data={JSON.parse(workflow?.data?.content||'{}')}
+                    <Tinyflow ref={tinyflowRef} data={JSON.parse(workflow?.data?.content || '{}')}
                               provider={provider}
-                    style={{height: 'calc(100vh - 110px)'}}/>
+                              onChange={(data: any) => {
+                                  console.log(data)
+                                  setWorkflow({
+                                      ...workflow,
+                                      data: {
+                                          ...workflow?.data,
+                                          content: JSON.stringify(data)
+                                      }
+                                  })
+                              }}
+                              style={{height: 'calc(100vh - 110px)'}}/>
                 </div>
             </div>
         </>
