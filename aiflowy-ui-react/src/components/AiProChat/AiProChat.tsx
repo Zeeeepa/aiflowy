@@ -6,6 +6,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import logo from "/favicon.png";
+import { UserOutlined } from '@ant-design/icons';
+
+const fooAvatar: React.CSSProperties = {
+    color: '#fff',
+    backgroundColor: '#87d068',
+};
+
 export type ChatMessage = {
     id: string;
     content: string;
@@ -92,20 +99,28 @@ export const AiProChat = ({
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let partial = '';
+            let currentContent = '';
             while (true) {
                 const {done, value} = await reader.read();
                 if (done) break;
                 partial += decoder.decode(value, {stream: true});
-                setChats?.((prev: ChatMessage[]) => {
-                    const newChats = [...(prev || [])];
-                    const lastMsg = newChats[newChats.length - 1];
-                    if (lastMsg.role === 'assistant') {
-                        lastMsg.loading = false;
-                        lastMsg.content = partial;
-                        lastMsg.updateAt = Date.now();
+
+                const id = setInterval(() => {
+                    currentContent = partial.slice(0, currentContent.length + 2);
+                    setChats?.((prev: ChatMessage[]) => {
+                        const newChats = [...(prev || [])];
+                        const lastMsg = newChats[newChats.length - 1];
+                        if (lastMsg.role === 'assistant') {
+                            lastMsg.loading = false;
+                            lastMsg.content = currentContent;
+                            lastMsg.updateAt = Date.now();
+                        }
+                        return newChats;
+                    });
+                    if (currentContent === partial) {
+                        clearInterval(id);
                     }
-                    return newChats;
-                });
+                }, 50);
 
             }
         } catch (error) {
@@ -146,20 +161,31 @@ export const AiProChat = ({
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             let partial = '';
+            let currentContent = '';
             while (true) {
                 const {done, value} = await reader.read();
                 if (done) break;
                 partial += decoder.decode(value, {stream: true});
-                setChats?.(prev => {
-                    const newChats = [...(prev || [])];
-                    const lastMsg = newChats[newChats.length - 1];
-                    if (lastMsg.role === 'assistant') {
-                        lastMsg.loading = false;
-                        lastMsg.content = partial;
-                        lastMsg.updateAt = Date.now();
+
+                const id = setInterval(() => {
+                    currentContent = partial.slice(0, currentContent.length + 2);
+                    setChats?.((prev: ChatMessage[]) => {
+                        const newChats = [...(prev || [])];
+                        const lastMsg = newChats[newChats.length - 1];
+                        if (lastMsg.role === 'assistant') {
+                            lastMsg.loading = false;
+                            lastMsg.content = currentContent;
+                            lastMsg.updateAt = Date.now();
+                        }
+                        return newChats;
+                    });
+                    if (currentContent === partial) {
+                        clearInterval(id);
                     }
-                    return newChats;
-                });
+                }, 50);
+
+
+
             }
         } catch (error) {
             console.error('Error:', error);
@@ -250,7 +276,7 @@ export const AiProChat = ({
                             style={{ width: 32, height: 32, borderRadius: '50%' }}
                             alt="AI Avatar"
                         />
-                    ) : undefined,
+                    ) : { icon: <UserOutlined />, style: fooAvatar },
                 }))}
                 roles={{ai: {placement: 'start'}, local: {placement: 'end'}}}
             />
