@@ -40,7 +40,6 @@ const SearchForm: React.FC<{
     const formStyle = {
         maxWidth: 'none',
         background: token.colorFillAlter,
-        borderRadius: token.borderRadiusLG,
         padding: 24,
         marginBottom: '20px'
     };

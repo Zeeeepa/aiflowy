@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    PartitionOutlined,
+    NodeIndexOutlined,
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
@@ -48,7 +48,7 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                       editLayout={{labelWidth: 140}}
                       customActions={(item, existNodes) => {
                           return [
-                              <PartitionOutlined title="设计工作流" onClick={() => {
+                              <NodeIndexOutlined title="设计工作流" onClick={() => {
                                   window.open(`/ai/workflow/design/${item.id}`, "_blank")
                               }}/>,
                               ...existNodes
