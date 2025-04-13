@@ -27,7 +27,7 @@
         <dependency>
             <groupId>dev.tinyflow</groupId>
             <artifactId>tinyflow-java-core</artifactId>
-            <version>1.0.0-rc.6</version>
+            <version>1.0.0-rc.7</version>
         </dependency>
         <!--使用 enjoy 模板引擎-->
         <dependency>
