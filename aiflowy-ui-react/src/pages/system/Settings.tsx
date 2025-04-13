@@ -3,7 +3,7 @@ import {Alert, Form, Input, Select} from "antd";
 import FormTitle from "../../components/FormTitle";
 import OptionsPage from "../../components/OptionsPage";
 
-const ModelConfig: React.FC = () => {
+const Settings: React.FC = () => {
 
     return (
         <OptionsPage>
@@ -11,37 +11,19 @@ const ModelConfig: React.FC = () => {
 
             <Form.Item label="对话模型" name="model_of_chat">
                 <Select>
+                    <Select.Option value="openai">OpenAI</Select.Option>
+                    <Select.Option value="ollama">Ollama</Select.Option>
                     <Select.Option value="chatglm">智普 AI （ChatGLM） </Select.Option>
                     <Select.Option value="spark">星火大模型</Select.Option>
                     <Select.Option value="yiyan">文心一言</Select.Option>
                     <Select.Option value="tongyi">通义大模型</Select.Option>
-                    <Select.Option value="chatgpt">ChatGPT</Select.Option>
-                    <Select.Option value="ollama">Ollama</Select.Option>
                 </Select>
             </Form.Item>
 
 
             <Form.Item label="Function Calling 模型" name="model_of_funcation_calling">
                 <Select>
-                    <Select.Option value="chatgpt">ChatGPT</Select.Option>
-                    <Select.Option value="chatglm">智普 AI （ChatGLM） </Select.Option>
-                    <Select.Option value="spark">星火大模型</Select.Option>
-                </Select>
-            </Form.Item>
-
-
-            <Form.Item label="Embedding 模型" name="model_of_embedding">
-                <Select>
-                    <Select.Option value="chatgpt">ChatGPT</Select.Option>
-                    <Select.Option value="chatglm">智普 AI （ChatGLM） </Select.Option>
-                    <Select.Option value="spark">星火大模型</Select.Option>
-                    <Select.Option value="ollama">Ollama</Select.Option>
-                </Select>
-            </Form.Item>
-
-            <Form.Item label="AI 编辑器使用模型" name="model_of_aieditor">
-                <Select>
-                    <Select.Option value="chatgpt">ChatGPT</Select.Option>
+                    <Select.Option value="openai">OpenAI</Select.Option>
                     <Select.Option value="chatglm">智普 AI （ChatGLM） </Select.Option>
                     <Select.Option value="spark">星火大模型</Select.Option>
                 </Select>
@@ -133,6 +115,6 @@ const ModelConfig: React.FC = () => {
 
 
 export default {
-    path: "config/model",
-    element: ModelConfig
+    path: "sys/settings",
+    element: Settings
 };
