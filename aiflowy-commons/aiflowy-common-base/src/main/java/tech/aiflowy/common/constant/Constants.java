@@ -26,4 +26,5 @@ public interface Constants {
     String TENANT_ID = "tenant_id";
     // 根部门标识
     String ROOT_DEPT = "root_dept";
+
 }
