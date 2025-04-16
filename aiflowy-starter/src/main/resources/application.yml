@@ -23,6 +23,6 @@ aiflowy:
     local:
       root: ''
   ollama:
-    host: http://115.190.9.61:11434
+    host: http://127.0.0.1:11434
   login:
     excludes: /api/v1/auth/**, /static/**
