@@ -31,7 +31,8 @@ const useStyle = createStyles(({ token, css }) => {
         `,
         menu: css`
             background: ${token.colorBgLayout}80;
-            width: 350px;
+            width: 300px;
+            min-width: 300px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -106,7 +107,7 @@ export const ExternalBot: React.FC = () => {
     const { start: startChat } = useSse("/api/v1/aiBot/chat");
     const { result: llms } = useGet('/api/v1/aiLlm/list');
     // 查询会话列表的数据
-    const { result: conversationResult } = useGet('/api/v1/conversation/externalList', { "botId": params?.id });
+    const { result: conversationResult, doGet: getConversationGet } = useGet('/api/v1/conversation/externalList', { "botId": params?.id });
     const { doGet: doGetManual } = useGetManual("/api/v1/aiBotMessage/messageList");
     const { doGet: doGetConverManualDelete } = useGetManual("/api/v1/conversation/deleteConversation");
     const { doGet: doGetConverManualUpdate } = useGetManual("/api/v1/conversation/updateConversation");
@@ -135,12 +136,14 @@ export const ExternalBot: React.FC = () => {
                     onOk() {
                         doGetConverManualDelete({
                             params: {
-                                sessionId: activeKey,
+                                sessionId: getExternalSessionId(),
                                 botId: params?.id,
                             },
                         }).then((res: any) => {
                             if (res.data.errorCode === 0){
                                 message.success('删除成功');
+                                setChats([])
+                                getConversationGet()
                             }
                         });
                     },
@@ -211,13 +214,16 @@ export const ExternalBot: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log('newTitle,',newTitle)
         setConversationsItems(getConversations(conversationResult?.data?.cons));
-    }, [conversationResult, newTitle]);
+        console.log('chats', chats);
+        if (chats.length === 2){
+            getConversationGet()
+        }
+    }, [conversationResult, chats]);
 
     const onAddConversation = () => {
         setNewExternalSessionId();
-        setConversationsItems(prev => [ { key: getExternalSessionId(), label: '新建会话' }, ...prev]);
+        // setConversationsItems(prev => [ { key: getExternalSessionId(), label: '新建会话' }, ...prev]);
         setActiveKey(getExternalSessionId());
         setChats([])
         setIsNewConversation(true);
@@ -225,6 +231,7 @@ export const ExternalBot: React.FC = () => {
 
     const onConversationClick: GetProp<typeof Conversations, 'onActiveChange'> = (key) => {
         setActiveKey(key);
+        console.log('删除', key);
         updateExternalSessionId(key);
         setIsNewConversation(false);
         doGetManual({
@@ -237,7 +244,7 @@ export const ExternalBot: React.FC = () => {
         }).then((r: any) => {
             setChats(r?.data.data);
         });
-        console.log(key);
+
     };
 
     const logoNode = (
@@ -349,7 +356,7 @@ export const ExternalBot: React.FC = () => {
                                     onFinished: () => {
                                         controller.close();
                                     },
-                                });
+                                })
                             },
                         });
                         return new Response(readableStream);
