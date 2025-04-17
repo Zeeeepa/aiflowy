@@ -162,9 +162,6 @@ export const useList = (tableAlias: string, params?: any, options?: Options) => 
     return useGet(`/api/v1/${tableAlias}/list`, params, options)
 }
 
-export const documentList = (tableAlias: string, params?: any, options?: Options) => {
-    return useGet(`/api/v1/${tableAlias}/documentList`, params, options)
-}
 
 export const usePage = (tableAlias: string, params?: any, options?: Options) => {
     return useGet(`/api/v1/${tableAlias}/page`, params, options)

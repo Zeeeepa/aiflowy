@@ -2,35 +2,68 @@ import React, {useEffect, useState} from 'react';
 import DocumentMenu from "./DocumentMenu";
 import '../style/document.css'
 import {Button, Form, Input, message, Popconfirm, Space, Spin, Table} from "antd";
-import {documentList, useGet, useGetManual, usePost} from "../../../hooks/useApis";
+import {useDetail, useGet, useGetManual, usePost} from "../../../hooks/useApis";
 import {useParams} from 'react-router-dom';
 import {convertDatetimeUtil} from "../../../libs/changeDatetimeUtil";
 import Modal from "antd/es/modal/Modal";
 import FileImportPanel from "./FileImportPanel";
 import TextArea from "antd/es/input/TextArea";
+import {useLayout} from "../../../hooks/useLayout.tsx";
 
-const treeTableAlias = "aiDocument"
+interface EditTxtBoxState {
+    content: string; // 文本内容
+    id: string | number | null; // 唯一标识符，可以是字符串、数字或 null
+}
+
+type queryParamsType = {
+    documentId: string;
+};
 
 const Document: React.FC = () => {
 
-    interface EditTxtBoxState {
-        content: string; // 文本内容
-        id: string | number | null; // 唯一标识符，可以是字符串、数字或 null
-    }
-    type queryParamsType = {
-        documentId: string;
-    };
-    const {doGet: doGetManual} = useGetManual(`/api/v1/${treeTableAlias}/documentList`)
+    const [pagination, setPagination] = useState({
+        current: 1, // 当前页码
+        pageSize: 10, // 每页显示条数
+        total: 0, // 总记录数
+    });
+    //documentChunk
+    const [paginationCk, setPaginationCk] = useState({
+        current: 1, // 当前页码
+        pageSize: 10, // 每页显示条数
+        total: 0, // 总记录数
+    });
+
+
+    // url 参数
+    const params = useParams();
+
+    // 知识库详情
+    const {result: knowledge} = useDetail("aiKnowledge", params.id);
+
+    // 手动加载知识库的文档列表
+    const {loading, result, doGet:doGetDocumentListManual} = useGet(`/api/v1/aiDocument/documentList`,
+        {
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            id: params.id
+        });
+
     const [queryParams, setQueryParams] = useState<queryParamsType>()
-    const {doGet: getDocChunk, result: docResult, loading : chunkLoading} = useGet(`/api/v1/aiDocumentChunk/page`,queryParams,{manual: true})
+
+    const {
+        doGet: getDocChunk,
+        result: docResult,
+        loading: chunkLoading
+    } = useGet(`/api/v1/aiDocumentChunk/page`, queryParams, {manual: true})
+
     // documentChunk查看弹框
     const [para] = useState();
     const [isDocChunkModalOpen, setIsDocChunkModalOpen] = useState(false);
     const [isDocPreviewContent, setIsDocPreviewContent] = useState(false);
     const {doPost, result: resultRemove} = usePost('/api/v1/aiDocument/removeDoc', para)
     const {doPost: doPostChunkRemove} = usePost('/api/v1/aiDocumentChunk/removeChunk', para)
-    const {doPost : doPostDocPreview} = usePost('/api/v1/aiDocument/docPreview', para,{manual: true})
-    const {doPost : doPostEditUpdate} = usePost('/api/v1/aiDocumentChunk/update', para,{manual: true})
+    const {doPost: doPostDocPreview} = usePost('/api/v1/aiDocument/docPreview', para, {manual: true})
+    const {doPost: doPostEditUpdate} = usePost('/api/v1/aiDocumentChunk/update', para, {manual: true})
     // documentChunk弹框绑定的值
     const [isDocChunkContent, setIsDocChunkContent] = useState('');
     const [fileContent, setFileContent] = useState<string | null>(null);
@@ -45,7 +78,7 @@ const Document: React.FC = () => {
     const onFinish = (values: any) => {
         doSearchGet({
             params: {
-                id:params.kSlug,
+                id: params.id,
                 ...values
             }
         }).then((resp) => {
@@ -57,7 +90,7 @@ const Document: React.FC = () => {
         })
     };
 
-    const columns:any = [
+    const columns: any = [
         {
             title: '文件名',
             dataIndex: 'title',
@@ -99,12 +132,12 @@ const Document: React.FC = () => {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: (_:any, record:any) => (
+            render: (_: any, record: any) => (
                 <Space size="middle">
                     <a onClick={() => {
                         setIsOpenDocChunk(!isOpenDocChunk)
                         const param = {
-                            pageNumber:1,
+                            pageNumber: 1,
                             pageSize: 10,
                             documentId: record.id,
                             sortKey: 'sorting',
@@ -118,17 +151,17 @@ const Document: React.FC = () => {
                     <Popconfirm
                         title="确定删除"
                         description="您确定要删除这条数据吗？"
-                        onConfirm={() =>{
+                        onConfirm={() => {
                             setIsConfirmDelete(true)
                             doPost({data: {id: record.id}}).then((res) => {
-                                if (res.data.errorCode === 0){
+                                if (res.data.errorCode === 0) {
                                     message.success('删除成功')
                                 } else {
                                     message.error('删除失败')
                                 }
                             })
                         }}
-                        onCancel={() =>{
+                        onCancel={() => {
 
                         }}
                         okText="确定"
@@ -143,7 +176,7 @@ const Document: React.FC = () => {
     ];
 
     // columnsChunk内容列
-    const columnsChunk:any = [
+    const columnsChunk: any = [
         {
             title: '顺序',
             dataIndex: 'sorting',
@@ -166,7 +199,7 @@ const Document: React.FC = () => {
             fixed: 'right',
             width: 150,
             align: 'center',
-            render: (_:any, record:any) => (
+            render: (_: any, record: any) => (
                 <Space size="middle">
                     <a onClick={() => {
                         setIsDocChunkContent(record.content)
@@ -179,9 +212,9 @@ const Document: React.FC = () => {
                     <Popconfirm
                         title="确定删除"
                         description="您确定要删除这条数据吗？"
-                        onConfirm={() =>{
+                        onConfirm={() => {
                             doPostChunkRemove({data: {id: record.id}}).then((resp) => {
-                                if (resp.data.errorCode === 0){
+                                if (resp.data.errorCode === 0) {
                                     message.success('删除成功')
                                     getDocChunk()
                                 } else {
@@ -189,7 +222,7 @@ const Document: React.FC = () => {
                                 }
                             })
                         }}
-                        onCancel={() =>{
+                        onCancel={() => {
 
                         }}
                         okText="确定"
@@ -204,9 +237,9 @@ const Document: React.FC = () => {
     ];
 // 定义菜单项
     const menuItems = [
-        { id: 'file-management', label: '文件管理' },
-        { id: 'file-import', label: '文件导入' },
-        { id: 'search-test', label: '检索测试' },
+        {id: 'file-management', label: '文件管理'},
+        {id: 'file-import', label: '文件导入'},
+        {id: 'search-test', label: '检索测试'},
     ];
 
     // 定义状态
@@ -214,36 +247,21 @@ const Document: React.FC = () => {
         content: '', // 初始内容为空字符串
         id: null,    // 初始 ID 为 null
     });
-    const params = useParams();
     // 标识是否打开文档块
     const [isOpenDocChunk, setIsOpenDocChunk] = useState<boolean>(false);
     const [fileName, setFileName] = useState<string>('');
 
     // 状态管理：当前选中的菜单项
     const [selectedMenu, setSelectedMenu] = useState<string | null>('file-management');
-    const [pagination, setPagination] = useState({
-        current: 1, // 当前页码
-        pageSize: 10, // 每页显示条数
-        total: 0, // 总记录数
-    });
-    //documentChunk
-    const [paginationCk, setPaginationCk] = useState({
-        current: 1, // 当前页码
-        pageSize: 10, // 每页显示条数
-        total: 0, // 总记录数
-    });
-    const {loading, result, doGet} = documentList(treeTableAlias,
-        {
-            current : pagination.current,
-            pageSize : pagination.pageSize,
-            kb_slug: params.kSlug});
+
+
 
     const getDocumentList = () => {
-        doGetManual({
-            params:{
-                current : 1,
-                pageSize : 10,
-                kb_slug: params.kSlug
+        doGetDocumentListManual({
+            params: {
+                current: 1,
+                pageSize: 10,
+                id: params.id
             }
         }).then(res => {
             setPagination({
@@ -252,7 +270,7 @@ const Document: React.FC = () => {
                 total: res.data.data.totalRow, // 总记录数
             })
             if (result) {
-                result.data.records = res.data.data.records
+                result.data.records = res.data?.data?.records
             }
         })
     }
@@ -266,37 +284,37 @@ const Document: React.FC = () => {
                 })
             })
         }
-        if (resultRemove){
-            if (resultRemove.errorCode === 0 && isConfirmDelete){
+        if (resultRemove) {
+            if (resultRemove.errorCode === 0 && isConfirmDelete) {
                 setIsConfirmDelete(false)
                 getDocumentList()
             }
         }
-    }, [result,queryParams, resultRemove]); // 仅在 count 变化时执行
+    }, [result, queryParams, resultRemove]); // 仅在 count 变化时执行
     // 分页变化时触发
     const handleTableChange = (newPagination: any) => {
-        const { current, pageSize } = newPagination;
-        doGet().then(res => {
+        const {current, pageSize} = newPagination;
+        doGetDocumentListManual().then(res => {
             setPagination({
                 current: current, // 当前页码
                 pageSize: pageSize, // 每页显示条数
                 total: res.data.data.totalRow, // 总记录数
             })
             if (result) {
-                result.data.records = res.data.records;
+                result.data.records = res.data?.records;
             }
         })
     };
 
     const handleTableChangeCk = (newPagination: any) => {
-        const { current, pageSize } = newPagination;
+        const {current, pageSize} = newPagination;
         setPaginationCk({
             current: current, // 当前页码
             pageSize: pageSize, // 每页显示条数
             total: 0, // 总记录数
         })
         const param = {
-            pageNumber:current,
+            pageNumber: current,
             pageSize: pageSize,
             documentId: queryParams?.documentId || '',
             sortKey: 'sorting',
@@ -305,19 +323,19 @@ const Document: React.FC = () => {
         setQueryParams(param)
     };
     // 处理输入框变化
-    const handleChange = (e:any) => {
+    const handleChange = (e: any) => {
         setFileName(e.target.value); // 更新状态
     };
     const handleSearch = () => {
-        doGetManual({
-            params:{
+        doGetDocumentListManual({
+            params: {
                 'fileName': fileName,
-                current : pagination.current,
-                pageSize : pagination.pageSize,
-                kb_slug: params.kSlug
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                id: params.id
             }
         }).then(res => {
-            if (result){
+            if (result) {
                 result.data = res.data.data
             }
 
@@ -334,7 +352,7 @@ const Document: React.FC = () => {
         setLoadingPreview(true);
         setError(null);
         try {
-            const response = await doPostDocPreview({ data: { documentId: documentId } });
+            const response = await doPostDocPreview({data: {documentId: documentId}});
             const contentType = response.data.data.headers['Content-Type'];
             const data = response.data.data.body;
 
@@ -381,7 +399,7 @@ const Document: React.FC = () => {
             const arrayBuffer = bytes.buffer;
 
             // 3. 使用Mammoth转换DOCX为HTML
-            const result = await mammoth?.convertToHtml({ arrayBuffer });
+            const result = await mammoth?.convertToHtml({arrayBuffer});
             return result.value; // 返回HTML内容
         } catch (error: any) {
             console.error('DOCX转换错误:', error);
@@ -395,23 +413,23 @@ const Document: React.FC = () => {
     const handleCancel = () => {
         setIsDocChunkModalOpen(false);
     };
-    const handleTxtBoxEditOk= () =>{
+    const handleTxtBoxEditOk = () => {
         doPostEditUpdate({
-            data:{
+            data: {
                 id: editTxtBoxValue.id,
                 content: editTxtBoxValue.content
             }
         }).then(res => {
-            if(res.data.errorCode === 0){
+            if (res.data.errorCode === 0) {
                 message.success('更新成功')
-                doGet()
-            }else{
+                doGetDocumentListManual()
+            } else {
                 message.error(res.data.message)
             }
         })
         setIsTxtBoxEditModalOpen(false)
     }
-    const handleTxtBoxEditCancel= () =>{
+    const handleTxtBoxEditCancel = () => {
         setIsTxtBoxEditModalOpen(false)
     }
     const onEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -429,42 +447,49 @@ const Document: React.FC = () => {
                 return (
                     <div className="content">
                         {
-                            !isOpenDocChunk?
-                                (   <div>
+                            !isOpenDocChunk ?
+                                (<div>
                                     <Space.Compact style={{margin: '0 0 10px 0'}}>
-                                        <Input  placeholder="请输入文件名进行搜索" value={fileName} onChange={handleChange}/>
+                                        <Input placeholder="请输入文件名进行搜索" value={fileName}
+                                               onChange={handleChange}/>
 
                                     </Space.Compact>
-                                    <Button type="primary" shape='default' size='middle'style={{marginLeft: '10px'}}
+                                    <Button type="primary" shape='default' size='middle' style={{marginLeft: '10px'}}
                                             onClick={handleSearch}
                                     >
                                         搜索
                                     </Button>
                                     <Button style={{margin: '0 5px'}} onClick={() => {
                                         setFileName('')
-                                        doGet()
+                                        doGetDocumentListManual()
                                     }}>
                                         重置
                                     </Button>
-                                    <Modal title="文件预览" open={isDocPreviewContent} onOk={handleIsPreviewOk} onCancel={() => {setIsDocPreviewContent(false)}} width={1500}>
+                                    <Modal title="文件预览" open={isDocPreviewContent} onOk={handleIsPreviewOk}
+                                           onCancel={() => {
+                                               setIsDocPreviewContent(false)
+                                           }} width={1500}>
                                         <div>
                                             {loadingPreview && <p>加载中...</p>}
-                                            {error && <p style={{ color: 'red' }}>错误：{error}</p>}
+                                            {error && <p style={{color: 'red'}}>错误：{error}</p>}
                                             {fileContent && (
                                                 <div>
                                                     {/* 如果是 blob URL，则直接用 iframe 加载 */}
                                                     {fileContent.startsWith('blob:') ? (
-                                                        <iframe src={fileContent} width="100%" height="600px" title="PDF 预览" />
+                                                        <iframe src={fileContent} width="100%" height="600px"
+                                                                title="PDF 预览"/>
                                                     ) : (
                                                         // 其他情况（如 data URL 或纯文本）
                                                         <div>
                                                             {typeof fileContent === 'string' && fileContent.startsWith('data:image') ? (
-                                                                <img src={fileContent} alt="预览" style={{ maxWidth: '100%' }} />
+                                                                <img src={fileContent} alt="预览"
+                                                                     style={{maxWidth: '100%'}}/>
                                                             ) : typeof fileContent === 'string' && fileContent.startsWith('data:application/pdf') ? (
-                                                                <iframe src={fileContent} width="100%" height="600px" title="PDF 预览" />
+                                                                <iframe src={fileContent} width="100%" height="600px"
+                                                                        title="PDF 预览"/>
                                                             ) : typeof fileContent === 'string' && !fileContent.startsWith('data:') ? (
                                                                 // 渲染 HTML 内容
-                                                                <div dangerouslySetInnerHTML={{ __html: fileContent }} />
+                                                                <div dangerouslySetInnerHTML={{__html: fileContent}}/>
                                                             ) : (
                                                                 <pre>{fileContent}</pre>
                                                             )}
@@ -474,46 +499,48 @@ const Document: React.FC = () => {
                                             )}
                                         </div>
                                     </Modal>
-                                    <Table columns={columns} dataSource={result?.data.records} scroll={{ x: 1000 }}
-                                                     pagination={{
-                                                         current: pagination.current,
-                                                         pageSize: pagination.pageSize,
-                                                         total: pagination.total,
-                                                         showSizeChanger: true, // 显示每页条数切换
-                                                         showTotal: (total) => `共 ${total} 条数据`
-                                                     }}
-                                                     onChange={handleTableChange}
-                                                     rowKey="id"
-                                                     loading={loading}
+                                    <Table columns={columns} dataSource={result?.data?.records} scroll={{x: 1000}}
+                                           pagination={{
+                                               current: pagination.current,
+                                               pageSize: pagination.pageSize,
+                                               total: pagination.total,
+                                               showSizeChanger: true, // 显示每页条数切换
+                                               showTotal: (total) => `共 ${total} 条数据`
+                                           }}
+                                           onChange={handleTableChange}
+                                           rowKey="id"
+                                           loading={loading}
                                     />
                                 </div>)
                                 :
                                 <div>
-                                    <Modal title="详情" open={isDocChunkModalOpen} onOk={handleOk}  onCancel={handleCancel}  width={800}>
+                                    <Modal title="详情" open={isDocChunkModalOpen} onOk={handleOk}
+                                           onCancel={handleCancel} width={800}>
                                         <p>{isDocChunkContent}</p>
                                     </Modal>
 
                                     <Table columns={columnsChunk} dataSource={docResult?.data.records}
-                                                     pagination={{
-                                                         current: paginationCk.current,
-                                                         pageSize: paginationCk.pageSize,
-                                                         total: paginationCk.total,
-                                                         showSizeChanger: true, // 显示每页条数切换
-                                                         showTotal: (total) => `共 ${total} 条数据`
-                                                     }}
-                                                     rowKey="id"
-                                                     loading={chunkLoading}
-                                                     onChange={handleTableChangeCk}
-                                                     scroll={{ x: 500, y: 800 }} // 水平滚动宽度 1000px，垂直滚动高度 400px
+                                           pagination={{
+                                               current: paginationCk.current,
+                                               pageSize: paginationCk.pageSize,
+                                               total: paginationCk.total,
+                                               showSizeChanger: true, // 显示每页条数切换
+                                               showTotal: (total) => `共 ${total} 条数据`
+                                           }}
+                                           rowKey="id"
+                                           loading={chunkLoading}
+                                           onChange={handleTableChangeCk}
+                                           scroll={{x: 500, y: 800}} // 水平滚动宽度 1000px，垂直滚动高度 400px
                                     />
-                                {/*    文本分割修改模态框*/}
-                                    <Modal title="文本修改"  width={1000} height={800} open={isTxtBoxEditModalOpen} onOk={handleTxtBoxEditOk} onCancel={handleTxtBoxEditCancel}>
+                                    {/*    文本分割修改模态框*/}
+                                    <Modal title="文本修改" width={1000} height={800} open={isTxtBoxEditModalOpen}
+                                           onOk={handleTxtBoxEditOk} onCancel={handleTxtBoxEditCancel}>
                                         <TextArea
                                             showCount
                                             value={editTxtBoxValue.content}
                                             onChange={onEditChange}
                                             placeholder="disable resize"
-                                            style={{ height: 500, resize: 'none',marginBottom: '10px' }}
+                                            style={{height: 500, resize: 'none', marginBottom: '10px'}}
                                         />
                                     </Modal>
                                 </div>
@@ -524,47 +551,52 @@ const Document: React.FC = () => {
             case 'file-import':
                 return (
                     <div className="content">
-                        <FileImportPanel data={{knowledgeId: params.kSlug}} maxCount={1} action="/api/v1/aiDocument/upload"/>
+                        <FileImportPanel data={{knowledgeId: params.id}} maxCount={1}
+                                         action="/api/v1/aiDocument/upload"/>
                     </div>
                 );
             case 'search-test':
                 return (
                     <div className="content" style={{width: '1000px'}}>
-                            <div style={{minHeight: 500}}>
-                                <Form form={form} onFinish={onFinish} preserve={false}>
-                                    <div style={{display: "flex", gap: 10}}>
-                                        <Form.Item
-                                            style={{flexGrow: 1}}
-                                            name="keyword"
-                                            rules={[{required: true, message: '请输入关键字!'}]}>
-                                            <TextArea style={{ height: 50}} placeholder="请输入关键字"/>
-                                        </Form.Item>
-                                        <Button type="primary" htmlType="submit">
-                                            搜索
-                                        </Button>
-                                    </div>
-                                </Form>
-                                <div>
-                                    {/*<div>搜索结果:</div>*/}
+                        <div style={{minHeight: 500}}>
+                            <Form form={form} onFinish={onFinish} preserve={false}>
+                                <div style={{display: "flex", gap: 10}}>
+                                    <Form.Item
+                                        style={{flexGrow: 1}}
+                                        name="keyword"
+                                        rules={[{required: true, message: '请输入关键字!'}]}>
+                                        <TextArea style={{height: 50}} placeholder="请输入关键字"/>
+                                    </Form.Item>
+                                    <Button type="primary" htmlType="submit">
+                                        搜索
+                                    </Button>
+                                </div>
+                            </Form>
+                            <div>
+                                {/*<div>搜索结果:</div>*/}
 
-                                    {searchLoading ?  <div style={{width:"100%", textAlign: "center"}}>
-                                          <Spin tip="Loading...">
+                                {searchLoading ? <div style={{width: "100%", textAlign: "center"}}>
+                                        <Spin tip="Loading...">
                                         </Spin>
                                     </div> :
-                                            <div>
-                                                {searchResult?.map((item: any, index) => {
-                                                    return <div key={item?.id || index} style={{margin:"10px 0",background:"#efefef",padding:"5px 10px",borderRadius:"7px"}}>
-                                                        <h3>相似度:{item.similarityScore}</h3>
-                                                        <div dangerouslySetInnerHTML={{__html: item?.content}}></div>
-                                                    </div>
-                                                })}
+                                    <div>
+                                        {searchResult?.map((item: any, index) => {
+                                            return <div key={item?.id || index} style={{
+                                                margin: "10px 0",
+                                                background: "#efefef",
+                                                padding: "5px 10px",
+                                                borderRadius: "7px"
+                                            }}>
+                                                <h3>相似度:{item.similarityScore}</h3>
+                                                <div dangerouslySetInnerHTML={{__html: item?.content}}></div>
                                             </div>
-                                        }
+                                        })}
+                                    </div>
+                                }
 
 
-
-                                </div>
                             </div>
+                        </div>
                     </div>
                 );
             case 'configuration':
@@ -584,15 +616,35 @@ const Document: React.FC = () => {
         }
     };
 
+    const {setOptions} = useLayout();
+    useEffect(() => {
+        console.log('knowledge', knowledge)
+        setOptions({
+            showBreadcrumb: true,
+            breadcrumbs: [
+                {title: '首页'},
+                {title: '知识库', href: `/ai/knowledge`},
+                {title: knowledge?.data?.title,}
+            ],
+        })
+
+        return () => {
+            setOptions({
+                showBreadcrumb: true,
+                breadcrumbs: []
+            })
+        }
+    }, [knowledge])
+
     return (
         <div className="app-container">
             {/* 左侧菜单 */}
             <DocumentMenu
                 items={menuItems}
                 onSelect={(id) => {
-                    if (id === 'search-test'){
+                    if (id === 'search-test') {
                         setSearchResult([])
-                    } else if (id === 'file-management'){
+                    } else if (id === 'file-management') {
                         getDocumentList()
                     }
                     setIsOpenDocChunk(false)
@@ -608,6 +660,6 @@ const Document: React.FC = () => {
 };
 
 export default {
-    path: "/ai/knowledge/document/:kSlug/:dSlug; /ai/knowledge/document/:kSlug;",
+    path: " /ai/knowledge/:id;",
     element: Document
 };

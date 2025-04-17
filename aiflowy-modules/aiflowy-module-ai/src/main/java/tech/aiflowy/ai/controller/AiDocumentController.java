@@ -122,7 +122,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
     @GetMapping("list")
     @Override
     public Result list(AiDocument entity, Boolean asTree, String sortKey, String sortType) {
-        String kbSlug = RequestUtil.getParamAsString("kb_slug");
+        String kbSlug = RequestUtil.getParamAsString("id");
         if (StringUtil.noText(kbSlug)) {
             return Result.fail(1);
         }
@@ -146,7 +146,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
 
     @GetMapping("documentList")
     public Result documentList(@RequestParam(name="fileName", required = false) String fileName, @RequestParam(name="pageSize") int pageSize, @RequestParam(name = "current") int current) {
-        String kbSlug = RequestUtil.getParamAsString("kb_slug");
+        String kbSlug = RequestUtil.getParamAsString("id");
         if (StringUtil.noText(kbSlug)) {
             return Result.fail(1);
         }
