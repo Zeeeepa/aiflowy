@@ -259,7 +259,8 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         }
         aiDocument.setTitle(StringUtil.removeFileExtension(file.getOriginalFilename()));
 
-        return super.save(aiDocument);
+        super.save(aiDocument);
+        return storeDocument(aiDocument, true, splitterName, chunkSize, overlapSize, regex);
     }
 
 
@@ -306,26 +307,27 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
      * @param entity
      * @param isSave
      */
-    @Override
-    protected void onSaveOrUpdateAfter(AiDocument entity, boolean isSave) {
+    protected Result storeDocument(AiDocument entity, boolean isSave,String splitterName, int chunkSize, int overlapSize, String regex) {
         AiDocument aiDocument = entity;
         // 重新获取全数据内容
         entity = service.getById(entity.getId());
 
         AiKnowledge knowledge = knowledgeService.getById(entity.getKnowledgeId());
         if (knowledge == null) {
-            return;
+            return Result.fail();
         }
 
         // 存储到知识库
         DocumentStore documentStore = knowledge.toDocumentStore();
         if (documentStore == null) {
-            return;
+            return Result.fail();
+
         }
 
         AiLlm aiLlm = aiLlmService.getById(knowledge.getVectorEmbedLlmId());
         if (aiLlm == null) {
-            return;
+            return Result.fail();
+
         }
         // 设置向量模型
         Llm embeddingModel = aiLlm.toLlm();
@@ -351,7 +353,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         }
 
         // 设置分割器 todo 未来可以通过参数来指定分割器，不同的文档使用不同的分割器效果更好
-        documentStore.setDocumentSplitter(new SimpleDocumentSplitter(aiDocument.getChunkSize(), aiDocument.getOverlapSize()));
+        documentStore.setDocumentSplitter(getDocumentSplitter(splitterName, chunkSize, overlapSize, regex));
 
         // 设置文档ID生成器
         AiDocument finalEntity = entity;
@@ -382,6 +384,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         if (!result.isSuccess()) {
             LoggerFactory.getLogger(AiDocumentController.class).error("DocumentStore.store failed: " + result);
         }
+        return Result.success();
     }
 
     public String getRootPath() {

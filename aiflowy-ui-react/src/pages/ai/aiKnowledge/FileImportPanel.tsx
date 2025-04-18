@@ -333,6 +333,8 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                             const file = fileList[0].originFileObj; // 获取用户选择的文件
                             formData.append("file", file); // 添加文件
                             formData.append("knowledgeId", uploadProps.knowledgeId as string); // 添加 knowledgeId
+                            formData.append("splitterName", uploadProps.splitterName as string);
+                            formData.append("regex", uploadProps.regex as string);
                             if (uploadProps.chunkSize !== undefined) {
                                 formData.append("chunkSize", uploadProps.chunkSize);
                             }
