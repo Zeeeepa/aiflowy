@@ -6,6 +6,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import tech.aiflowy.ai.entity.*;
+import tech.aiflowy.ai.mapper.AiBotApiKeyMapper;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
 import tech.aiflowy.ai.service.*;
 import tech.aiflowy.common.ai.ChatManager;
@@ -55,6 +56,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     private final AiBotWorkflowService aiBotWorkflowService;
     private final AiBotKnowledgeService aiBotKnowledgeService;
     private final AiBotMessageService aiBotMessageService;
+    @Resource
+    private AiBotApiKeyMapper aiBotApiKeyMapper;
     @Resource
     private AiBotConversationMessageService aiBotConversationMessageService;
     @Resource
@@ -224,15 +227,24 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         // 获取 API Key 和 Bot 信息
         String apiKey = request.getHeader("Authorization");
+        QueryWrapper queryWrapper = QueryWrapper.create()
+                .select("apiKey")
+                .from("tb_ai_bot_api_key")
+                .where("apikey = ? ", apiKey);
+        long count =  aiBotApiKeyMapper.selectCountByQuery(queryWrapper);
+        if (count <= 0){
+            return createResponse(stream, JSON.toJSONString(errorRespnseMsg(1,"该apiKey不存在")));
+        }
+
         AiBot aiBot = service.getById(botId);
         if (aiBot == null) {
-            return createResponse(stream, "机器人不存在");
+            return createResponse(stream, JSON.toJSONString(errorRespnseMsg(2,"机器人不存在")));
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
         AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
         if (aiLlm == null) {
-            return createResponse(stream, "LLM不存在");
+            return createResponse(stream, JSON.toJSONString(errorRespnseMsg(3, "LLM不存在")));
         }
 
         Llm llm = aiLlm.toLlm();
@@ -418,6 +430,13 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             }
         }
         return JSON.toJSONString(messageContent);
+    }
+
+    private Map<String, Object> errorRespnseMsg(int errorCode, String message){
+        HashMap<String, Object> result =  new HashMap<>();
+        result.put("error", errorCode);
+        result.put("message", message);
+        return result;
     }
 
     private AiBotExternalMsgJsonResult handleMessageStreamJsonResult(AiMessage message) {

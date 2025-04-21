@@ -80,6 +80,7 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
         { text: 'Bot 应用', link: '/ai/bot-application' },
         { text: '插件', link: '/ai/plugin' },
         { text: '知识库', link: '/ai/knowledge' },
+        { text: 'apiKey', link: '/ai/apiKey' },
         { text: 'Ollama', link: '/ai/ollama' },
       ]
     },
