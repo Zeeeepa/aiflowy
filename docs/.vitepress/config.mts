@@ -200,10 +200,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
       text: '模型管理',
       collapsed: false,
       items: [
-        { text: '什么是 AIFlowy？', link: '/zh/product/info/what-is-aiflowy' },
-        { text: '快速开始', link: 'getting-started' },
-        { text: '路由', link: 'routing' },
-        { text: '部署', link: 'deploy' }
+        { text: '什么是 AIFlowy？', link: '/model-mangement/what-is-aiflowy' },
+        { text: '快速开始', link: '/model-mangement/quick-start' },
+        { text: '路由', link: '/model-mangement/route' },
+        { text: '部署', link: '/model-mangement/deploy' }
       ]
     },
   ]
