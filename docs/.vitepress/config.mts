@@ -168,8 +168,8 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             text: 'Bot 应用',
             collapsed: false,
             items: [
-                {text: '什么是 Bot', link: '/bot-applicatoin/what-is-a-bot'},
-                {text: '快速开始', link: '/bot-applicatoin/quick-start'},
+                {text: '什么是 Bot', link: '/bot-application/what-is-a-bot'},
+                {text: '快速开始', link: '/bot-application/quick-start'},
             ]
         },
         {
@@ -201,10 +201,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             text: '模型管理',
             collapsed: false,
             items: [
-                {text: '什么是 AIFlowy？', link: '/model-mangement/what-is-aiflowy'},
-                {text: '快速开始', link: '/model-mangement/quick-start'},
-                {text: '路由', link: '/model-mangement/route'},
-                {text: '部署', link: '/model-mangement/deploy'}
+                {text: '什么是 AIFlowy？', link: '/model-management/what-is-aiflowy'},
+                {text: '快速开始', link: '/model-management/quick-start'},
+                {text: '路由', link: '/model-management/route'},
+                {text: '部署', link: '/model-management/deploy'}
             ]
         },
     ]
