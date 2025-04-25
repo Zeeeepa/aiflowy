@@ -89,7 +89,7 @@ const Plugin: React.FC = () => {
 		headers?: string;
 		authData?: string;
 		authType?: string;
-
+		position?: string;
 
 	};
 
@@ -107,6 +107,8 @@ const Plugin: React.FC = () => {
 	const [addPluginIsOpen, setAddPluginIsOpen] = useState(false)
 	// 认证类型
 	const [authType, setAuthType] = useState('none')
+	// 认证参数位置
+	const [positionValue, setPositionValue] = useState('headers')
 	const {
 		loading,
 		result,
@@ -129,6 +131,8 @@ const Plugin: React.FC = () => {
 	const [form] = Form.useForm();
 	const handleaddPluginCancle = () => {
 		form.resetFields()
+		setPositionValue('headers')
+		setAuthType('none')
 		setAddPluginIsOpen(false);
 	};
 
@@ -176,7 +180,7 @@ const Plugin: React.FC = () => {
 					layout="vertical"
 					name="basic"
 					style={{ width: '100%'}}
-					initialValues={{ authType: 'none' }}
+					initialValues={{ authType: 'none', position: 'headers' }}
 					onFinish={onFinish}
 					onFinishFailed={onFinishFailed}
 					autoComplete="off"
@@ -267,11 +271,13 @@ const Plugin: React.FC = () => {
 					{authType === 'apiKey' ?
 						<>
 						<Form.Item<FieldType>
-						name="authData"
+						name="position"
 						label={'参数位置'}
 						rules={[{ required: true, message: '请输入认证数据' }]}
 						>
-						<Radio.Group options={options}  />
+						<Radio.Group options={options} value={positionValue} onChange={(e) =>{
+							setPositionValue(e.target.value)
+						}} />
 
 						</Form.Item>
 						<Form.Item<FieldType>
