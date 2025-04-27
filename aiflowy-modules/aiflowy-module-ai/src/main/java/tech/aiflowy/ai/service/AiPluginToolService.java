@@ -16,4 +16,6 @@ public interface AiPluginToolService extends IService<AiPluginTool> {
     Result savePluginTool(AiPluginTool aiPluginTool);
 
     Result searchPlugin(String aiPluginToolId);
+
+    Result updatePlugin(AiPluginTool aiPluginTool);
 }

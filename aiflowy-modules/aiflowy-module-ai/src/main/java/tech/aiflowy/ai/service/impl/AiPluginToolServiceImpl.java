@@ -59,4 +59,13 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
         result.put("aiPlugin", aiPlugin);
         return Result.success(result);
     }
+
+    @Override
+    public Result updatePlugin(AiPluginTool aiPluginTool) {
+        int update = aiPluginToolMapper.update(aiPluginTool);
+        if (update <= 0){
+            return Result.fail(1,"修改失败");
+        }
+        return Result.success();
+    }
 }
