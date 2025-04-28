@@ -83,29 +83,6 @@ const PluginToolEdit: React.FC = () => {
         }
     };
 
-
-    const startEditing = () => {
-        setIsEditInput(true);
-    };
-
-    const cancelEditing = () => {
-        setIsEditInput(false);
-    };
-
-    const saveInputData =  () => {
-        try {
-            const values =  formInput.validateFields();
-            const updatedData = data.map(item => ({
-                ...item,
-                // ...values[item.key] // 获取对应行的数据
-            }));
-            setData(updatedData);
-            setIsEditInput(false);
-        } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
-        }
-    };
-
     const handleAdd = () => {
         const newData: Parameter = {
             key: Date.now().toString(),
@@ -117,35 +94,20 @@ const PluginToolEdit: React.FC = () => {
             defaultValue: '',
             enabled: true,
         };
-        setData([...pluginToolInfo?.data?.data?.inputData ?? [], newData]);
+        setInputData([...inputData, newData]);
     };
 
     const handleDelete = (key: string) => {
-        setData(data.filter((item) => item.key !== key));
+        setInputData(inputData.filter((item) => item.key !== key));
     };
-    const [data, setData] = useState<Parameter[]>([
-        // {
-        //     key: '1',
-        //     name: 'city',
-        //     description: '城市',
-        //     type: 'String',
-        //     method: 'Query',
-        //     required: true,
-        //     defaultValue: 'beijing',
-        //     enabled: true,
-        // },
-        // {
-        //     key: '2',
-        //     name: 'time',
-        //     description: '时间',
-        //     type: 'String',
-        //     method: 'Query',
-        //     required: true,
-        //     defaultValue: '请填写默认值',
-        //     enabled: true,
-        // },
+    const [inputData, setInputData] = useState<Parameter[]>([
     ]);
-
+    useEffect(() => {
+        if (pluginToolInfo?.data?.data?.inputData){
+            setInputData(JSON.parse(pluginToolInfo?.data?.data?.inputData));
+            console.log(JSON.parse(pluginToolInfo?.data?.data?.inputData));
+        }
+    }, [pluginToolInfo]);
     const getColumnsInput = ()=>{
         const columnsInput = [
             {
@@ -192,11 +154,11 @@ const PluginToolEdit: React.FC = () => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'type']} initialValue={text}>
                             <Select style={{ width: 120 }}>
-                                <Select value="String">String</Select>
-                                <Select value="Number">Number</Select>
-                                <Select value="Boolean">Boolean</Select>
-                                <Select value="Object">Object</Select>
-                                <Select value="Array">Array</Select>
+                                <Select.Option value="String">String</Select.Option>
+                                <Select.Option value="Number">Number</Select.Option>
+                                <Select.Option value="Boolean">Boolean</Select.Option>
+                                <Select.Option value="Object">Object</Select.Option>
+                                <Select.Option value="Array">Array</Select.Option>
                             </Select>
                         </Form.Item>
                     ) : (
@@ -212,10 +174,10 @@ const PluginToolEdit: React.FC = () => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'method']} initialValue={text}>
                             <Select style={{ width: 120 }}>
-                                <Select value="Query">Query</Select>
-                                <Select value="Body">Body</Select>
-                                <Select value="Header">Header</Select>
-                                <Select value="Path">Path</Select>
+                                <Select.Option value="Query">Query</Select.Option>
+                                <Select.Option value="Body">Body</Select.Option>
+                                <Select.Option value="Header">Header</Select.Option>
+                                <Select.Option value="Path">Path</Select.Option>
                             </Select>
                         </Form.Item>
                     ) : (
@@ -320,6 +282,7 @@ const PluginToolEdit: React.FC = () => {
                                         }).then((r) => {
                                             if (r?.data?.errorCode === 0) {
                                                 message.success('修改成功');
+                                                setEditStates(prev => ({...prev, '1': false})); // 添加这行
                                                 doPostSearch({
                                                     data: {
                                                         aiPluginToolId: id
@@ -328,7 +291,27 @@ const PluginToolEdit: React.FC = () => {
                                             }
                                         });
                                     } else if (index === '2') {
-                                        saveInputData()
+                                        formInput.validateFields().then(() => {
+                                            const formData = formInput.getFieldsValue();
+                                            doPostUpdate({
+                                                data: {
+                                                    id: id,
+                                                    inputData: JSON.stringify(formData),
+                                                }
+                                            }).then((r) => {
+                                                if (r?.data?.errorCode === 0) {
+                                                    setIsEditInput(false);
+                                                    setEditStates(prev => ({...prev, '2': false})); // 添加这行
+                                                    message.success('修改成功');
+                                                    doPostSearch({
+                                                        data: {
+                                                            aiPluginToolId: id
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        });
+
                                     }
 
 
@@ -341,8 +324,8 @@ const PluginToolEdit: React.FC = () => {
                     </div>
                 ) : (
                     <div style={{ display: 'flex', gap: '8px' }} onClick={()=>{
-                        if (index === '2'){
-                            setIsEditInput(true)
+                        if (index === '2') {
+                            setIsEditInput(true);
                         }
                     }}>
                         <EditOutlined />
@@ -417,23 +400,13 @@ const PluginToolEdit: React.FC = () => {
                         <Table
                             className="custom-table"
                             bordered
-                            dataSource={pluginToolInfo?.data?.data?.inputData || data || []}
+                            dataSource={inputData || []}
                             columns={getColumnsInput()}
                             pagination={false}
                             rowKey="key"
                         />
                     </Form>
                     <Space style={{ marginTop: 16 }}>
-                        {/*{isEditInput ? (*/}
-                        {/*    <>*/}
-                        {/*        <Button type="primary" onClick={saveAll}>保存全部</Button>*/}
-                        {/*        <Button onClick={cancelEditing}>取消</Button>*/}
-                        {/*    </>*/}
-                        {/*) : (*/}
-                        {/*    <Button type="primary" icon={<EditOutlined />} onClick={startEditing}>*/}
-                        {/*        编辑全部*/}
-                        {/*    </Button>*/}
-                        {/*)}*/}
                         {
                             isEditInput ? ( <Button
                                     type="dashed"

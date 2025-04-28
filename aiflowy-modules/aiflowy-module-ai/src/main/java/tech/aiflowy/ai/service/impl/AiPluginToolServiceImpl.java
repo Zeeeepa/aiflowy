@@ -1,7 +1,11 @@
 package tech.aiflowy.ai.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import org.eclipse.jetty.util.ajax.JSON;
 import tech.aiflowy.ai.entity.AiPlugin;
 import tech.aiflowy.ai.entity.AiPluginTool;
 import tech.aiflowy.ai.mapper.AiPluginMapper;
@@ -9,11 +13,14 @@ import tech.aiflowy.ai.mapper.AiPluginToolMapper;
 import tech.aiflowy.ai.service.AiPluginToolService;
 import org.springframework.stereotype.Service;
 import tech.aiflowy.common.domain.Result;
+import tech.aiflowy.common.util.StringUtil;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *  服务层实现。
@@ -62,6 +69,33 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
 
     @Override
     public Result updatePlugin(AiPluginTool aiPluginTool) {
+        String inputData = null;
+        if (!StringUtil.isEmpty(aiPluginTool.getInputData())){
+            ObjectMapper mapper = new ObjectMapper();
+            String inputJson = aiPluginTool.getInputData();
+            // 1. 将JSON解析为Map<String, Parameter>
+            Map<String, Map<String, Object>> map = null;
+            try {
+                map = mapper.readValue(
+                        inputJson,
+                        new TypeReference<Map<String, Map<String, Object>>>(){}
+                );
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            // 2. 转换为目标结构
+            List<Map<String, Object>> result = map.entrySet().stream()
+                    .map(entry -> {
+                        Map<String, Object> param = entry.getValue();
+                        param.put("key", entry.getKey()); // 添加key字段
+                        return param;
+                    })
+                    .collect(Collectors.toList());
+            inputData = JSON.toString(result);
+            System.out.println("aaa");
+        }
+        aiPluginTool.setInputData(inputData);
         int update = aiPluginToolMapper.update(aiPluginTool);
         if (update <= 0){
             return Result.fail(1,"修改失败");
