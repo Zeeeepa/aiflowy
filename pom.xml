@@ -31,7 +31,7 @@
         <jackson.version>2.13.4</jackson.version>
         <caffeine.version>2.9.3</caffeine.version>
         <junit.version>4.13.2</junit.version>
-        <sa-token.version>1.40.0</sa-token.version>
+        <sa-token.version>1.42.0</sa-token.version>
         <commonmark.version>0.18.0</commonmark.version>
         <jsoup.version>1.16.1</jsoup.version>
         <commons-io.version>2.18.0</commons-io.version>
@@ -68,6 +68,13 @@
                 <artifactId>sa-token-spring-boot-starter</artifactId>
                 <version>${sa-token.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-redis-template</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.mysql</groupId>
