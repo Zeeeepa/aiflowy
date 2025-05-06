@@ -32,8 +32,6 @@ const Login: React.FC = () => {
                 }
             }).then((resp) => {
                 if (resp.data.errorCode == 0) {
-                    console.log('location')
-                    console.log(location)
                     const from = new URLSearchParams(location.search).get('from');
                     if (from) {
                         navigate(from)
