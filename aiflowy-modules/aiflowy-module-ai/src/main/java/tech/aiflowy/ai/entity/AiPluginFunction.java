@@ -145,8 +145,24 @@ public class AiPluginFunction  implements Function {
         for (Map<String, Object> header : headers) {
             headersMap.put((String) header.get("label"), header.get("value"));
         }
-
         List<PluginParam> params = new ArrayList<>();
+
+        String authType = aiPlugin.getAuthType();
+        if (!StrUtil.isEmpty(authType) && "apiKey".equals(aiPlugin.getAuthType())){
+            if ("headers".equals(authType)){
+                headersMap.put(aiPlugin.getTokenKey(), aiPlugin.getTokenValue());
+            } else {
+                PluginParam pluginParam = new PluginParam();
+                pluginParam.setName(aiPlugin.getTokenKey());
+                pluginParam.setDefaultValue(aiPlugin.getTokenValue());
+                pluginParam.setEnabled(true);
+                pluginParam.setRequired(true);
+                pluginParam.setMethod("query");
+                params.add(pluginParam);
+            }
+        }
+
+
         List<Map<String, Object>> dataList = getDataList(aiPluginTool.getInputData());
 
         // 遍历插件工具定义的参数列表

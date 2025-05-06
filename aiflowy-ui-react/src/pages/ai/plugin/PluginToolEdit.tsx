@@ -4,7 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {Button, Collapse, Form, Input, message, Select, Space, Spin, Switch, Table, Tooltip} from "antd";
 import {usePost, usePostManual} from "../../../hooks/useApis.ts";
 import './less/pluginToolEdit.less'
-import {ArrowLeftOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {ArrowLeftOutlined, DeleteOutlined, EditOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
 
@@ -101,16 +101,6 @@ const PluginToolEdit: React.FC = () => {
             [index]: !prev[index as keyof typeof prev]
         }));
 
-        if (index === '1' && !editStates['1']) {
-            formBasicInfo.setFieldsValue({
-                id: pluginToolInfo?.data?.data?.id,
-                name: pluginToolInfo?.data?.data?.name,
-                description: pluginToolInfo?.data?.data?.description,
-                basePath: pluginToolInfo?.data?.data?.basePath ? pluginToolInfo?.data?.data?.basePath : `/${pluginToolInfo?.data?.data?.name}`,
-                baseUrl: pluginToolInfo?.data?.aiPlugin?.baseUrl,
-                requestMethod: pluginToolInfo?.data?.data?.requestMethod,
-            });
-        }
     };
 
     const handleAdd = () => {
@@ -163,13 +153,22 @@ const PluginToolEdit: React.FC = () => {
         const columnsOutput = [
             {
                 title: (
+                    <div style={{display: 'flex'}}>
                     <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                    <div  style={{marginLeft: 5}}>
+                        <Tooltip title="当前工具返回的参数">
+                            <QuestionCircleOutlined/>
+                        </Tooltip>
+                    </div>
+                    </div>
                 ),
+                width: 150,
                 dataIndex: 'name',
                 key: 'name',
                 render: (text: string, record: outputDataParameter) => {
                     return isEditOutput ? (
                         <Form.Item
+                            className="tool-edit-item"
                             name={[record.key, 'name']}
                             initialValue={text}
                             rules={[{ required: true, message: '请输入参数名称' }]}
@@ -183,13 +182,21 @@ const PluginToolEdit: React.FC = () => {
             },
             {
                 title: (
-                    <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                    <div style={{display: 'flex'}}>
+                        <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                        <div  style={{marginLeft: 5}}>
+                            <Tooltip title="当前工具返回的参数描述">
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </div>
+                    </div>
                 ),
                 dataIndex: 'description',
                 key: 'description',
                 render: (text: string, record: outputDataParameter) => {
                     return isEditOutput ? (
                         <Form.Item
+                            className="tool-edit-item"
                             name={[record.key, 'description']}
                             initialValue={text}
                             rules={[{ required: true, message: '请输入参数描述' }]}
@@ -215,11 +222,12 @@ const PluginToolEdit: React.FC = () => {
                 title: (
                     <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
                 ),
+                width: 130,
                 dataIndex: 'type',
                 key: 'type',
                 render: (text: string, record: outputDataParameter) => {
                     return isEditOutput ? (
-                        <Form.Item name={[record.key, 'type']} initialValue={text}>
+                        <Form.Item name={[record.key, 'type']} initialValue={text} className="tool-edit-item">
                             <Select style={{ width: 120 }}>
                                 <Select.Option value="String">String</Select.Option>
                                 <Select.Option value="Number">Number</Select.Option>
@@ -235,11 +243,12 @@ const PluginToolEdit: React.FC = () => {
             },
             {
                 title: '开启',
+                width: 80,
                 dataIndex: 'enabled',
                 key: 'enabled',
                 render: (text: boolean, record: outputDataParameter) => {
                     return isEditOutput ? (
-                        <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" >
+                        <Form.Item  name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" className="tool-edit-item">
                             <Switch />
                         </Form.Item>
                     ) : (
@@ -251,11 +260,14 @@ const PluginToolEdit: React.FC = () => {
                 title: '操作',
                 key: 'operation',
                 render: (_: any, record: outputDataParameter) => (
-                    <Button
-                        type="text"
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleDeleteOutputData(record.key)}
-                    />
+                    <Form.Item className="tool-edit-item">
+                        <Button
+                            type="text"
+                            icon={<DeleteOutlined />}
+                            onClick={() => handleDeleteOutputData(record.key)}
+                        />
+                    </Form.Item>
+
                 ),
             },
         ];
@@ -265,13 +277,22 @@ const PluginToolEdit: React.FC = () => {
         const columnsInput = [
             {
                 title: (
-                    <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                    <div style={{display: 'flex'}}>
+                        <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                        <div  style={{marginLeft: 5}}>
+                            <Tooltip title="当前工具请求的参数名称">
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </div>
+                    </div>
                 ),
+                width: 150,
                 dataIndex: 'name',
                 key: 'name',
                 render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item
+                            className="tool-edit-item"
                             name={[record.key, 'name']}
                             initialValue={text}
                             rules={[{ required: true, message: '请输入参数名称' }]}
@@ -285,13 +306,21 @@ const PluginToolEdit: React.FC = () => {
             },
             {
                 title: (
-                    <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                    <div style={{display: 'flex'}}>
+                        <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                        <div  style={{marginLeft: 5}}>
+                            <Tooltip title="请描述参数的功能，帮助用户/大模型更好的理解。">
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </div>
+                    </div>
                 ),
                 dataIndex: 'description',
                 key: 'description',
                 render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item
+                            className="tool-edit-item"
                             name={[record.key, 'description']}
                             initialValue={text}
                             rules={[{ required: true, message: '请输入参数描述' }]}
@@ -317,11 +346,12 @@ const PluginToolEdit: React.FC = () => {
                 title: (
                     <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
                 ),
+                width: 130,
                 dataIndex: 'type',
                 key: 'type',
                 render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
-                        <Form.Item name={[record.key, 'type']} initialValue={text}>
+                        <Form.Item name={[record.key, 'type']} initialValue={text} className="tool-edit-item">
                             <Select style={{ width: 120 }}>
                                 <Select.Option value="String">String</Select.Option>
                                 <Select.Option value="Number">Number</Select.Option>
@@ -339,11 +369,12 @@ const PluginToolEdit: React.FC = () => {
                 title: (
                     <span>传入方法<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
                 ),
+                width: 130,
                 dataIndex: 'method',
                 key: 'method',
                 render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
-                        <Form.Item name={[record.key, 'method']} initialValue={text}>
+                        <Form.Item name={[record.key, 'method']} initialValue={text} className="tool-edit-item">
                             <Select style={{ width: 120 }}>
                                 <Select.Option value="Query">Query</Select.Option>
                                 <Select.Option value="Body">Body</Select.Option>
@@ -363,7 +394,7 @@ const PluginToolEdit: React.FC = () => {
                 key: 'required',
                 render: (text: boolean, record: inputDataParameter) => {
                     return isEditInput ? (
-                        <Form.Item name={[record.key, 'required']} initialValue={text} valuePropName="checked">
+                        <Form.Item name={[record.key, 'required']} initialValue={text} valuePropName="checked" className="tool-edit-item">
                             <Switch />
                         </Form.Item>
                     ) : (
@@ -373,11 +404,12 @@ const PluginToolEdit: React.FC = () => {
             },
             {
                 title: '默认值',
+                width: 100,
                 dataIndex: 'defaultValue',
                 key: 'defaultValue',
                 render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
-                        <Form.Item name={[record.key, 'defaultValue']} initialValue={text}>
+                        <Form.Item name={[record.key, 'defaultValue']} initialValue={text} className="tool-edit-item">
                             <Input placeholder="默认值" size="small" />
                         </Form.Item>
                     ) : (
@@ -387,11 +419,12 @@ const PluginToolEdit: React.FC = () => {
             },
             {
                 title: '开启',
+                width: 80,
                 dataIndex: 'enabled',
                 key: 'enabled',
                 render: (text: boolean, record: inputDataParameter) => {
                     return isEditInput ? (
-                        <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" >
+                        <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" className="tool-edit-item">
                             <Switch />
                         </Form.Item>
                     ) : (
@@ -431,9 +464,9 @@ const PluginToolEdit: React.FC = () => {
                 {isEditInput ? (
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <Button type="primary" size="small" onClick={() => {
-                            if (index === '2'){
+                            if (index === '2') {
                                 setIsEditInput(false);
-                            } else if (index === '3'){
+                            } else if (index === '3') {
                                 setIsEditOutput(false);
                             }
                         }}>取消</Button>
@@ -518,7 +551,17 @@ const PluginToolEdit: React.FC = () => {
                     </div>
                 ) : (
                     <div style={{ display: 'flex', gap: '8px' }} onClick={()=>{
-                        if (index === '2') {
+
+                        if (index === '1' && !editStates['1']) {
+                            formBasicInfo.setFieldsValue({
+                                id: pluginToolInfo?.data?.data?.id,
+                                name: pluginToolInfo?.data?.data?.name,
+                                description: pluginToolInfo?.data?.data?.description,
+                                basePath: pluginToolInfo?.data?.data?.basePath ? pluginToolInfo?.data?.data?.basePath : `/${pluginToolInfo?.data?.data?.name}`,
+                                baseUrl: pluginToolInfo?.data?.aiPlugin?.baseUrl,
+                                requestMethod: pluginToolInfo?.data?.data?.requestMethod,
+                            });
+                        }else if (index === '2') {
                             setIsEditInput(true);
                         } else if (index === '3'){
                             setIsEditOutput(true);

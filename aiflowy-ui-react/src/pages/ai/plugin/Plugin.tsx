@@ -5,7 +5,7 @@ import {
 	EllipsisOutlined,
 	MenuUnfoldOutlined,
 	MinusCircleOutlined,
-	PlusOutlined
+	PlusOutlined, QuestionCircleOutlined
 } from '@ant-design/icons';
 import {
 	Avatar,
@@ -481,7 +481,25 @@ const Plugin: React.FC = () => {
 					</Form.List>
 					</Form.Item>
 					<Form.Item<FieldType>
-						label="认证方式"
+						label={
+							<span >
+      									认证方式
+      						<Tooltip style={{width: 350}}
+									 styles={{root: {maxWidth: 350 }}}
+									 title={
+								<div>
+									<p style={{ marginBottom: 8, width: 300 }}>选择插件使用的授权或验证方式。目前支持如下两种类型：</p>
+									<p>1.  无需认证</p>
+									<p style={{ fontSize: 12}}>不需要认证，直接访问插件即可。</p>
+									<p>2.  Service token / API key</p>
+									<p style={{ fontSize: 12}}>Token（令牌）是一种身份验证方式，用户或系统需提供唯一的密钥（Token）来访问受保护的资源。插件校验 Token 合法后，允许操作。</p>
+								</div>
+							}
+										 >
+      						  <QuestionCircleOutlined style={{ marginLeft: 8, color: 'rgba(0,0,0,.45)' }} />
+      						</Tooltip>
+    						</span>
+						}
 						name="authType"
 						rules={[{ required: true, message: '请输入插件名称!' }]}
 					>
