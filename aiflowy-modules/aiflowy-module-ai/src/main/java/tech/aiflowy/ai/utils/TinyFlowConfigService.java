@@ -45,7 +45,7 @@ public class TinyFlowConfigService {
     @Resource
     private AiKnowledgeService aiKnowledgeService;
 
-    public void setAll(Tinyflow tinyflow) {
+    public void initProvidersAndNodeParsers(Tinyflow tinyflow) {
         setExtraNodeParser(tinyflow);
         setSearchEngineProvider(tinyflow);
         setLlmProvider(tinyflow);

@@ -61,7 +61,6 @@ public class AiWorkflowFunction extends BaseFunction {
         AiWorkflow workflow = service.getById(this.workflowId);
         if (workflow != null) {
             Tinyflow tinyflow = workflow.toTinyflow();
-            setTinyflow(tinyflow);
             Chain chain = tinyflow.toChain();
             return chain.executeForResult(argsMap);
         } else {
@@ -69,10 +68,6 @@ public class AiWorkflowFunction extends BaseFunction {
         }
     }
 
-    private void setTinyflow(Tinyflow tinyflow) {
-        TinyFlowConfigService service = SpringContextUtil.getBean(TinyFlowConfigService.class);
-        service.setAll(tinyflow);
-    }
 
     @Override
     public String toString() {

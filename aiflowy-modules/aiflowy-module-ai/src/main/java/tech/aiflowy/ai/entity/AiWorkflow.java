@@ -1,6 +1,8 @@
 package tech.aiflowy.ai.entity;
 
 import tech.aiflowy.ai.entity.base.AiWorkflowBase;
+import tech.aiflowy.ai.utils.TinyFlowConfigService;
+import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.common.util.StringUtil;
 import com.agentsflex.core.llm.functions.Function;
 import com.mybatisflex.annotation.Table;
@@ -22,7 +24,11 @@ public class AiWorkflow extends AiWorkflowBase {
         if (StringUtil.noText(jsonContent)) {
             return null;
         }
-        return new Tinyflow(jsonContent);
+
+        Tinyflow tinyflow = new Tinyflow(jsonContent);
+        TinyFlowConfigService service = SpringContextUtil.getBean(TinyFlowConfigService.class);
+        service.initProvidersAndNodeParsers(tinyflow);
+        return tinyflow;
     }
 
 

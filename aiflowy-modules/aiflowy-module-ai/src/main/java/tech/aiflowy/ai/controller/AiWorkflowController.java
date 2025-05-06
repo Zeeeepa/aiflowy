@@ -1,28 +1,12 @@
 package tech.aiflowy.ai.controller;
 
-import com.agentsflex.core.document.Document;
-import com.agentsflex.core.llm.Llm;
-import com.agentsflex.core.store.DocumentStore;
-import com.agentsflex.core.store.SearchWrapper;
-import com.agentsflex.core.store.StoreOptions;
 import dev.tinyflow.core.Tinyflow;
-import dev.tinyflow.core.knowledge.Knowledge;
-import dev.tinyflow.core.node.KnowledgeNode;
-import dev.tinyflow.core.parser.ChainParser;
-import dev.tinyflow.core.provider.KnowledgeProvider;
-import dev.tinyflow.core.provider.LlmProvider;
-import org.springframework.beans.factory.annotation.Value;
-import tech.aiflowy.ai.entity.AiKnowledge;
-import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.entity.AiWorkflow;
-import tech.aiflowy.ai.node.*;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.ai.utils.TinyFlowConfigService;
 import tech.aiflowy.common.domain.Result;
-import tech.aiflowy.common.filestorage.FileStorageService;
-import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
 import com.agentsflex.core.chain.*;
@@ -85,9 +69,6 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         }
 
         Tinyflow tinyflow = workflow.toTinyflow();
-
-        tinyFlowConfigService.setAll(tinyflow);
-
         Chain chain = tinyflow.toChain();
         chain.addEventListener(new ChainEventListener() {
             @Override
