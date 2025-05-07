@@ -198,6 +198,8 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                 {text: '节点配置', collapsed: false, items: [
                         {text: '搜索引擎', link: '/workflow/nodes/search-engine'},
                         {text: '内容模板', link: '/workflow/nodes/template-node'},
+                        {text: '文件内容提取', link: '/workflow/nodes/doc-content'},
+                        {text: '文件生成', link: '/workflow/nodes/file-generator'},
                     ]},
             ]
         },
