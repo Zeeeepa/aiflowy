@@ -1,20 +1,22 @@
 package tech.aiflowy.ai.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.io.IoUtil;
+import com.agentsflex.core.chain.*;
 import dev.tinyflow.core.Tinyflow;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.aiflowy.ai.entity.AiWorkflow;
-import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
-import tech.aiflowy.ai.utils.TinyFlowConfigService;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
-import com.agentsflex.core.chain.*;
-import org.springframework.web.bind.annotation.*;
+import tech.aiflowy.system.service.SysApiKeyService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -33,9 +35,7 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
     private final AiLlmService aiLlmService;
 
     @Resource
-    private AiKnowledgeService aiKnowledgeService;
-    @Resource
-    private TinyFlowConfigService tinyFlowConfigService;
+    private SysApiKeyService apiKeyService;
 
     public AiWorkflowController(AiWorkflowService service, AiLlmService aiLlmService) {
         super(service);
@@ -70,8 +70,8 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         }
         List<Parameter> chainParameters = chain.getParameters();
         return Result.success("parameters", chainParameters)
-                .set("title",  workflow.getTitle())
-                .set("description",  workflow.getDescription())
+                .set("title", workflow.getTitle())
+                .set("description", workflow.getDescription())
                 .set("icon", workflow.getIcon());
     }
 
@@ -102,5 +102,26 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         Map<String, Object> result = chain.executeForResult(variables);
 
         return Result.success("result", result).set("message", chain.getMessage());
+    }
+
+    @SaIgnore
+    @GetMapping(value = "/external/getRunningParams", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Result externalGetRunningParameters(HttpServletRequest request,
+                                               @RequestParam BigInteger id) {
+        String apiKey = request.getHeader("Authorization");
+        apiKeyService.checkApiKey(apiKey);
+        return getRunningParameters(id);
+    }
+
+    @SaIgnore
+    @PostMapping(value = "/external/run", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Result externalRun(HttpServletRequest request,
+                              @JsonBody(value = "id", required = true) BigInteger id,
+                              @JsonBody("variables") Map<String, Object> variables) {
+        String apiKey = request.getHeader("Authorization");
+        apiKeyService.checkApiKey(apiKey);
+        return tryRunning(id, variables);
     }
 }
