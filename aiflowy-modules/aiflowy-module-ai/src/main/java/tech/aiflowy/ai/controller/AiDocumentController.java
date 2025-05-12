@@ -3,6 +3,7 @@ package tech.aiflowy.ai.controller;
 import com.agentsflex.core.document.DocumentSplitter;
 import com.agentsflex.core.document.splitter.RegexDocumentSplitter;
 import com.agentsflex.core.document.splitter.SimpleTokenizeSplitter;
+import com.agentsflex.core.llm.embedding.EmbeddingOptions;
 import org.springframework.core.io.ClassPathResource;
 import tech.aiflowy.ai.entity.AiDocument;
 import tech.aiflowy.ai.entity.AiDocumentChunk;
@@ -183,14 +184,16 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
                          @RequestParam(name="regex", required = false) String regex,
                          @RequestParam(name="userWillSave") boolean userWillSave
     ) throws IOException {
-
+        if (file.getOriginalFilename() == null){
+            return Result.fail(1,"文件名不能为空");
+        }
         String fileTypeByExtension = JudgeFileTypeUtil.getFileTypeByExtension(file.getOriginalFilename());
         if (StringUtils.isEmpty(fileTypeByExtension)){
-            return Result.fail(1,"不支持的文档类型");
+            return Result.fail(2,"不支持的文档类型");
         }
         DocumentParser documentParser = DocumentParserFactory.getDocumentParser(file.getOriginalFilename());
         if (documentParser == null) {
-            return Result.fail(2, "can not support the file type: " + file.getOriginalFilename());
+            return Result.fail(3, "can not support the file type: " + file.getOriginalFilename());
         }
         String path = storageService.save(file);
         AiDocument aiDocument = new AiDocument();
@@ -318,7 +321,9 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         documentStore.setEmbeddingModel(embeddingModel);
 
         StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
-
+        EmbeddingOptions embeddingOptions = new EmbeddingOptions();
+        embeddingOptions.setModel(aiLlm.getLlmModel());
+        options.setEmbeddingOptions(embeddingOptions);
         if (entity.getId() != null) {
             List<AiDocumentChunk> documentChunks = documentChunkService.list(QueryWrapper.create()
                     .eq(AiDocumentChunk::getDocumentId, entity.getId()));

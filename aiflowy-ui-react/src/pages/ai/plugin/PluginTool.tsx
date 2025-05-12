@@ -292,7 +292,7 @@ const PluginTool: React.FC = () =>{
                     <Form.Item<FieldType>
                         label="工具名称"
                         name="name"
-                        rules={[{ required: true, message: '请输入工具名称' }]}
+                        rules={[{ required: true, pattern: /^[a-zA-Z0-9_-]+$/, message: '仅包含字母、数字、下划线或连字符的字符串' }]}
                     >
 
                         <Input maxLength={40} showCount placeholder={'请输入工具名称'}/>

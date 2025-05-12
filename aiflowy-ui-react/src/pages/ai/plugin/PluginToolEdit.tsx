@@ -603,7 +603,7 @@ const PluginToolEdit: React.FC = () => {
                     <Form.Item label="id" name="id" hidden rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="工具名称" name="name" rules={[{ required: true }]}>
+                    <Form.Item label="工具名称" name="name" rules={[{ required: true, pattern: /^[a-zA-Z0-9_-]+$/, message: '仅包含字母、数字、下划线或连字符的字符串' }]} >
                         <Input />
                     </Form.Item>
                     <Form.Item label="工具描述" name="description" rules={[{ required: true }]}>

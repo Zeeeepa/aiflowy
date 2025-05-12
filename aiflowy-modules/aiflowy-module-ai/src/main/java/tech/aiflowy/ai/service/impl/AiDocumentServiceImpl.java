@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.service.impl;
 
+import com.agentsflex.core.llm.embedding.EmbeddingOptions;
 import org.springframework.core.io.ClassPathResource;
 import tech.aiflowy.ai.entity.AiDocument;
 import tech.aiflowy.ai.entity.AiKnowledge;
@@ -109,6 +110,9 @@ public class AiDocumentServiceImpl extends ServiceImpl<AiDocumentMapper, AiDocum
         Llm embeddingModel = aiLlm.toLlm();
         documentStore.setEmbeddingModel(embeddingModel);
         StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
+        EmbeddingOptions embeddingOptions = new EmbeddingOptions();
+        embeddingOptions.setModel(aiLlm.getLlmModel());
+        options.setEmbeddingOptions(embeddingOptions);
         // 查询文本分割表tb_ai_document_chunk中对应的有哪些数据，找出来删除
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select("id").from("tb_ai_document_chunk").where("document_id = ?", id);
