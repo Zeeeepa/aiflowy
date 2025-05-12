@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 
 
 import {useLayout} from '../../../hooks/useLayout.tsx';
-import {App, Button, Drawer, Form, Input} from "antd";
+import {App, Button, Drawer, Form, Input, Skeleton} from "antd";
 import {useParams} from "react-router-dom";
 import {useDetail, useGet, useGetManual, usePostManual, useUpdate} from "../../../hooks/useApis.ts";
 import {FormOutlined, SendOutlined, UploadOutlined} from "@ant-design/icons";
@@ -56,6 +56,13 @@ export const WorkflowDesign = () => {
             label: '博查搜索',
         }]
     }
+    const [showTinyflow, setShowTinyflow] = useState(false);
+    useEffect(() => {
+        if (llms && knowledge) {
+            setShowTinyflow(true)
+        }
+    }, [llms, knowledge]);
+
     const {setOptions} = useLayout();
     useEffect(() => {
         setOptions({leftMenuCollapsed: true, showBreadcrumb: false})
@@ -273,19 +280,22 @@ export const WorkflowDesign = () => {
                             <Button type={"primary"} loading={saveLoading} onClick={saveHandler}>保存 (Ctrl + s)</Button>
                         </div>
                     </div>
-                    <Tinyflow ref={tinyflowRef} data={workflowData}
-                              provider={provider}
-                              // onChange={(data: any) => {
-                              //     console.log(data)
-                              //     setWorkflow({
-                              //         ...workflow,
-                              //         data: {
-                              //             ...workflow?.data,
-                              //             content: JSON.stringify(data)
-                              //         }
-                              //     })
-                              // }}
-                              style={{height: 'calc(100vh - 110px)'}} customNodes={customNodes}/>
+                    {showTinyflow ? <Tinyflow ref={tinyflowRef} data={workflowData}
+                                            provider={provider}
+                        // onChange={(data: any) => {
+                        //     console.log(data)
+                        //     setWorkflow({
+                        //         ...workflow,
+                        //         data: {
+                        //             ...workflow?.data,
+                        //             content: JSON.stringify(data)
+                        //         }
+                        //     })
+                        // }}
+                                            style={{height: 'calc(100vh - 110px)'}} customNodes={customNodes}/>
+                        : <div style={{padding: '20px'}}><Skeleton active /></div>
+                    }
+
                 </div>
             </div>
         </>
