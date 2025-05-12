@@ -235,7 +235,7 @@ public class AiOllamaServiceImpl implements AiOllamaService {
     public static OllamaModel  hasJoinModel(List<AiLlm> aiLlmList, OllamaModel ollamaModel){
         aiLlmList.stream()
                 .anyMatch(item -> {
-                    if (item.getTitle().equals(ollamaModel.getName())) {
+                    if (item.getTitle().replaceFirst("ollama_","").equals(ollamaModel.getName())) {
                         ollamaModel.setHasJoinModel(1);
                         return true; // 找到匹配项，停止遍历
                     }
