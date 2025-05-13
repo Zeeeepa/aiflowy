@@ -40,6 +40,11 @@ public class AiPluginToolController extends BaseCurdController<AiPluginToolServi
         return aiPluginToolService.searchPlugin(aiPluginToolId);
     }
 
+    @PostMapping("/toolsList")
+    public Result searchPluginToolByPluginId(@JsonBody(value = "pluginId", required = true) BigInteger pluginId){
+        return aiPluginToolService.searchPluginToolByPluginId(pluginId);
+    }
+
     @PostMapping("/tool/update")
     public Result updatePlugin(@JsonBody AiPluginTool aiPluginTool){
 
