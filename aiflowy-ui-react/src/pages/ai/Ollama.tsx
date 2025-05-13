@@ -37,8 +37,11 @@ const Ollama: React.FC = () => {
                 supportFunctionCalling: isSupportFunctionCalling(record.name),
                 brand: 'ollama'
             }
+        }).then(resp => {
+            if (resp.data.errorCode == 0) {
+                doGet()
+            }
         })
-        doGet()
     };
     //删除大模型操作
     function handleDeleteAction(record: any) {
