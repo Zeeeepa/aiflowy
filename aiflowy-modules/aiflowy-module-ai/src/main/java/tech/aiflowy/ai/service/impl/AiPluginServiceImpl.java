@@ -10,6 +10,7 @@ import tech.aiflowy.common.domain.Result;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  *  服务层实现。
@@ -56,5 +57,13 @@ public class AiPluginServiceImpl extends ServiceImpl<AiPluginMapper, AiPlugin>  
 
         }
         return Result.success();
+    }
+
+    @Override
+    public Result getList(String botId) {
+        QueryWrapper queryWrapper = QueryWrapper.create().select("*")
+                .from("tb_ai_plugin");
+        List<AiPlugin> aiPlugins = aiPluginMapper.selectListByQueryAs(queryWrapper, AiPlugin.class);
+        return Result.success(aiPlugins);
     }
 }

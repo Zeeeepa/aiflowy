@@ -5,7 +5,16 @@ import {Row} from 'antd/lib/index';
 import {App, Avatar, Button, Col, Collapse, Modal, Select, Tooltip} from 'antd';
 import Title from 'antd/es/typography/Title';
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
-import {useDetail, useGet, useList, usePostManual, useRemove, useSave, useUpdate} from "../../../hooks/useApis.ts";
+import {
+    useDetail,
+    useGet,
+    useList,
+    usePost,
+    usePostManual,
+    useRemove,
+    useSave,
+    useUpdate
+} from "../../../hooks/useApis.ts";
 import {useParams} from "react-router-dom";
 import {WorkflowsModal} from "./Workflows.tsx";
 import {DebouncedTextArea} from "../../../components/DebouncedTextArea";
@@ -15,8 +24,7 @@ import {KnowledgeModal} from "./Knowledge.tsx";
 import TextArea from "antd/es/input/TextArea";
 import {getSessionId} from "../../../libs/getSessionId.ts";
 import {AiProChat, ChatMessage} from "../../../components/AiProChat/AiProChat";
-import {PluginModal} from "./Plugins.tsx";
-
+import {PluginsModal} from "./PluginsModal.tsx";
 const colStyle: React.CSSProperties = {
     background: '#fafafa',
     padding: '8px',
@@ -168,9 +176,9 @@ const BotDesign: React.FC = () => {
     const {doRemove: doRemoveAiBotWorkflow} = useRemove("aiBotWorkflow");
     const [workflowOpen, setWorkflowOpen] = useState(false)
 
-    const {result: pluginResult, doGet: doGetPlugin} = useList("aiBotPlugins", {"botId": params.id});
-    const {doSave: doSavePlugin} = useSave("aiBotPlugins");
-    const {doRemove: doRemovePlugin} = useRemove("aiBotPlugins");
+    const {doPost: doPostPluginTool, result: pluginResult} = usePost('/api/v1/aiPluginTool/tool/list')
+
+    const {doPost: doRemovePluginTool} = usePostManual('/api/v1/aiBotPlugins/doRemove')
     const [pluginOpen, setPluginOpen] = useState(false)
 
 
@@ -189,12 +197,25 @@ const BotDesign: React.FC = () => {
         botId: params.id,
         sessionId: getSessionId()
     });
-    console.log('pluginResult')
-    console.log(pluginResult)
+    const [pluginToolData, setPluginToolData] = useState([])
     useEffect(() => {
         setChats(messageResult?.data)
     }, [messageResult]);
+    useEffect(() => {
+        doPostPluginTool({data: {botId: params.id}}).then(r => {
+            console.log('ssssdfsdfadsf')
+            console.log(r)
+            setPluginToolData(r?.data?.data)
+            console.log('pluginToolData')
+            console.log(pluginToolData)
+        })
+    }, []);
+    const {doPost: doPostGetPluginsList, result: resultPlugins} = usePostManual(('/api/v1/aiPlugin/getList'))
 
+    const handleToolExecute = async (pluginId: string, toolId: string, params: Record<string, any>) => {
+        console.log('执行工具:', { pluginId, toolId, params });
+        // 这里调用实际API
+    };
     return (
         <>
             <WorkflowsModal open={workflowOpen} onClose={() => setWorkflowOpen(false)}
@@ -211,18 +232,12 @@ const BotDesign: React.FC = () => {
                             }}
             />
 
-            <PluginModal open={pluginOpen} onClose={() => setPluginOpen(false)}
-                         onCancel={() => setPluginOpen(false)}
-                         goToPage={"/ai/plugins"}
-                         onSelectedItem={item => {
-                             setPluginOpen(false)
-                             doSavePlugin({
-                                 data: {
-                                     botId: params.id,
-                                     pluginId: item.id,
-                                 }
-                             }).then(doGetPlugin)
-                         }}
+            <PluginsModal
+                open={pluginOpen}
+                onCancel={() => setPluginOpen(false)}
+                params={params}
+                plugins={resultPlugins?.data}
+                onToolExecute={handleToolExecute}
             />
 
 
@@ -357,21 +372,26 @@ const BotDesign: React.FC = () => {
                                 key: 'plugins',
                                 label: <CollapseLabel text="插件" onClick={() => {
                                     setPluginOpen(true)
+                                    doPostGetPluginsList({data: {
+                                        botId: params.id
+                                        }})
                                 }}/>,
                                 children:
                                     <div>
                                         {pluginResult?.data?.map((item: any) => {
-                                            return <ListItem key={item.id} title={item.aiPlugin.name}
-                                                             description={item.aiPlugin.description}
-                                                             icon={item.aiPlugin.icon}
+                                            return <ListItem key={item.id} title={item?.name}
+                                                             description={item.description}
+                                                             icon={item?.icon}
                                                              onButtonClick={() => {
                                                                  Modal.confirm({
                                                                      title: '确定要删除该插件吗？',
                                                                      content: '删除后，该插件将不再关联该机器人，但插件本身不会被删除。',
                                                                      onOk: () => {
-                                                                         doRemovePlugin({
-                                                                             data: {id: item.id}
-                                                                         }).then(doGetPlugin)
+                                                                         doRemovePluginTool({
+                                                                             data: {pluginId: item.id, botId: params.id}
+                                                                         }).then(() =>{
+                                                                             doPostPluginTool({data: {botId: params.id}})
+                                                                         })
                                                                      }
                                                                  })
                                                              }}

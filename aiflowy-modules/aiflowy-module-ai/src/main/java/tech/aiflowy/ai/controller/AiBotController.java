@@ -177,7 +177,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 function_call(aiMessageResponse, emitter, needClose, historiesPrompt, llm, prompt, false);
             } catch (Exception e) {
                 emitter.completeWithError(e);
-            } 
+            }
 
             if (needClose[0]) {
                 System.out.println("function chat complete");
@@ -526,7 +526,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         List<AiBotPlugins> aiBotPlugins = aiBotPluginsService.getMapper().selectListWithRelationsByQuery(queryWrapper);
         // 根据插件iD查询该插件下面有哪些插件工具，转换成Function
         for (AiBotPlugins aiBotPlugin: aiBotPlugins){
-            BigInteger pluginId = aiBotPlugin.getPluginId();
+            BigInteger pluginId = aiBotPlugin.getPluginToolId();
             QueryWrapper queryTool = QueryWrapper.create()
                     .select("*")
                     .from("tb_ai_plugin_tool")

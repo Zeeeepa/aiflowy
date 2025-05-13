@@ -22,4 +22,6 @@ public interface AiPluginToolService extends IService<AiPluginTool> {
     Result updatePlugin(AiPluginTool aiPluginTool);
 
     Result searchPluginToolByPluginId(BigInteger pluginId);
+
+    Result getPluginToolList(BigInteger botId);
 }

@@ -15,7 +15,7 @@ public class AiBotPluginsBase implements Serializable {
 
     private BigInteger botId;
 
-    private BigInteger pluginId;
+    private BigInteger pluginToolId;
 
     private String options;
 
@@ -35,12 +35,12 @@ public class AiBotPluginsBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getPluginId() {
-        return pluginId;
+    public BigInteger getPluginToolId() {
+        return pluginToolId;
     }
 
-    public void setPluginId(BigInteger pluginId) {
-        this.pluginId = pluginId;
+    public void setPluginToolId(BigInteger pluginToolId) {
+        this.pluginToolId = pluginToolId;
     }
 
     public String getOptions() {

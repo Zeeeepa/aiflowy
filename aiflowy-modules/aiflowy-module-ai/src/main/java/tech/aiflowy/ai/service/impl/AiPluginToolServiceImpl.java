@@ -10,6 +10,7 @@ import org.eclipse.jetty.util.ajax.JSON;
 import org.springframework.stereotype.Service;
 import tech.aiflowy.ai.entity.AiPlugin;
 import tech.aiflowy.ai.entity.AiPluginTool;
+import tech.aiflowy.ai.mapper.AiBotPluginsMapper;
 import tech.aiflowy.ai.mapper.AiPluginMapper;
 import tech.aiflowy.ai.mapper.AiPluginToolMapper;
 import tech.aiflowy.ai.service.AiPluginToolService;
@@ -37,6 +38,9 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
 
     @Resource
     private AiPluginMapper aiPluginMapper;
+
+    @Resource
+    private AiBotPluginsMapper aiBotPluginsMapper;
 
     @Override
     public Result savePluginTool(AiPluginTool aiPluginTool) {
@@ -100,6 +104,20 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
                 .from("tb_ai_plugin_tool")
                 .where("plugin_id = ? ", pluginId);
         List<AiPluginTool> aiPluginTools = aiPluginToolMapper.selectListByQueryAs(queryAiPluginToolWrapper, AiPluginTool.class);
+        return Result.success(aiPluginTools);
+    }
+
+    @Override
+    public Result getPluginToolList(BigInteger botId) {
+        QueryWrapper queryAiPluginToolWrapper = QueryWrapper.create()
+                .select("plugin_tool_id")
+                .from("tb_ai_bot_plugins")
+                .where("bot_id = ? ", botId);
+        List<BigInteger> pluginToolIds = aiBotPluginsMapper.selectListByQueryAs(queryAiPluginToolWrapper, BigInteger.class);
+        if (pluginToolIds.size() <= 0){
+            return Result.success();
+        }
+        List<AiPluginTool> aiPluginTools = aiPluginToolMapper.selectListByIds(pluginToolIds);
         return Result.success(aiPluginTools);
     }
 

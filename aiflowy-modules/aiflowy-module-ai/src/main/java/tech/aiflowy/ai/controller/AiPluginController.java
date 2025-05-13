@@ -52,4 +52,11 @@ public class AiPluginController extends BaseCurdController<AiPluginService, AiPl
 
         return aiPluginService.updatePlugin(aiPlugin);
     }
+
+    @PostMapping("/getList")
+    public Result getList(@JsonBody(value = "botId", required = true) String botId){
+//        QueryWrapper queryWrapper = QueryWrapper.create().select("plugin_id").where("bot_id = ?", botId);
+//        List<AiBotPlugins> list = service.list(queryWrapper);
+        return aiPluginService.getList(botId);
+    }
 }

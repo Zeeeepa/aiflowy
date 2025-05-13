@@ -17,4 +17,6 @@ public interface AiPluginService extends IService<AiPlugin> {
     Result removePlugin(String id);
 
     Result updatePlugin(AiPlugin aiPlugin);
+
+    Result getList(String botId);
 }

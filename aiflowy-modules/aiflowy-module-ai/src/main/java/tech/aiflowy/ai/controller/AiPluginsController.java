@@ -49,7 +49,7 @@ public class AiPluginsController extends BaseCurdController<AiPluginsService, Ai
     @Override
     protected void onRemoveAfter(Collection<Serializable> ids) {
         QueryWrapper wrapper = QueryWrapper.create();
-        wrapper.in(AiBotPlugins::getPluginId, ids);
+        wrapper.in(AiBotPlugins::getPluginToolId, ids);
         aiBotPluginsService.remove(wrapper);
     }
 }
