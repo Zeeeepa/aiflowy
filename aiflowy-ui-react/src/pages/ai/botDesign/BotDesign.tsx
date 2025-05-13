@@ -159,7 +159,7 @@ const BotDesign: React.FC = () => {
     }
 
     useEffect(() => {
-        setSystemPrompt(detail?.data?.llmOptions?.systemPrompt)
+        setSystemPrompt(detail?.data?.llmOptions?.systemPrompt || '你是一个AI助手，请根据用户的问题给出清晰、准确的回答。');
         setWelcomeMessage(detail?.data?.options?.welcomeMessage)
     }, [detail]);
 
