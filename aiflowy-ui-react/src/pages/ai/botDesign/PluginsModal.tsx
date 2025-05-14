@@ -1,8 +1,8 @@
 import {Button, Card, Divider, Input, message, Modal, Tooltip, Typography} from "antd";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ModalProps} from "antd/es/modal/interface";
 import logo from "/favicon.png";
-import {usePostManual, useSave} from "../../../hooks/useApis.ts";
+import {useGetManual, usePostManual, useSave} from "../../../hooks/useApis.ts";
 
 const { Text } = Typography;
 interface Tool {
@@ -27,32 +27,38 @@ export interface Plugin {
 }
 
 interface PluginModalProps extends ModalProps {
-    plugins?: Plugin[];
     params?: any;
     onToolExecute?: (pluginId: string, toolId: string, params: Record<string, any>) => void;
 }
 export const PluginsModal: React.FC<PluginModalProps> = ({
-                                                            plugins,
                                                              params,
                                                             onToolExecute,
                                                             ...modalProps
                                                         }) => {
     const {doPost: doPostGetToolsList} = usePostManual('/api/v1/aiPluginTool/toolsList')
     const {doSave: doSavePlugin} = useSave("aiBotPlugins");
+    const {doPost: doRemovePlugin} = usePostManual('/api/v1/aiBotPlugins/doRemove');
+    const {doPost: doPostGetPluginsList} = usePostManual(('/api/v1/aiPlugin/getList'))
+    const {doGet: doGetPluginsList} = useGetManual(('/api/v1/aiPlugin/list'))
+
 
     const [selectedPlugin, setSelectedPlugin] = useState<Plugin | null>(null);
     const [activeTool] = useState<Tool | null>(null);
+    const [plugins, setPlugins] = useState<Plugin[]>([]);
     const [toolParams, setToolParams] = useState<Record<string, any>>({});
     const [loading, setLoading] = useState(false);
     const [pluginTools, setPluginTools] = useState([])
     const handlePluginSelect = (plugin: Plugin) => {
-        doPostGetToolsList({data: {pluginId: plugin.id}}).then(res => {
+        doPostGetToolsList({data: {pluginId: plugin.id, botId: params.id}}).then(res => {
             setPluginTools(res?.data?.data)
         })
         setSelectedPlugin(plugin);
-        // setActiveTool(null);
-        // setToolParams({});
     };
+    useEffect(() => {
+        doPostGetPluginsList({data: {botId: params.id}}).then(res => {
+            setPlugins(res?.data?.data)
+        })
+    }, [])
     const executeTool = async () => {
         if (!selectedPlugin || !activeTool) return;
 
@@ -67,7 +73,19 @@ export const PluginsModal: React.FC<PluginModalProps> = ({
             setLoading(false);
         }
     };
-
+    const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
+    const handleRemoveBotPluginTool = (plugintoolId: string) =>{
+        doRemovePlugin({data: {pluginToolId: plugintoolId, botId: params.id}}).then(res => {
+            if (res?.data?.errorCode === 0){
+                message.success('删除成功')
+                doPostGetToolsList({data: {pluginId: selectedPlugin?.id, botId: params.id}}).then(res => {
+                    setPluginTools(res?.data?.data)
+                })
+            } else {
+                message.error('删除失败')
+            }
+        })
+    }
     return (
         <Modal
             title="插件工具管理"
@@ -82,7 +100,11 @@ export const PluginsModal: React.FC<PluginModalProps> = ({
                 {/* 左侧插件列表 */}
                 <div style={{ width: 280 }}>
                     <div style={{ marginBottom: 16 }}>
-                        <Input.Search placeholder="搜索插件..." />
+                        <Input.Search placeholder="搜索插件..." onSearch={value => {
+                            doGetPluginsList({params:{name: value}}).then(r =>{
+                                setPlugins(r?.data?.data)
+                            })
+                        }}/>
                     </div>
 
                     <div style={{
@@ -169,43 +191,62 @@ export const PluginsModal: React.FC<PluginModalProps> = ({
                                 borderRadius: 8
                             }}>
                                 {pluginTools.map((item: any) => (
-                                    <Card
-                                        key={item?.id}
-                                        style={{
-                                            marginBottom: 16,
-                                            border: activeTool?.id === item?.id
-                                                ? '1px solid #1890ff'
-                                                : '1px solid #f0f0f0'
-                                        }}
-                                        // onClick={() => handleToolSelect(item)}
-                                    >
+                                    <Card key={item?.id} style={{ marginBottom: 16 }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <Text strong>{item.name}</Text>
-                                            {/*<Tag color="blue">{item.usageCount}次使用</Tag>*/}
-                                            <Button color="blue" onClick={()=>{
-                                                console.log('item')
-                                                console.log(item)
-                                                doSavePlugin({
-                                                    data: {
-                                                        botId: params.id,
-                                                        pluginToolId: item.id,
-                                                    }
-                                                }).then(r => {
-                                                    if (r?.data?.errorCode === 0){
-                                                        message.success("添加成功")
-                                                        onToolExecute?.(selectedPlugin.id, item.id, toolParams);
-                                                    } else {
-                                                        message.error("添加失败")
-                                                    }
-                                                    doPostGetToolsList({data: {pluginId: selectedPlugin.id}}).then(res => {
-                                                        setPluginTools(res?.data?.data)
-                                                    })
-                                                })
-                                            }}>添加</Button>
+                                            <div style={{ display: 'flex', flexDirection: "column" }}>
+                                                <Text strong>{item?.name}</Text>
+                                                <Tooltip title={item?.description}>
+                                                    <div style={{
+                                                        display: '-webkit-box',
+                                                        WebkitLineClamp: 1,      // 限制显示行数
+                                                        WebkitBoxOrient: 'vertical',
+                                                        overflow: 'hidden',
+                                                        color: '#A0A1A5',
+                                                        fontSize: 12,
+                                                        textOverflow: 'ellipsis',
+                                                    }}>
+                                                       {item?.description}
+                                                    </div>
+                                                </Tooltip>
+                                            </div>
+                                            {item.joinBot ? (
+                                                <Button
+                                                    danger={hoverStates[item.id]} // 仅当前按钮变红
+                                                    onMouseEnter={() => setHoverStates({ ...hoverStates, [item.id]: true })}
+                                                    onMouseLeave={() => setHoverStates({ ...hoverStates, [item.id]: false })}
+                                                    onClick={() => handleRemoveBotPluginTool(item.id)}
+                                                    style={{ width: "80px" }}
+                                                >
+                                                    {hoverStates[item.id] ? "移除" : "已添加"}
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    type="primary"
+                                                    onClick={() => {
+                                                        doSavePlugin({
+                                                            data: {
+                                                                botId: params.id,
+                                                                pluginToolId: item.id,
+                                                            }
+                                                        }).then(r => {
+                                                            if (r?.data?.errorCode === 0){
+                                                                message.success("添加成功")
+                                                                doPostGetToolsList({data: {pluginId: selectedPlugin.id, botId: params.id}}).then(res => {
+                                                                    setPluginTools(res?.data?.data)
+                                                                })
+                                                                onToolExecute?.(selectedPlugin.id, item.id, toolParams);
+                                                            } else {
+                                                                message.error("添加失败")
+                                                            }
+
+                                                        })
+                                                    }}
+                                                    style={{ width: "80px" }}
+                                                >
+                                                    添加
+                                                </Button>
+                                            )}
                                         </div>
-                                        <Text type="secondary" style={{ display: 'block', margin: '8px 0' }}>
-                                            {item.description}
-                                        </Text>
                                     </Card>
                                 ))}
                             </div>

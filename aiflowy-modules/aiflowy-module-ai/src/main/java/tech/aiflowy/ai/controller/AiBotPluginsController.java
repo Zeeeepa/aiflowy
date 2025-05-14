@@ -54,8 +54,8 @@ public class AiBotPluginsController extends BaseCurdController<AiBotPluginsServi
 
     @PostMapping("/doRemove")
     public Result doRemove(@JsonBody(value = "botId", required = true) String botId,
-                           @JsonBody(value = "pluginId", required = true) String pluginId){
-        return aiBotPluginsService.doRemove(botId, pluginId);
+                           @JsonBody(value = "pluginToolId", required = true) String pluginToolId){
+        return aiBotPluginsService.doRemove(botId, pluginToolId);
     }
 
 }

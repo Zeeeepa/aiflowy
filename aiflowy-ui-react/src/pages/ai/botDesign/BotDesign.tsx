@@ -176,7 +176,7 @@ const BotDesign: React.FC = () => {
     const {doRemove: doRemoveAiBotWorkflow} = useRemove("aiBotWorkflow");
     const [workflowOpen, setWorkflowOpen] = useState(false)
 
-    const {doPost: doPostPluginTool, result: pluginResult} = usePost('/api/v1/aiPluginTool/tool/list')
+    const {doPost: doPostPluginTool} = usePost('/api/v1/aiPluginTool/tool/list')
 
     const {doPost: doRemovePluginTool} = usePostManual('/api/v1/aiBotPlugins/doRemove')
     const [pluginOpen, setPluginOpen] = useState(false)
@@ -203,14 +203,9 @@ const BotDesign: React.FC = () => {
     }, [messageResult]);
     useEffect(() => {
         doPostPluginTool({data: {botId: params.id}}).then(r => {
-            console.log('ssssdfsdfadsf')
-            console.log(r)
             setPluginToolData(r?.data?.data)
-            console.log('pluginToolData')
-            console.log(pluginToolData)
         })
     }, []);
-    const {doPost: doPostGetPluginsList, result: resultPlugins} = usePostManual(('/api/v1/aiPlugin/getList'))
 
     const handleToolExecute = async (pluginId: string, toolId: string, params: Record<string, any>) => {
         console.log('执行工具:', { pluginId, toolId, params });
@@ -234,9 +229,14 @@ const BotDesign: React.FC = () => {
 
             <PluginsModal
                 open={pluginOpen}
-                onCancel={() => setPluginOpen(false)}
+                onCancel={() => {
+                    setPluginOpen(false)
+                    doPostPluginTool({data: {botId: params.id}})
+                        .then(r =>{
+                        setPluginToolData(r?.data?.data)
+                    })
+                }}
                 params={params}
-                plugins={resultPlugins?.data}
                 onToolExecute={handleToolExecute}
             />
 
@@ -372,13 +372,11 @@ const BotDesign: React.FC = () => {
                                 key: 'plugins',
                                 label: <CollapseLabel text="插件" onClick={() => {
                                     setPluginOpen(true)
-                                    doPostGetPluginsList({data: {
-                                        botId: params.id
-                                        }})
+                                    setPluginToolData([])
                                 }}/>,
                                 children:
                                     <div>
-                                        {pluginResult?.data?.map((item: any) => {
+                                        {pluginToolData?.map((item: any) => {
                                             return <ListItem key={item.id} title={item?.name}
                                                              description={item.description}
                                                              icon={item?.icon}
@@ -388,9 +386,12 @@ const BotDesign: React.FC = () => {
                                                                      content: '删除后，该插件将不再关联该机器人，但插件本身不会被删除。',
                                                                      onOk: () => {
                                                                          doRemovePluginTool({
-                                                                             data: {pluginId: item.id, botId: params.id}
+                                                                             data: {pluginToolId: item.id, botId: params.id}
                                                                          }).then(() =>{
                                                                              doPostPluginTool({data: {botId: params.id}})
+                                                                                 .then(r =>{
+                                                                                     setPluginToolData(r?.data?.data)
+                                                                                 })
                                                                          })
                                                                      }
                                                                  })

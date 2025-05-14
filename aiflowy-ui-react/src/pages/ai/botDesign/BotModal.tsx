@@ -117,10 +117,10 @@ export const BotModal: React.FC<BotModalProps> = (props) => {
                     </div>
                     <div style={{marginTop: "20px", display: "flex", flexDirection: "column", gap: "15px",}}>
                         {items?.map((item) => <BotDataItem key={item.id}
-                                                            onButtonClick={() => props.onSelectedItem?.(item)}
-                                                            title={item.title}
-                                                            description={item.description}
-                                                            icon={item.icon}/>)}
+                                                           onButtonClick={() => props.onSelectedItem?.(item)}
+                                                           title={item.title}
+                                                           description={item.description}
+                                                           icon={item.icon}/>)}
                     </div>
                 </div>
             </div>

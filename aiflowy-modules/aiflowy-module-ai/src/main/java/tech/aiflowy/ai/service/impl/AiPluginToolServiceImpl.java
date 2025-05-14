@@ -18,10 +18,7 @@ import tech.aiflowy.common.domain.Result;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -98,12 +95,25 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
     }
 
     @Override
-    public Result searchPluginToolByPluginId(BigInteger pluginId) {
+    public Result searchPluginToolByPluginId(BigInteger pluginId, BigInteger botId) {
         QueryWrapper queryAiPluginToolWrapper = QueryWrapper.create()
                 .select("*")
                 .from("tb_ai_plugin_tool")
                 .where("plugin_id = ? ", pluginId);
         List<AiPluginTool> aiPluginTools = aiPluginToolMapper.selectListByQueryAs(queryAiPluginToolWrapper, AiPluginTool.class);
+        // 查询当前bot有哪些插件工具方法
+        QueryWrapper queryBotPluginTools = QueryWrapper.create()
+                .select("plugin_tool_id")
+                .from("tb_ai_bot_plugins")
+                .where("bot_id = ? ", botId);
+        List<BigInteger> aiBotPluginToolIds = aiBotPluginsMapper.selectListWithRelationsByQueryAs(queryBotPluginTools, BigInteger.class);
+        aiBotPluginToolIds.forEach(botPluginTooId ->{
+            aiPluginTools.forEach(item ->{
+                if (Objects.equals(botPluginTooId, item.getId())){
+                    item.setJoinBot(true);
+                }
+            });
+        });
         return Result.success(aiPluginTools);
     }
 
