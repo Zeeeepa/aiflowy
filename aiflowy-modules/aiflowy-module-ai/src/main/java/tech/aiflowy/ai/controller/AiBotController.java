@@ -524,7 +524,9 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     private void appendPluginToolFunction(BigInteger botId, HumanMessage humanMessage) {
         QueryWrapper queryWrapper = QueryWrapper.create().select("plugin_tool_id").eq(AiBotPlugins::getBotId, botId);
         List<BigInteger> pluginToolIds = aiBotPluginsService.getMapper().selectListWithRelationsByQueryAs(queryWrapper, BigInteger.class);
-
+        if (pluginToolIds.isEmpty()){
+            return;
+        }
             QueryWrapper queryTool = QueryWrapper.create()
                     .select("*")
                     .from("tb_ai_plugin_tool")
