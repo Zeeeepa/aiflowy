@@ -92,7 +92,7 @@ DROP TABLE IF EXISTS `tb_ai_bot_plugins`;
 CREATE TABLE `tb_ai_bot_plugins`  (
   `id` bigint(0) UNSIGNED NOT NULL,
   `bot_id` bigint(0) UNSIGNED NULL DEFAULT NULL,
-  `plugin_tool_id` bigint(0) UNSIGNED NULL DEFAULT NULL,
+  `plugin_id` bigint(0) UNSIGNED NULL DEFAULT NULL,
   `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
