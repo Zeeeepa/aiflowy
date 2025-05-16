@@ -189,6 +189,9 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             collapsed: false,
             items: [
                 {text: '什么是知识库', link: '/knowledge/what-is-knowledge'},
+                {text: '创建知识库', link: '/knowledge/create-knowledge'} ,
+                {text: '文档分片', link: 'knowledge/splitter'},
+                {text: 'Embedding 模型', link: 'knowledge/embedding'},
                 {text: '快速开始', link: '/knowledge/quick-start'},
             ]
         },

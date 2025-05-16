@@ -218,7 +218,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
 
                     {/* 上传文件 */}
                     <p className="section-description">
-                        支持 txt, pdf, docx, md, xlsx 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
+                        支持 txt, pdf, docx, md 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
                     </p>
 
                     <div style={{display: "flex",  flexDirection:"column", width:"500px"}}>

@@ -110,30 +110,30 @@ const PluginToolEdit: React.FC = () => {
     };
 
     const handleAdd = () => {
-            const newData: inputDataParameter = {
-                key: Date.now().toString(),
-                name: '',
-                description: '',
-                type: 'String',
-                method: 'Query',
-                required: true,
-                defaultValue: '',
-                enabled: true,
-            };
-            setInputData([...inputData, newData]);
+        const newData: inputDataParameter = {
+            key: Date.now().toString(),
+            name: '',
+            description: '',
+            type: 'String',
+            method: 'Query',
+            required: true,
+            defaultValue: '',
+            enabled: true,
+        };
+        setInputData([...inputData, newData]);
 
     };
 
     const handleAddOutputData = () => {
-            const newData: outputDataParameter = {
-                key: Date.now().toString(),
-                name: '',
-                description: '',
-                type: 'String',
-                required: true,
-                enabled: true,
-            };
-            setOutputData([...outputData, newData]);
+        const newData: outputDataParameter = {
+            key: Date.now().toString(),
+            name: '',
+            description: '',
+            type: 'String',
+            required: true,
+            enabled: true,
+        };
+        setOutputData([...outputData, newData]);
     };
 
     const handleDeleteInputData = (key: string) => {
@@ -160,12 +160,12 @@ const PluginToolEdit: React.FC = () => {
             {
                 title: (
                     <div style={{display: 'flex'}}>
-                    <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                    <div  style={{marginLeft: 5}}>
-                        <Tooltip title="当前工具返回的参数">
-                            <QuestionCircleOutlined/>
-                        </Tooltip>
-                    </div>
+                        <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                        <div  style={{marginLeft: 5}}>
+                            <Tooltip title="当前工具返回的参数">
+                                <QuestionCircleOutlined/>
+                            </Tooltip>
+                        </div>
                     </div>
                 ),
                 width: 150,
@@ -596,7 +596,7 @@ const PluginToolEdit: React.FC = () => {
                     <Form.Item label="id" name="id" hidden rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label="工具名称" name="name" rules={[{ required: true, pattern: /^[a-zA-Z0-9_-]+$/, message: '仅包含字母、数字、下划线或连字符的字符串' }]} >
+                    <Form.Item label="工具名称" name="name" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
                     <Form.Item label="工具描述" name="description" rules={[{ required: true }]}>
@@ -625,7 +625,7 @@ const PluginToolEdit: React.FC = () => {
                     <div>
                         <strong>工具路径:</strong>
                         {pluginToolInfo?.data?.aiPlugin?.baseUrl
-                            && pluginToolInfo?.data?.data?.basePath ?
+                        && pluginToolInfo?.data?.data?.basePath ?
                             pluginToolInfo?.data?.aiPlugin?.baseUrl+pluginToolInfo?.data?.data?.basePath
                             :
                             pluginToolInfo?.data?.aiPlugin?.baseUrl+'/'+pluginToolInfo?.data?.data?.name
