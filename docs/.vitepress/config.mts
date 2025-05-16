@@ -190,9 +190,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '什么是知识库', link: '/knowledge/what-is-knowledge'},
                 {text: '创建知识库', link: '/knowledge/create-knowledge'} ,
+                {text: '管理知识库', link: '/knowledge/management-knowledge'} ,
                 {text: '文档分片', link: 'knowledge/splitter'},
                 {text: 'Embedding 模型', link: 'knowledge/embedding'},
-                {text: '快速开始', link: '/knowledge/quick-start'},
+                {text: '向量数据库', link: 'knowledge/vector-database'}
             ]
         },
         {
@@ -202,6 +203,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                 {text: '什么是工作流', link: '/workflow/what_is_workflow'},
                 {text: '快速开始', link: '/workflow/quick_start'},
                 {text: '执行条件', link: '/workflow/execute-condition'},
+                {text: '节点上下文', link: '/workflow/node-context'},
                 {text: '节点配置', collapsed: false, items: [
                         {text: '循环', link: '/workflow/nodes/loop'},
                         {text: '大模型', link: '/workflow/nodes/llm'},

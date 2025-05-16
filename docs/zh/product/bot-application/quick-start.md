@@ -1,10 +1,10 @@
 # 快速开始
 
-## 创建 Bot
+## 1. 创建 Bot
 
 ![create-bot.png](resource/create-bot.png)
 
-## 配置大模型
+## 2. 配置大模型
 
 ![create-model.png](resource/create-model.png)
 
@@ -12,7 +12,7 @@
 
 ![create-model-second.png](resource/create-model-second.png)
 
-## 运行 Bot
+## 3. 运行 Bot
 
 
 ![start-bot.png](resource/start-bot.png)
