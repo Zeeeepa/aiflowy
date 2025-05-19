@@ -173,6 +173,9 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '什么是 Bot', link: '/bot-application/what-is-a-bot'},
                 {text: '快速开始', link: '/bot-application/quick-start'},
+                {text: '挂载知识库', link: '/bot-application/mount-Knowledge'},
+                {text: '挂载插件', link: '/bot-application/mount-plugins'},
+                {text: '挂载工作流', link: '/bot-application/mount-workflow'},
             ]
         },
         {
