@@ -2,7 +2,6 @@ package tech.aiflowy.ai.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.agentsflex.core.llm.ChatContext;
 import com.agentsflex.core.llm.Llm;
 import com.agentsflex.core.llm.StreamResponseListener;
@@ -16,7 +15,6 @@ import com.agentsflex.core.prompt.HistoriesPrompt;
 import com.agentsflex.core.util.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson2.JSONObject;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +75,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         this.aiBotMessageService = aiBotMessageService;
     }
 
-    @Resource
-    private AiPluginsService aiPluginsService;
     @Resource
     private AiBotPluginsService aiBotPluginsService;
     @Resource
@@ -178,45 +174,44 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         MySseEmitter emitter = new MySseEmitter((long) (1000 * 60 * 2));
 
         final Boolean[] needClose = {true};
-        if (humanMessage.getFunctions() != null && !humanMessage.getFunctions().isEmpty()) {
-            try {
-                AiMessageResponse aiMessageResponse = llm.chat(historiesPrompt);
-                function_call(aiMessageResponse, emitter, needClose, historiesPrompt, llm, prompt, false);
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
 
-            if (needClose[0]) {
-                System.out.println("function chat complete");
-                emitter.complete();
-            }
-        } else {
+        // 统一使用流式处理，无论是否有 Function Calling
+        llm.chatStream(historiesPrompt, new StreamResponseListener() {
+            @Override
+            public void onMessage(ChatContext context, AiMessageResponse response) {
+                try {
 
-            llm.chatStream(historiesPrompt, new StreamResponseListener() {
-                @Override
-                public void onMessage(ChatContext context, AiMessageResponse response) {
-                    try {
-
+                    // 检查是否需要触发 Function Calling
+                    if (CollectionUtil.hasItems(response.getFunctionCallers())) {
+                        needClose[0] = false;
                         function_call(response, emitter, needClose, historiesPrompt, llm, prompt, false);
-                    } catch (Exception e) {
-                        emitter.completeWithError(e);
+                    } else {
+                        // 强制流式返回，即使有 Function Calling 也先返回部分结果
+                        if (response.getMessage() != null) {
+                            String content = response.getMessage().getContent();
+                            if (StringUtil.hasText(content)) {
+                                emitter.send(JSON.toJSONString(response.getMessage()));
+                            }
+                        }
                     }
-                }
 
-                @Override
-                public void onStop(ChatContext context) {
-                    if (needClose[0]) {
-                        System.out.println("normal chat complete");
-                        emitter.complete();
-                    }
+                } catch (Exception e) {
+                    emitter.completeWithError(e);
                 }
+            }
 
-                @Override
-                public void onFailure(ChatContext context, Throwable throwable) {
-                    emitter.completeWithError(throwable);
+            @Override
+            public void onStop(ChatContext context) {
+                if (needClose[0]) {
+                    emitter.complete();
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(ChatContext context, Throwable throwable) {
+                emitter.completeWithError(throwable);
+            }
+        });
 
         return emitter;
     }
@@ -411,9 +406,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             // 如果是外部系统调用chat
             if (isExternalChatApi) {
                 AiBotExternalMsgJsonResult result = handleMessageStreamJsonResult(aiMessageResponse.getMessage());
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                System.out.println(JSON.toJSONString(result, new SerializeConfig()));
-                System.out.println("未完测试");
 
                 emitter.send(JSON.toJSONString(result, new SerializeConfig()));
             } else {

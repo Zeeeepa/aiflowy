@@ -18,11 +18,9 @@ import tech.aiflowy.common.ai.util.PluginParamConverter;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.util.SpringContextUtil;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AiPluginFunction  implements Function {
 
@@ -195,13 +193,20 @@ public class AiPluginFunction  implements Function {
             requestParam.setMethod(originalParam.getMethod());
 
             // 优先级: argsMap值 < 参数默认值
-            if (argsMap != null && argsMap.containsKey(paramName) && originalParam.getDefaultValue() == null) {
-                // 使用大模型返回的值
-                requestParam.setDefaultValue(argsMap.get(paramName));
-            } else if (originalParam.getDefaultValue() != null) {
-                // 使用参数定义的默认值
+            if (argsMap != null && argsMap.containsKey(paramName)) {
+                // 1. 优先检查是否有有效的默认值
+                if (hasValidDefaultValue(originalParam.getDefaultValue())) {
+                    // 使用默认值
+                    requestParam.setDefaultValue(originalParam.getDefaultValue());
+                } else {
+                    // 使用大模型返回的值
+                    requestParam.setDefaultValue(argsMap.get(paramName));
+                }
+            } else if (hasValidDefaultValue(originalParam.getDefaultValue())) {
+                // 2. 没有传参但默认值有效时使用默认值
                 requestParam.setDefaultValue(originalParam.getDefaultValue());
             }
+            // 3. 其他情况（无传参且无有效默认值）保持null
 
             // 根据method分类参数
             switch (originalParam.getMethod().toLowerCase()) {
@@ -240,6 +245,32 @@ public class AiPluginFunction  implements Function {
             }
         }
         return null;
+    }
+
+    // 添加辅助方法判断默认值是否有效
+    private boolean hasValidDefaultValue(Object defaultValue) {
+        if (defaultValue == null) {
+            return false;
+        }
+
+        // 字符串类型检查
+        if (defaultValue instanceof CharSequence) {
+            return !((CharSequence) defaultValue).toString().trim().isEmpty();
+        }
+
+        // 集合/数组类型检查
+        if (defaultValue instanceof Collection) {
+            return !((Collection<?>) defaultValue).isEmpty();
+        }
+        if (defaultValue instanceof Map) {
+            return !((Map<?, ?>) defaultValue).isEmpty();
+        }
+        if (defaultValue.getClass().isArray()) {
+            return Array.getLength(defaultValue) > 0;
+        }
+
+        // 其他类型直接认为有效
+        return true;
     }
 
     private void processParamWithChildren(Map<String, Object> paramDef, Map<String, Object> argsMap, List<PluginParam> params) {
