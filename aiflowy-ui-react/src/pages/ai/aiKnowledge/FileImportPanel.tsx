@@ -362,7 +362,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                     </div>
                 </div>
                 <div style={{display:"flex", flexDirection:"column", width:"60%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"500px", overflowY:"scroll", padding:"5px"}}>
+                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"700px", overflowY:"scroll", padding:"5px"}}>
                         <List
                             itemLayout="horizontal"
                             dataSource={dataPreView}
@@ -506,7 +506,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                     </div>
                 </div>
                 <div style={{display:"flex", flexDirection:"column", width:"60%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"500px", overflowY:"scroll", padding:"5px"}}>
+                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"700px", overflowY:"scroll", padding:"5px"}}>
                         <List
                             itemLayout="horizontal"
                             dataSource={dataPreView}

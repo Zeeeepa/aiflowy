@@ -2,6 +2,7 @@
 .app-container {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 
 .menu-container {
@@ -29,6 +30,7 @@
 }
 .content-container{
     overflow: auto;
+    flex: 1;
 }
 .file-container{
     display: flex;
@@ -38,6 +40,7 @@
 }
 .content {
     padding: 10px;
+    height: 100vh;
 }
 
 /* 在document.css中添加 */

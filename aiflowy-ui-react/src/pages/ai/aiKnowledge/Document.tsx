@@ -562,7 +562,7 @@ const Document: React.FC = () => {
                 );
             case 'search-test':
                 return (
-                    <div className="content" style={{width: '1000px'}}>
+                    <div className="content" style={{width: '100%'}}>
                         <div style={{minHeight: 500}}>
                             <Form form={form} onFinish={onFinish} preserve={false}>
                                 <div style={{display: "flex", gap: 10}}>
