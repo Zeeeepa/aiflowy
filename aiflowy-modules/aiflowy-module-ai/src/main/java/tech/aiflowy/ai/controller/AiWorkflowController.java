@@ -1,9 +1,13 @@
 package tech.aiflowy.ai.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import com.agentsflex.core.chain.*;
+import com.alibaba.fastjson.JSONObject;
 import dev.tinyflow.core.Tinyflow;
+import dev.tinyflow.core.parser.NodeParser;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -98,6 +103,7 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
             }
         });
 
+
         chain.addOutputListener(new ChainOutputListener() {
             @Override
             public void onOutput(Chain chain, ChainNode node, Object outputMessage) {
@@ -129,5 +135,69 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         String apiKey = request.getHeader("Authorization");
         apiKeyService.checkApiKey(apiKey);
         return tryRunning(id, variables);
+    }
+
+    @PostMapping("/singleRun")
+    public Result singleRun(
+            @JsonBody(value = "id", required = true) BigInteger id,
+            @JsonBody(value = "node", required = true) Map<String, Object> node,
+            @JsonBody("variables") Map<String, Object> variables) {
+
+        AiWorkflow workflow = service.getById(id);
+        if (workflow == null) {
+            return Result.fail(1, "工作流不存在");
+        }
+        List<ChainNode> nodes = new ArrayList<>();
+        Tinyflow tinyflow = workflow.toTinyflow();
+        Chain fullChain = tinyflow.toChain();
+        if (fullChain != null) {
+            nodes = fullChain.getNodes();
+        }
+        Map<String, NodeParser> map = tinyflow.getChainParser().getNodeParserMap();
+        NodeParser parser = map.get(node.get("type").toString());
+        if (parser == null) {
+            return Result.fail(1, "节点类型不存在");
+        }
+        ChainNode currentNode = parser.parse(new JSONObject(node), tinyflow);
+        if (currentNode == null) {
+            return Result.fail(1, "节点不存在");
+        }
+        currentNode.setInwardEdges(null);
+        currentNode.setOutwardEdges(null);
+        fixParamType(nodes, currentNode);
+        Chain chain = new Chain();
+        chain.addNode(currentNode);
+        Map<String, Object> res = chain.executeForResult(variables);
+        return Result.success(res);
+    }
+
+    /**
+     * 修正引用类的值类型
+     */
+    private void fixParamType(List<ChainNode> allNodes, ChainNode currentNode) {
+        List<Parameter> currentParams = currentNode.getParameters();
+        if (CollectionUtil.isEmpty(currentParams)) {
+            return;
+        }
+        for (Parameter parameter : currentParams) {
+            RefType refType = parameter.getRefType();
+            if (refType.equals(RefType.REF)) {
+                parameter.setRefType(RefType.INPUT);
+                String ref = parameter.getRef();
+                if (StrUtil.isNotEmpty(ref)) {
+                    for (ChainNode node : allNodes) {
+                        List<Parameter> parameters = node.getParameters();
+                        if (parameters != null) {
+                            for (Parameter nodeParameter : parameters) {
+                                String nodeAttr = node.getId() + "." + nodeParameter.getName();
+                                if (ref.equals(nodeAttr)) {
+                                    parameter.setDataType(nodeParameter.getDataType());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

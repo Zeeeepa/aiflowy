@@ -10,6 +10,7 @@ import {Uploader} from "../../../components/Uploader";
 import customNode from './customNode/index.ts'
 import {PluginNode} from './customNode/pluginNode.ts'
 import {PluginTools} from "../botDesign/PluginTools.tsx";
+import {SingleRun} from "./SingleRun.tsx";
 
 export const WorkflowDesign = () => {
 
@@ -132,6 +133,10 @@ export const WorkflowDesign = () => {
     }
 
     const [open, setOpen] = useState(false);
+    const [singleRunOpen, setSingleRunOpen] = useState(false);
+
+    const singleRunRef = useRef<any>(null)
+    const [currentNode,  setCurrentNode] = useState<any>(null)
 
     const showDrawer = () => {
         setOpen(true);
@@ -139,6 +144,11 @@ export const WorkflowDesign = () => {
 
     const onClose = () => {
         setOpen(false);
+    };
+
+    const onSingleRunClose  = () => {
+        setSingleRunOpen(false);
+        singleRunRef.current.resetForm()
     };
 
     const onFinish = (values: any) => {
@@ -306,6 +316,17 @@ export const WorkflowDesign = () => {
 
             </Drawer>
 
+            <Drawer
+                width={640}
+                title="请输入参数"
+                placement="right"
+                closable={false}
+                onClose={onSingleRunClose}
+                open={singleRunOpen}
+            >
+                <SingleRun ref={singleRunRef} workflowId={params.id} node={currentNode} />
+            </Drawer>
+
             <div style={{height: 'calc(100vh - 50px)', display: "flex"}} className={"agentsflow"}>
                 <div style={{flexGrow: 1}}>
                     <div style={{
@@ -335,16 +356,22 @@ export const WorkflowDesign = () => {
                         <Spin spinning={pageLoading} >
                             <Tinyflow ref={tinyflowRef} data={workflowData}
                                       provider={provider}
-                                // onChange={(data: any) => {
-                                //     console.log(data)
-                                //     setWorkflow({
-                                //         ...workflow,
-                                //         data: {
-                                //             ...workflow?.data,
-                                //             content: JSON.stringify(data)
-                                //         }
-                                //     })
-                                // }}
+                                      onNodeExecute={async (node) => {
+                                          if ("loopNode" === node.type) {
+                                              message.warning("暂不支持")
+                                              return
+                                          }
+                                          setCurrentNode(node)
+                                          setPageLoading(true)
+                                          await doUpdate({
+                                              data: {
+                                                  id: params.id,
+                                                  content: tinyflowRef.current!.getData()
+                                              }
+                                          })
+                                          setPageLoading(false)
+                                          setSingleRunOpen(true)
+                                      }}
                                       style={{height: 'calc(100vh - 10px)'}} customNodes={customNodes}/>
                         </Spin>
                         : <div style={{padding: '20px'}}><Skeleton active /></div>
