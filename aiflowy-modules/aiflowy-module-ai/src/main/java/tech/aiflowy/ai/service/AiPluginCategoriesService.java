@@ -2,6 +2,7 @@ package tech.aiflowy.ai.service;
 
 import com.mybatisflex.core.service.IService;
 import tech.aiflowy.ai.entity.AiPluginCategories;
+import tech.aiflowy.common.domain.Result;
 
 /**
  *  服务层。
@@ -11,4 +12,5 @@ import tech.aiflowy.ai.entity.AiPluginCategories;
  */
 public interface AiPluginCategoriesService extends IService<AiPluginCategories> {
 
+    Result doRemoveCategory(Integer id);
 }

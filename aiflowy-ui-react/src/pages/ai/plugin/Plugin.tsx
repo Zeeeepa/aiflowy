@@ -198,16 +198,18 @@ const Plugin: React.FC = () => {
 
 	// 分类相关状态
 	const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-	const [selectedCategoryId, setSelectedCategoryId] = useState<number | string | null>('0');
+	const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
+	const [selectedCategoryIdToEdit, setSelectedCategoryIdToEdit] = useState<number | null>(null);
+	const [isEditCategory, setIsEditCategory] = useState(false);
 	const [categoryModalVisible, setCategoryModalVisible] = useState(false);
 	const [newCategoryName, setNewCategoryName] = useState('');
-// 归类相关状态
+	// 归类相关状态
 	const [classifyModalVisible, setClassifyModalVisible] = useState(false);
 	const [selectedPluginId, setSelectedPluginId] = useState<number | null>(null);
 	// 回显选中的分类
 	const [selectedCategoryForClassify, setSelectedCategoryForClassify] = useState< SelectProps['options']>([]);
 
-// 更新插件分类的方法
+	// 更新插件分类的方法
 	const { doPost: doUpdatePluginCategory } = usePostManual('/api/v1/aiPluginCategoryRelation/updateRelation');
 	// 获取插件数据
 	// const { doGet: doGetPage } = usePage('aiPlugin', {}, { manual: true });
@@ -222,7 +224,11 @@ const Plugin: React.FC = () => {
 	// 获取分类数据（假设有一个分类接口）
 	const { doGet: doGetCategories } = useGetManual('/api/v1/aiPluginCategories/list');
 
-	const { doPost: doSaveCategories } =usePostManual('/api/v1/aiPluginCategories/save')
+	const { doPost: doSaveCategories } =usePostManual('/api/v1/aiPluginCategories/save');
+
+	const { doPost: doUpdateCategories } =usePostManual('/api/v1/aiPluginCategories/update');
+
+	const { doGet: doRemoveCategory } =useGetManual('/api/v1/aiPluginCategories/doRemoveCategory');
 
 	const {doGet: doGetPluginCategory} = useGetManual('/api/v1/aiPluginCategoryRelation/getPluginCategories')
 
@@ -233,10 +239,14 @@ const Plugin: React.FC = () => {
 		fetchCategories();
 	}, []);
 
-	const fetchCategories = () => {
+	const fetchCategories = (isDeleteCategory: boolean = false) => {
 		doGetCategories().then((res) => {
 			if (res.data.errorCode === 0) {
-				setCategories([{id: '0', name: '全部'},  ...(res.data.data)] || []);
+				setCategories([{id: 0, name: '全部'},  ...(res.data.data)] || []);
+			}
+			if (isDeleteCategory){
+				doSearchPlugins()
+				setSelectedCategoryId(0)
 			}
 		});
 	};
@@ -302,24 +312,35 @@ const Plugin: React.FC = () => {
 			return;
 		}
 
-		// 假设你有新增分类的接口
-		// doPostAddCategory({ data: { name: newCategoryName } }).then(...)
+		if (isEditCategory){
+			doUpdateCategories({data:{id: selectedCategoryIdToEdit, name: newCategoryName}}).then((res)=>{
+				if (res.data.errorCode === 0){
+					message.success('修改成功');
+					setNewCategoryName('')
+					setCategoryModalVisible(false)
+					fetchCategories();
+				}
 
-		// 模拟添加本地分类
-		const newCategory = {
-			id: Date.now(),
-			name: newCategoryName,
-		};
-		setCategories([...categories, newCategory]);
-		setNewCategoryName('');
-		setCategoryModalVisible(false);
-		doSaveCategories({data:{name:newCategoryName}}).then((res)=>{
-			if (res.data.errorCode === 0){
-				message.success('分类添加成功');
-				fetchCategories();
-			}
+			})
+		} else {
+			// 模拟添加本地分类
+			const newCategory = {
+				id: Date.now(),
+				name: newCategoryName,
+			};
+			setCategories([...categories, newCategory]);
+			setNewCategoryName('');
+			setCategoryModalVisible(false);
+			doSaveCategories({data:{name:newCategoryName}}).then((res)=>{
+				if (res.data.errorCode === 0){
+					message.success('分类添加成功');
+					fetchCategories();
+				}
 
-		})
+			})
+		}
+
+
 	};
 	const handleClassifySubmit = () => {
 		// if (!selectedPluginId || selectedCategoriesForClassify.length === 0) {
@@ -342,6 +363,32 @@ const Plugin: React.FC = () => {
 
 		setClassifyModalVisible(false);
 	};
+
+	// 编辑分类
+	const handleEditCategory = (category: any) => {
+		setNewCategoryName(category.name);
+		setSelectedCategoryIdToEdit(category.id); // 用于标识正在编辑的分类 ID
+		setIsEditCategory(true)
+		setCategoryModalVisible(true);
+	};
+	// 删除分类
+	const handleDeleteCategory = (categoryId: any) => {
+		Modal.confirm({
+			title: '确定要删除该分类吗？',
+			content: '此操作不可逆，会删除该分类下所有的插件，请谨慎操作。',
+			onOk() {
+				// 假设你有删除分类的接口
+				doRemoveCategory({ params: { id: categoryId } }).then((res) => {
+					if (res.data.errorCode === 0) {
+						message.success('分类删除成功');
+						fetchCategories(true); // 刷新分类列表
+					} else {
+						message.error(res.data.message || '删除失败');
+					}
+				});
+			},
+		});
+	};
 	return (
 		<div style={{ height: 'calc(100vh - 68px)', overflowY: 'auto', display: 'flex'}}>
 			{/* 左侧分类导航 */}
@@ -357,9 +404,53 @@ const Plugin: React.FC = () => {
 							<div
 								key={cat.id}
 								className={`category-item ${selectedCategoryId === cat.id ? 'selected' : ''}`}
+								style={{ position: 'relative'}}
 								onClick={() => handleSelectCategory(cat.id)}
 							>
-								{cat.name}
+								<span  style={{ cursor: 'pointer', flex: 1 }}>
+        						{cat.name}
+      							</span>
+								{
+									cat.id != 0 ? <span style={{position: 'absolute', right: '10px'}}>
+										<Dropdown
+											menu={{
+												items: [
+													{
+														key: 'edit',
+														icon: <EditOutlined />,
+														label: '编辑',
+														onClick: (e) => {
+															e.domEvent.stopPropagation(); // 阻止事件冒泡
+															handleEditCategory(cat)
+														}
+													},
+													{
+														key: 'delete',
+														icon: <DeleteOutlined />,
+														label: '删除',
+														danger: true,
+														onClick: (e) => {
+															e.domEvent.stopPropagation(); // 阻止事件冒泡
+															handleDeleteCategory(cat.id)
+														},
+													},
+												],
+											}}
+											trigger={['hover']}
+										>
+									<EllipsisOutlined
+										style={{
+											fontSize: '18px',
+											cursor: 'pointer',
+											marginLeft: '8px',
+										}}
+									/>
+								</Dropdown>
+								</span>
+										: ''
+								}
+
+
 							</div>
 						))}
 					</div>
@@ -424,7 +515,7 @@ const Plugin: React.FC = () => {
 															doRemove({ data: { id: item.id } }).then((r) => {
 																if (r.data.errorCode === 0) {
 																	message.success("删除成功！");
-																	doSearchPlugins();
+																	doSearchPlugins({categoryId: 0});
 																} else {
 																	message.error(r.data.message);
 																}
@@ -634,7 +725,7 @@ const Plugin: React.FC = () => {
 
 			{/* 新增分类模态框 */}
 			<Modal
-				title="新增分类"
+				title="新增/修改分类"
 				open={categoryModalVisible}
 				onOk={addNewCategory}
 				onCancel={() => setCategoryModalVisible(false)}

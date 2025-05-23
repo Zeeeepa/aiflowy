@@ -1,10 +1,15 @@
 package tech.aiflowy.ai.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.aiflowy.ai.entity.AiPluginCategories;
 import tech.aiflowy.ai.service.AiPluginCategoriesService;
+import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
+
+import javax.annotation.Resource;
 
 /**
  *  控制层。
@@ -19,4 +24,12 @@ public class AiPluginCategoriesController extends BaseCurdController<AiPluginCat
         super(service);
     }
 
+    @Resource
+    private AiPluginCategoriesService aiPluginCategoriesService;
+
+    @GetMapping("/doRemoveCategory")
+    public Result doRemoveCategory(@RequestParam("id") Integer id){
+
+        return aiPluginCategoriesService.doRemoveCategory(id);
+    }
 }
