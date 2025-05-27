@@ -284,6 +284,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     link: 'system/apiKey.md',
                 },
                 {
+                    text: 'iframe 嵌入',
+                    link: 'system/iframe.md',
+                },
+                {
                     text: '数据字典',
                     link: 'system/data_dictionary.md',
                 },

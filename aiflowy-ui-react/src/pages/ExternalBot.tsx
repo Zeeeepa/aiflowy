@@ -2,7 +2,7 @@ import {
     Conversations, ConversationsProps,
 } from '@ant-design/x';
 import { createStyles } from 'antd-style';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     DeleteOutlined,
     EditOutlined, ExclamationCircleFilled,
@@ -93,10 +93,37 @@ const useStyle = createStyles(({ token, css }) => {
 
 export const ExternalBot: React.FC = () => {
     const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('authKey');
-    if (token) {
-        localStorage.setItem('authKey', token);
-    }
+    const [isExternalIFrame, setIsExternalIFrame] = useState<boolean>(false);
+    const isExternalIFrameRef = useRef(isExternalIFrame);
+   const {doGet: doGetCreateToken} =  useGetManual('/api/temp-token/create')
+    useEffect(() => {
+        isExternalIFrameRef.current = isExternalIFrame;
+    }, [isExternalIFrame]);
+    useEffect(() => {
+        const isFrame = urlParams.get('isIframe');
+        const token = urlParams.get('authKey');
+        if (isFrame) {
+            const newValue = true;
+            setIsExternalIFrame(newValue);
+            isExternalIFrameRef.current = newValue; // 手动同步 ref
+            doGetCreateToken().then((res: any) => {
+                if (res.data.errorCode === 0){
+                    localStorage.setItem('authKey', res.data.data);
+                    const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
+                    doGetBotInfo({params: {id: params?.id}}).then((r: any) => {
+                        if (link) {
+                            link.href = r?.data?.data?.icon || '/favicon.png';
+                        }
+                        document.title = r?.data?.data?.title;
+                    });
+                }
+            });
+        } else if (token) {
+                localStorage.setItem('authKey', token);
+        }
+
+
+    }, []); // 空依赖数组表示只在组件挂载时执行一次
     const [newTitle, setNewTitle] = useState<string>('');
 
     // ==================== Style ====================
@@ -171,17 +198,24 @@ export const ExternalBot: React.FC = () => {
         }
         return [];
     };
-    useEffect(() => {
-        if (chats.length === 2 && chats[1].content.length < 1){
-            getConversationManualGet({
-                params:  { "botId": params?.id }
-            }).then((r: any) => {
-                setConversationsItems(getConversations(r?.data?.data?.cons));
-            });
-        }
-    }, [chats]);
+     useEffect(() => {
+         if (isExternalIFrameRef.current) {
+             return;
+         }
+            if (chats.length === 2 && chats[1].content.length < 1){
+                getConversationManualGet({
+                    params:  { "botId": params?.id }
+                }).then((r: any) => {
+                    setConversationsItems(getConversations(r?.data?.data?.cons));
+                });
+            }
+        }, [chats])
+
 
     useEffect(() => {
+        if (isExternalIFrameRef.current) {
+            return;
+        }
         const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement;
         doGetBotInfo({params: {id: params?.id}}).then((r: any) => {
             if (link) {
@@ -199,7 +233,7 @@ export const ExternalBot: React.FC = () => {
             setActiveKey(getExternalSessionId());
             setConversationsItems(getConversations(r?.data?.data?.cons));
         });
-    }, []);
+    }, [])
 
     const onAddConversation = () => {
         setNewExternalSessionId();
@@ -271,7 +305,7 @@ export const ExternalBot: React.FC = () => {
     };
     // ==================== Render ====================
     return (
-        <div className={styles.layout}>
+       <div className={styles.layout}>
             <Modal
                 title="修改会话名称"
                 open={open}
