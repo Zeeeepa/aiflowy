@@ -465,12 +465,12 @@ const BotDesign: React.FC = () => {
                                     />
                                 </div>,
                             },
-                            {
-                                key: 'ui',
-                                label: <CollapseLabel text="UI 与 Logo" onClick={() => {
-                                }} plusDisabled/>,
-                                children: text,
-                            },
+                            // {
+                            //     key: 'ui',
+                            //     label: <CollapseLabel text="UI 与 Logo" onClick={() => {
+                            //     }} plusDisabled/>,
+                            //     children: text,
+                            // },
 
                         ]} bordered={false}/>
 
@@ -497,7 +497,17 @@ const BotDesign: React.FC = () => {
                                 key: 'api',
                                 label: <CollapseLabel text="API" onClick={() => {
                                 }} plusDisabled/>,
-                                children: text,
+                                children: <div>
+                                    <div>
+                                        <span>
+                                            使用手册请参考 <a
+                                            href={'https://aiflowy.tech/zh/development/ai/apiKey.html'}
+                                            target={"_blank"}>打开</a>
+                                        </span>
+                                        <TextArea readOnly disabled
+                                                  value={'https://aiflowy.tech/zh/development/ai/apiKey.html'}></TextArea>
+                                    </div>
+                                </div>
                             },
                         ]} bordered={false}/>
 
