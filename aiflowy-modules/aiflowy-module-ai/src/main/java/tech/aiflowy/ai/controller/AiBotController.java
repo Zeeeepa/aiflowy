@@ -12,10 +12,14 @@ import com.agentsflex.core.message.AiMessage;
 import com.agentsflex.core.message.HumanMessage;
 import com.agentsflex.core.message.SystemMessage;
 import com.agentsflex.core.prompt.HistoriesPrompt;
+import com.agentsflex.core.prompt.ToolPrompt;
 import com.agentsflex.core.util.CollectionUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.jfinal.template.stat.ast.Break;
 import com.mybatisflex.core.query.QueryWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,10 +45,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 控制层。
@@ -66,6 +71,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     private AiBotConversationMessageService aiBotConversationMessageService;
     @Resource
     private AiBotConversationMessageMapper aiBotConversationMessageMapper;
+
+    private static final Logger logger = LoggerFactory.getLogger(AiBotController.class);
 
     public AiBotController(AiBotService service, AiLlmService aiLlmService, AiBotWorkflowService aiBotWorkflowService, AiBotKnowledgeService aiBotKnowledgeService, AiBotMessageService aiBotMessageService) {
         super(service);
@@ -174,6 +181,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         MySseEmitter emitter = new MySseEmitter((long) (1000 * 60 * 2));
 
         final Boolean[] needClose = {true};
+
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         // 统一使用流式处理，无论是否有 Function Calling
         llm.chatStream(historiesPrompt, new StreamResponseListener() {
@@ -181,7 +189,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             public void onMessage(ChatContext context, AiMessageResponse response) {
                 try {
                     RequestContextHolder.setRequestAttributes(sra, true);
-                    if (response != null){
+                    if (response != null) {
                         // 检查是否需要触发 Function Calling
                         if (response.getFunctionCallers() != null && CollectionUtil.hasItems(response.getFunctionCallers())) {
                             needClose[0] = false;
@@ -422,45 +430,34 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             }
 
         }
-        List<FunctionCaller> functionCallers = aiMessageResponse.getFunctionCallers();
-        if (CollectionUtil.hasItems(functionCallers)) {
-            needClose[0] = false;
-            for (FunctionCaller functionCaller : functionCallers) {
-                Object result = functionCaller.call();
-                if (ObjectUtil.isNotEmpty(result)) {
-
-                    String newPrompt = "请根据以下内容回答用户，内容是:\n" + result + "\n 用户的问题是：" + prompt;
-                    historiesPrompt.addMessageTemporary(new HumanMessage(newPrompt));
-
-                    llm.chatStream(historiesPrompt, new StreamResponseListener() {
-                        @Override
-                        public void onMessage(ChatContext context, AiMessageResponse response) {
-                            needClose[0] = true;
-                            String content = response.getMessage().getContent();
-                            Object messageContent = response.getMessage();
-                            if (StringUtil.hasText(content)) {
-                                String jsonResult = JSON.toJSONString(messageContent);
-                                emitter.send(jsonResult);
-                            }
-                        }
-
-                        @Override
-                        public void onStop(ChatContext context) {
-                            if (needClose[0]) {
-                                System.out.println("function chat complete");
-                                emitter.complete();
-                            }
-                            historiesPrompt.clearTemporaryMessages();
-                        }
-
-                        @Override
-                        public void onFailure(ChatContext context, Throwable throwable) {
-                            emitter.completeWithError(throwable);
-                        }
-                    });
+        System.out.println("function call 接收到的参数message：" + aiMessageResponse);
+        llm.chatStream(ToolPrompt.of(aiMessageResponse), new StreamResponseListener() {
+            @Override
+            public void onMessage(ChatContext context, AiMessageResponse response) {
+                System.out.println("function call <UNK>message<UNK>" + aiMessageResponse);
+                String content = response.getMessage().getContent();
+                if (StringUtil.hasText(content)) {
+                    System.out.println("if content"  + content);
+                    emitter.send(JSON.toJSONString(response.getMessage()));
                 }
             }
-        }
+
+            @Override
+            public void onStop(ChatContext context) {
+                System.out.println("function call complete");
+                emitter.complete();
+            }
+
+            @Override
+            public void onFailure(ChatContext context, Throwable throwable) {
+                logger.error("function_call报错:",throwable);
+                AiMessage aiMessage = new AiMessage();
+                aiMessage.setContent("未查询到相关信息...");
+                emitter.send(JSON.toJSONString(aiMessage));
+                System.out.println("function call complete with error");
+            }
+        });
+
         return JSON.toJSONString(messageContent);
     }
 
