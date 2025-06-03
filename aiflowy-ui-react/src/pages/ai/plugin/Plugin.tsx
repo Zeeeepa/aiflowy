@@ -155,6 +155,7 @@ const Plugin: React.FC = () => {
 					authType: values.authType,
 					position: values.position,
 					tokenKey: values.tokenKey,
+					tokenValue: values.tokenValue,
 				},
 			}).then((r) => {
 				if (r.data.errorCode === 0) {

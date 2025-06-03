@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, message, Tag} from 'antd';
 // import { CopyOutlined } from '@ant-design/icons';
-import './JsonViewer.less';
+import './less/JsonViewer.less';
 import {CopyOutlined} from "@ant-design/icons"; // 可选的样式文件
 
 interface JsonViewerProps {

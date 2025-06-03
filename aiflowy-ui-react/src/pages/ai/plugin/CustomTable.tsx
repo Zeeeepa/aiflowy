@@ -2,44 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
 import {usePostManual} from "../../../hooks/useApis.ts";
-import JsonViewer from "./less/JsonViewer.tsx";
+import JsonViewer from "./JsonViewer.tsx";
 
 export interface DataType {
     key: string;
     name: string;
     type?: string;
+    required?: boolean; // 新增字段表示是否必填
     defaultValue: string;
     children?: DataType[];
 }
 
-const columns = (
-    handleInputChange: (key: React.Key, value: string) => void
-): TableColumnsType<DataType> => [
-    {
-        title: '参数名称',
-        dataIndex: 'name',
-        key: 'name',
-        width: 200,
-    },
-    {
-        title: '参数值',
-        dataIndex: 'defaultValue',
-        key: 'defaultValue',
-        width: 100,
-        render: (text: string, record: DataType) => {
-            return record?.type === 'Object' || record?.type === 'Array' ? (
-                <span>--</span>
-            ) : (
-                <Input
-                    value={text}
-                    variant="filled"
-                    size="middle"
-                    onChange={(e) => handleInputChange(record.key, e.target.value)}
-                />
-            );
-        },
-    },
-];
+
 
 interface CustomTableProps {
     data: DataType[];
@@ -53,12 +27,54 @@ const CustomTable: React.FC<CustomTableProps> = ({ data, pluginToolTitle, plugin
     const [pluginTestResultJsonString, setPluginTestResultJsonString] = useState<string>('');
     const [pluginTestRequestJsonString, setPluginTestRequestJsonString] = useState<string>('');
     const [activeView, setActiveView] = useState<'request' | 'response'>('response');
-
+    const [errors, setErrors] = useState<Record<string, string>>({});
     // 初始化数据
     useEffect(() => {
+        setErrors({})
         setTableData(data);
     }, [data]);
-
+    const columns = (
+        handleInputChange: (key: React.Key, value: string) => void
+    ): TableColumnsType<DataType> => [
+        {
+            title: '参数名称',
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
+            render: (text: string, record: DataType) => (
+                <span>
+                {text}
+                    {record.required && <span style={{ color: 'red', marginLeft: 4 }}>*</span>}
+            </span>
+            ),
+        },
+        {
+            title: '参数值',
+            dataIndex: 'defaultValue',
+            key: 'defaultValue',
+            width: 100,
+            render: (text: string, record: DataType) => {
+                return record?.type === 'Object' || record?.type === 'Array' ? (
+                    <span>--</span>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Input
+                            value={text}
+                            variant="filled"
+                            size="middle"
+                            onChange={(e) => handleInputChange(record.key, e.target.value)}
+                        />
+                        {/* 错误提示 */}
+                        {errors[record.key as string] && (
+                            <span style={{ color: 'red', fontSize: '12px', marginTop: 4 }}>
+                            {errors[record.key as string]}
+                        </span>
+                        )}
+                    </div>
+                )
+            },
+        },
+    ];
     // 处理 input change
     const handleInputChange = (key: React.Key, value: string) => {
         const updateData = (dataList: DataType[]): DataType[] => {
@@ -78,16 +94,35 @@ const CustomTable: React.FC<CustomTableProps> = ({ data, pluginToolTitle, plugin
 
     // 提交函数：打印或发送数据
     const handleSubmit = () => {
-        setPluginTestRequestJsonString(JSON.stringify(tableData))
+        const newErrors: Record<string, string> = {};
+
+        const missingRequired = tableData.filter(item => {
+            if (item.required && !item.defaultValue) {
+                newErrors[item.key as string] = '此字段不能为空';
+                return true;
+            }
+            return false;
+        });
+
+        if (missingRequired.length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        // 清空错误
+        setErrors({});
+
+        // 提交数据
+        setPluginTestRequestJsonString(JSON.stringify(tableData));
         doPostPluginToolTest({
             data: {
                 inputData: tableData,
                 pluginToolId: pluginToolId
             }
         }).then(res => {
-            setPluginTestResultJsonString(JSON.stringify(res.data.data))
-            setActiveView('response'); // Switch to response view after getting results
-        })
+            setPluginTestResultJsonString(JSON.stringify(res.data.data));
+            setActiveView('response');
+        });
     };
 
     return (

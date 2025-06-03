@@ -165,7 +165,7 @@ public class AiPluginFunction  implements Function {
 
         String authType = aiPlugin.getAuthType();
         if (!StrUtil.isEmpty(authType) && "apiKey".equals(aiPlugin.getAuthType())){
-            if ("headers".equals(authType)){
+            if ("headers".equals(aiPlugin.getPosition())){
                 headersMap.put(aiPlugin.getTokenKey(), aiPlugin.getTokenValue());
             } else {
                 PluginParam pluginParam = new PluginParam();
