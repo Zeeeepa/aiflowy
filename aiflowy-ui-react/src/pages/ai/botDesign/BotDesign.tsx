@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import {useLayout} from '../../../hooks/useLayout.tsx';
 import {Row} from 'antd/lib/index';
-import {App, Avatar, Button, Col, Collapse, Form, Input, Modal, Select, Space, Tooltip} from 'antd';
+import {App, Avatar, Button, Col, Collapse, Form, Input, Modal, Select, Space, Switch, Tooltip} from 'antd';
 import Title from 'antd/es/typography/Title';
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import {
@@ -177,6 +177,7 @@ const BotDesign: React.FC = () => {
         setWelcomeMessage(detail?.data?.options?.welcomeMessage)
         // 转换后端数据为新的格式
         setPresetQuestions(detail?.data?.options?.presetQuestions || [])
+        setAnonymousEnabled(detail?.data?.options?.anonymousEnabled)
     }, [detail]);
 
     const {result: workflowResult, doGet: doGetWorkflow} = useList("aiBotWorkflow", {"botId": params.id});
@@ -230,6 +231,9 @@ const BotDesign: React.FC = () => {
     }
     // 创建表单实例
     const [form] = Form.useForm();
+
+    const [anonymousEnabled,setAnonymousEnabled] = useState<boolean>(false)
+    const [anonymousSwitchLoading,setAnonymousSwitchLoading] = useState<boolean>(false)
 
     return (
         <>
@@ -560,6 +564,28 @@ const BotDesign: React.FC = () => {
                                 label: <CollapseLabel text="嵌入" onClick={() => {
                                 }} plusDisabled/>,
                                 children: <div>
+                                    <div style={{display:'flex',justifyContent:'space-between'}}>
+                                        <span>启用匿名访问</span>
+                                        <Switch
+                                            checked={anonymousEnabled}
+                                            loading={anonymousSwitchLoading}
+                                            onChange={async (checked) => {
+                                                setAnonymousSwitchLoading(true)
+                                                const resp = await updateBotOptions({
+                                                    data: {
+                                                        options: {anonymousEnabled: checked},
+                                                        id: params.id,
+                                                    }
+                                                })
+                                                if (resp?.data?.errorCode === 0){
+                                                    const reGetResp = await reGetDetail();
+                                                    setAnonymousEnabled(reGetResp.data?.data?.options.anonymousEnabled)
+                                                }
+
+                                                setAnonymousSwitchLoading(false)
+                                            }}
+                                        />
+                                    </div>
                                     <div>
                                         <span>
                                             外部访问地址 <a

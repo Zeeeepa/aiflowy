@@ -40,6 +40,7 @@ import tech.aiflowy.common.ai.ChatManager;
 import tech.aiflowy.common.ai.MySseEmitter;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
+import tech.aiflowy.common.util.Maps;
 import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
@@ -147,8 +148,23 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         response.setContentType("text/event-stream");
         AiBot aiBot = service.getById(botId);
         boolean login = StpUtil.isLogin();
+
+
+
         if (!login) {
-            List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + botId);
+
+            Object o = aiBot.getOptions().get("anonymousEnabled");
+            if (o == null) {
+                return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content","此bot不支持匿名访问")));
+            }
+
+            boolean anonymousEnabled = (boolean) o;
+            if (!anonymousEnabled) {
+                return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content","此bot不支持匿名访问")));
+            }
+
+
+            List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
             AiBotMessage aiBotMessage = new AiBotMessage();
             aiBotMessage.setBotId(botId);
             aiBotMessage.setRole("user");
@@ -165,7 +181,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             aiBotConversationMessage.setAiBotMessageList(messages);
             consversations.add(aiBotConversationMessage);
             if (result == null) {
-                cache.put(tempUserId + botId, consversations);
+                cache.put(tempUserId + ":" + botId, consversations);
             } else {
                 AtomicInteger flag = new AtomicInteger();
                 result.forEach(consversation -> {
@@ -178,9 +194,9 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 // 意味着这是新的会话
                 if (flag.get() == 0){
                     result.addAll(consversations);
-                    cache.put(tempUserId + botId, result);
+                    cache.put(tempUserId + ":" + botId, result);
                 } else {
-                    cache.put(tempUserId + botId, result);
+                    cache.put(tempUserId + ":" + botId, result);
                 }
 
             }
@@ -218,9 +234,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             historiesPrompt.setMemory(memory);
 
         }
-
-
-
 
         HumanMessage humanMessage = new HumanMessage(prompt);
 

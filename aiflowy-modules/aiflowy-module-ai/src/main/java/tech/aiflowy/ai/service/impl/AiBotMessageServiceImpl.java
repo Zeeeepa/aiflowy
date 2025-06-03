@@ -56,7 +56,7 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
             return Result.success(messages);
         } else {
             AtomicReference<List<AiBotMessage>> messages = new AtomicReference<>(new ArrayList<>());
-            List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + botId);
+            List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
             result.forEach(conversationMessage -> {
                 if (conversationMessage.getSessionId().equals(sessionId)) {
                     messages.set(conversationMessage.getAiBotMessageList());

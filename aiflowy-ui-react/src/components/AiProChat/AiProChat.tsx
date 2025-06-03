@@ -33,6 +33,7 @@ export type AiProChatProps = {
     request: (messages: ChatMessage[]) => Promise<Response>;
     clearMessage?: () => void;
     prompts?: GetProp<typeof Prompts, 'items'>;
+    inputDisabled?: boolean;
 };
 
 export const AiProChat = ({
@@ -45,6 +46,7 @@ export const AiProChat = ({
                               botAvatar = `${logo}`,
                               request,
                               clearMessage,
+                              inputDisabled = false,
                               prompts,
                           }: AiProChatProps) => {
     const isControlled = parentChats !== undefined && parentOnChatsChange !== undefined;
@@ -392,10 +394,11 @@ export const AiProChat = ({
                     onChange={setContent}
                     onSubmit={handleSubmit}
                     loading={sendLoading || isStreaming}
+                    disabled={inputDisabled}
                     actions={(_, info) => (
                         <Space size="small">
                             <info.components.ClearButton
-                                disabled={false}  // 强制不禁用
+                                disabled={inputDisabled}  // 强制不禁用
                                 title="删除对话记录"
                                 style={{ fontSize: 20 }}
                                 onClick={(e) => {
@@ -405,6 +408,7 @@ export const AiProChat = ({
                             />
                             <info.components.SendButton
                                 type="primary"
+                                disabled={inputDisabled}
                                 icon={<OpenAIOutlined/>}
                                 loading={sendLoading || isStreaming}
                             />

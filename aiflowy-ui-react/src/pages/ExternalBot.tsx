@@ -13,7 +13,7 @@ import { AiProChat, ChatMessage } from "../components/AiProChat/AiProChat.tsx";
 import {getExternalSessionId, setNewExternalSessionId, updateExternalSessionId} from "../libs/getExternalSessionId.ts";
 import { useSse } from "../hooks/useSse.ts";
 import { useParams } from "react-router-dom";
-import { useGetManual } from "../hooks/useApis.ts";
+import {useGetManual, usePostManual} from "../hooks/useApis.ts";
 import {uuid} from "../libs/uuid.ts";
 
 const useStyle = createStyles(({ token, css }) => {
@@ -147,6 +147,8 @@ export const ExternalBot: React.FC = () => {
     const { doGet: doGetManual } = useGetManual("/api/v1/aiBotMessage/messageList");
     const { doGet: doGetConverManualDelete } = useGetManual("/api/v1/conversation/deleteConversation");
     const { doGet: doGetConverManualUpdate } = useGetManual("/api/v1/conversation/updateConversation");
+    const {doPost:doClearMessage} = usePostManual("/api/v1/conversation/clearMessage")
+
     const menuConfig: ConversationsProps['menu'] = () => ({
         items: [
             {
@@ -172,12 +174,14 @@ export const ExternalBot: React.FC = () => {
                             params: {
                                 sessionId: getExternalSessionId(),
                                 botId: params?.id,
+                                tempUserId: localStorage.getItem("tempUserId")
                             },
-                        }).then((res: any) => {
+                        }).then(async (res: any) => {
                             if (res.data.errorCode === 0){
                                 message.success('删除成功');
                                 setChats([])
-                                getConversationManualGet({params: { "botId": params?.id }})
+                                const resp = await  getConversationManualGet({params: { "botId": params?.id , "tempUserId": localStorage.getItem("tempUserId")}})
+                                setConversationsItems(getConversations(resp?.data?.data?.cons))
                             }
                         });
                     },
@@ -296,11 +300,13 @@ export const ExternalBot: React.FC = () => {
                 sessionId: activeKey,
                 botId: params?.id,
                 title: newTitle,
+                tempUserId: localStorage.getItem("tempUserId")
             },
         }).then((res: any) => {
             if (res.data.errorCode === 0){
                 // 更新本地状态
                 updateConversationTitle(activeKey, newTitle)
+
                 message.success('更新成功');
                 setOpen(false);
 
@@ -310,6 +316,33 @@ export const ExternalBot: React.FC = () => {
     const hideModal = () => {
         setOpen(false);
     };
+
+
+    const [inputDisabled, setInputDisabled] = useState<boolean>(false);
+
+    const clearMessage = async (botId:any,sessionId:any,tempUserId:any) => {
+        setInputDisabled(true);
+        await  doClearMessage({
+            data:{
+                botId,
+                sessionId,
+                tempUserId,
+            }
+        });
+
+       const resp = await  doGetManual({
+            params: {
+                 sessionId,
+                botId,
+                // 是externalBot页面提交的消息记录
+                isExternalMsg: 1,
+                tempUserId
+            },
+        })
+        setChats(resp?.data.data);
+        setInputDisabled(false);
+
+    }
     // ==================== Render ====================
     return (
        <div className={styles.layout}>
@@ -357,6 +390,8 @@ export const ExternalBot: React.FC = () => {
                     onChatsChange={setChats} // 确保正确传递 onChatsChange
                     helloMessage="欢迎使用 AIFlowy ，我是你的专属机器人，有什么问题可以随时问我。"
                     botAvatar={botInfo?.data?.icon}
+                    clearMessage={() => clearMessage(params.id,getExternalSessionId(),localStorage.getItem("tempUserId"))}
+                    inputDisabled={inputDisabled}
                     request={async (messages) => {
                         const readableStream = new ReadableStream({
                             async start(controller) {

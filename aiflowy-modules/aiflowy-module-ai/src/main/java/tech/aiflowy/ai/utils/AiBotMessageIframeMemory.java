@@ -30,7 +30,7 @@ public class AiBotMessageIframeMemory implements ChatMemory {
 
     @Override
     public List<Message> getMessages() {
-        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + botId);
+        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
         List<AiBotMessage> aiBotMessages = null;
         for (int i = 0; i < result.size(); i++) {
             if (result.get(i).getSessionId().equals(sessionId)) {
@@ -47,7 +47,7 @@ public class AiBotMessageIframeMemory implements ChatMemory {
 
     @Override
     public void addMessage(Message message) {
-        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + botId);
+        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
         if (message instanceof AiMessage) {
             AiMessage m = (AiMessage) message;
             List<FunctionCall> calls = m.getCalls();
@@ -66,7 +66,7 @@ public class AiBotMessageIframeMemory implements ChatMemory {
                     aiBotMessage.setCompletionTokens(m.getCompletionTokens());
                     aiBotMessageList.add(aiBotMessage);
                     result.get(i).setAiBotMessageList(aiBotMessageList);
-                    cache.put(tempUserId + botId, result);
+                    cache.put(tempUserId + ":" + botId, result);
                 }
             }
         }
