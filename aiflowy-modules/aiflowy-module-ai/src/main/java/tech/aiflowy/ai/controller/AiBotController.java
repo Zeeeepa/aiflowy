@@ -529,6 +529,11 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
             @Override
             public void onStop(ChatContext context) {
+                AiMessage lastAiMessage = context.getLastAiMessage();
+                if (lastAiMessage != null) {
+                    historiesPrompt.addMessage(lastAiMessage);
+                }
+                System.out.println(lastAiMessage);
                 System.out.println("function call complete");
                 emitter.complete();
             }
