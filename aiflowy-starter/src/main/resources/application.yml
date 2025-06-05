@@ -25,7 +25,7 @@ spring:
         quartz:
           jobStore:
             misfireThreshold: 1000
-            tablePrefix: tb_qrtz_
+            tablePrefix: TB_QRTZ_
           threadPool:
             threadCount: 20
             threadPriority: 5
