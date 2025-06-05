@@ -9,7 +9,7 @@ type ResetPasswordProps = {
 }
 const UpdatePassword: React.FC<ResetPasswordProps> = ({open, onClose}) => {
 
-    const {loading, doPost} = usePostManual("/api/v1/sysAccountv3/updatePassword");
+    const {loading, doPost} = usePostManual("/api/v1/sysAccount/updatePassword");
     const {message} = App.useApp();
 
     const [form] = useForm()
