@@ -9,9 +9,9 @@ import com.agentsflex.core.util.StringUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import lombok.SneakyThrows;
 import okhttp3.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -101,7 +101,6 @@ public class AiPluginsFunction implements Function {
         return ArrayUtil.toArray(list, Parameter.class);
     }
 
-    @SneakyThrows
     @Override
     public Object invoke(Map<String, Object> map) {
 
@@ -142,10 +141,19 @@ public class AiPluginsFunction implements Function {
         Request build = reqBuilder.build();
         System.out.println("http plugin function calling >>>>>>>>>> " + build);
         OkHttpClient okHttpClient = OkHttpClientUtil.buildDefaultClient();
-        Response response = okHttpClient.newCall(build).execute();
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(build).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         ResponseBody body = response.body();
         if (body != null) {
-            return body.string();
+            try {
+                return body.string();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return null;
     }
