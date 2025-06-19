@@ -415,6 +415,7 @@ CREATE TABLE `tb_ai_knowledge`  (
   `options` text CHARACTER SET utf8mb4 NULL COMMENT '其他配置',
   `rerank_llm_id` bigint(0) NULL DEFAULT NULL COMMENT '重排模型id',
   `search_engine_enable` tinyint(1) NULL COMMENT '是否启用搜索引擎',
+  `english_name` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '英文名称',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT = '知识库' ROW_FORMAT = Dynamic;
 
@@ -550,6 +551,7 @@ CREATE TABLE `tb_ai_workflow`  (
   `created_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建人',
   `modified` datetime(0) NULL DEFAULT NULL COMMENT '最后修改时间',
   `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '最后修改的人',
+  `english_name` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '英文名称',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
 
