@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.service;
 
+import com.agentsflex.core.llm.Llm;
 import com.mybatisflex.core.service.IService;
 import tech.aiflowy.ai.entity.AiBotConversationMessage;
 import tech.aiflowy.common.domain.Result;
@@ -19,5 +20,7 @@ public interface AiBotConversationMessageService extends IService<AiBotConversat
     Result updateConversation(String botId, String sessionId, String title);
 
     Result externalList(BigInteger botId);
+
+    Boolean needRefreshConversationTitle(String sessionId, String userPrompt, Llm llm, BigInteger botId, long accountId, int isExternalMsg);
 
 }

@@ -466,6 +466,17 @@ export const ExternalBot: React.FC = () => {
                                     onFinished: () => {
                                         controller.close();
                                     },
+                                    onEvent: (event: any) => {
+                                        if (event.event && event.event === "refreshSession"){
+                                            getConversationManualGet(
+                                                {
+                                                    params: {"botId": params?.id, "tempUserId": localStorage.getItem("tempUserId")}
+                                                }
+                                            ).then((r: any) => {
+                                                setConversationsItems(getConversations(r?.data?.data?.cons));
+                                            });
+                                        }
+                                    }
                                 })
                             },
                         });

@@ -57,6 +57,7 @@ import tech.aiflowy.system.mapper.SysApiKeyMapper;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -214,6 +215,21 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, historiesPrompt);
 
         reActAgent.setStreamable(true);
+        long userId = StpUtil.getLoginIdAsLong();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Boolean needRefresh = aiBotConversationMessageService.needRefreshConversationTitle(sessionId, prompt, llm, botId, userId, isExternalMsg);
+                if (needRefresh){
+                    try {
+                        emitter.send(SseEmitter.event().name("refreshSession"));
+                    } catch (IOException e) {
+                        logger.error("创建会话报错", e);
+                    }
+                }
+            }
+        }).start();
 
         reActAgent.addListener(new ReActAgentListener() {
 

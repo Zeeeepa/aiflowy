@@ -1,5 +1,11 @@
 package tech.aiflowy.ai.service.impl;
 
+import com.agentsflex.core.llm.Llm;
+import com.agentsflex.core.llm.response.AiMessageResponse;
+import com.agentsflex.core.message.AiMessage;
+import com.agentsflex.core.message.SystemMessage;
+import com.agentsflex.core.prompt.TextPrompt;
+import com.alibaba.fastjson.JSON;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import tech.aiflowy.ai.entity.AiBotConversationMessage;
@@ -14,6 +20,7 @@ import tech.aiflowy.common.satoken.util.SaTokenUtil;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,5 +106,28 @@ public class AiBotConversationMessageServiceImpl extends ServiceImpl<AiBotConver
         Map<String, Object> result = new HashMap<>();
         result.put("cons", cons);
         return Result.success(result);
+    }
+
+    @Override
+    public Boolean needRefreshConversationTitle(String sessionId, String userPrompt, Llm llm, BigInteger botId, long accountId, int isExternalMsg) {
+        AiBotConversationMessage conversationMessage = this.getMapper().selectOneById(sessionId);
+        if (conversationMessage == null && isExternalMsg == 1){
+            TextPrompt textPrompt = new TextPrompt();
+            textPrompt.setSystemMessage(SystemMessage.of("你是一个给会话取标题的助手，根据用户输入，为此次会话提供**一个**标题，回复格式:{title:'titleContent'}"));
+            textPrompt.setContent(userPrompt);
+            AiMessageResponse chatResponse = llm.chat(textPrompt);
+            AiMessage message = chatResponse.getMessage();
+            Map<String, String> parse = JSON.parseObject(message.getContent(), Map.class);
+            String title = parse.get("title");
+            AiBotConversationMessage newConversation = new AiBotConversationMessage();
+            newConversation.setSessionId(sessionId);
+            newConversation.setTitle(title);
+            newConversation.setBotId(botId);
+            newConversation.setCreated(new Date());
+            newConversation.setAccountId(BigInteger.valueOf(accountId));
+            int insert = this.getMapper().insert(newConversation);
+            return insert > 0;
+        }
+        return true;
     }
 }

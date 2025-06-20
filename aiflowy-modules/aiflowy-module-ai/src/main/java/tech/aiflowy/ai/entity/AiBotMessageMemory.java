@@ -113,21 +113,6 @@ public class AiBotMessageMemory implements ChatMemory {
 
         }
         if (StrUtil.isNotEmpty(aiMessage.getContent())) {
-
-            AiBotConversationMessage aiBotConversation = aiBotConversationMessageMapper.selectOneById(aiMessage.getSessionId());
-
-            if (aiBotConversation == null  && isExternalMsg == 1){
-
-                AiBotConversationMessage conversation = new AiBotConversationMessage();
-                conversation.setSessionId(aiMessage.getSessionId());
-                conversation.setTitle(aiMessage.getContent());
-                conversation.setBotId(aiMessage.getBotId());
-                conversation.setCreated(new Date());
-                conversation.setAccountId(SaTokenUtil.getLoginAccount().getId());
-                aiBotConversationService.save(conversation);
-
-            }
-
             messageService.save(aiMessage);
         }
     }
