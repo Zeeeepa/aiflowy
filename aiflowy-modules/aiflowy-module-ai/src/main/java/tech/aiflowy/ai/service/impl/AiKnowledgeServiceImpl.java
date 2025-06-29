@@ -101,7 +101,7 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
         try {
             Map<String, Document> uniqueDocs = combinedFuture.get(); // 阻塞等待所有查询完成
             List<Document> needRerankDocuments = new ArrayList<>(uniqueDocs.values());
-
+            needRerankDocuments.sort((doc1, doc2) -> Double.compare(doc2.getScore(), doc1.getScore()));
             if (needRerankDocuments.isEmpty()) {
                 return Result.success();
             }
