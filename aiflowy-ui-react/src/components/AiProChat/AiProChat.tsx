@@ -399,7 +399,6 @@ export const AiProChat = ({
                         await handleEventComplete(currentEventType.current, eventContent.current);
                     } catch (error) {
                         console.error(` Event transition failed:`, error);
-                        //  事件转换失败，中断流处理
                     }
 
                     // 重置累积内容
@@ -428,13 +427,10 @@ export const AiProChat = ({
                         }
                     } catch (error) {
                         console.error(`Event processing failed, terminating stream:`, error);
-
-                        //  更新AI消息显示错误状态
-
                     }
                 }
 
-                // 处理内容更新（保持你原有的逻辑）
+                // 处理内容更新
                 partial += respData.content || '';
 
                 // 清除之前的打字间隔
@@ -494,9 +490,6 @@ export const AiProChat = ({
 
         } catch (error) {
             console.error(`Stream processing error:`, error);
-
-            //  更新UI状态
-
         } finally {
             // 确保打字效果完成后再重置状态
             setIsStreaming(false);
