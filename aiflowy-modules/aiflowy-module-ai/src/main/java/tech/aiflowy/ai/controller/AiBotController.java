@@ -2,6 +2,7 @@ package tech.aiflowy.ai.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.agentsflex.core.llm.ChatContext;
 import com.agentsflex.core.llm.ChatOptions;
@@ -12,6 +13,7 @@ import com.agentsflex.core.llm.response.AiMessageResponse;
 import com.agentsflex.core.llm.response.FunctionCaller;
 import com.agentsflex.core.message.AiMessage;
 import com.agentsflex.core.message.HumanMessage;
+import com.agentsflex.core.message.Message;
 import com.agentsflex.core.message.SystemMessage;
 import com.agentsflex.core.prompt.HistoriesPrompt;
 import com.agentsflex.core.prompt.TextPrompt;
@@ -59,7 +61,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.*;
+import com.agentsflex.core.llm.client.OkHttpClientUtil;
+import okhttp3.OkHttpClient;
+import tech.aiflowy.common.web.exceptions.BusinessException;
 
 /**
  * 控制层。
@@ -207,137 +213,378 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         }
         boolean needEnglishName = AiBotChatUtil.needEnglishName(llm);
 
-        MySseEmitter emitter = new MySseEmitter(1000 * 60 * 300L);
-        List<Function> functions = buildFunctionList(Maps.of("botId", botId).set("needEnglishName", needEnglishName));
+            MySseEmitter emitter = new MySseEmitter(1000 * 60 * 300L);
+            List<Function> functions = null;
+            try {
+                functions = buildFunctionList(Maps.of("botId", botId).set("needEnglishName", needEnglishName));
+            } catch (Exception throwables) {
+                logger.error("构建工具列表时报错：", throwables);
+                return ChatManager.getInstance()
+                        .sseEmitterForContent(JSON.toJSONString(Maps.of("content", "大模型调用出错，请检查配置后重试！")));
+            }
 
-        ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, historiesPrompt);
+            ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, historiesPrompt);
 
-        reActAgent.setStreamable(true);
-        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            String promptTemplate = "你是一个 ReAct Agent，结合 Reasoning（推理）和 Action（行动）来解决问题。\n" +
+                    "但在处理用户问题时，请首先判断：\n" +
+                    "1. 如果问题可以通过你的常识或已有知识直接回答 → 请忽略 ReAct 框架，直接输出自然语言回答。\n" +
+                    "2. 如果问题需要调用特定工具才能解决（如查询、计算、获取外部信息等）→ 请严格按照 ReAct 格式响应。\n\n" +
+                    "如果你选择使用 ReAct 模式，请遵循以下格式：\n" +
+                    "Thought: 描述你对当前问题的理解，包括已知信息和缺失信息，说明你下一步将采取什么行动及其原因。\n" +
+                    "Action: 从下方列出的工具中选择一个合适的工具，仅输出工具名称，不得虚构。\n" +
+                    "Action Input: 使用标准 JSON 格式提供该工具所需的参数，禁止使用任何形式的代码块格式，包括但不限于'```json'、'```sql'、'```java'，确保字段名与工具描述一致。\n\n" +
+                    "在 ReAct 模式下，如果你已获得足够信息可以直接回答用户，请输出：\n" +
+                    "Final Answer: [你的回答]\n\n" +
+                    "注意事项：\n" +
+                    "1. 每次只能选择一个工具并执行一个动作。\n" +
+                    "2. 在未收到工具执行结果前，不要自行假设其输出。\n" +
+                    "3. 不得编造工具或参数，所有工具均列于下方。\n" +
+                    "4. 输出顺序必须为：Thought → Action → Action Input。\n" +
+                    "5. **严禁以任何形式询问、建议、猜测用户后续操作或步骤**\n" +
+                    "6. **回答完用户问题后立即结束，不得添加任何延伸建议、分析选项或询问**\n" +
+                    "7. **禁止使用\"如果需要...\"、\"您是否需要...\"、\"可以进一步...\"等表述**\n" +
+                    "8. 回复前需判断当前输出是否为Final Answer，**必须严格遵守：当需要回复的内容是Final Answer时，禁止输出Thought、Action、Action Input**，示例：\n" +
+                    "\t[正确示例1]\n" +
+                    "\t\tFinal Answer:张三的年龄是35岁\n\n" +
+                    "\t[正确示例2]\n" +
+                    "\t\tFinal Answer:张三的邮箱是：aabbcc@qq.com\n\n" +
+                    "\t[错误示例]\n" +
+                    "\t\tThought: 根据查询结果，张三的年龄是35岁\n\t\tFinal Answer:张三的年龄是35岁\n\n" +
+                    "\t[错误示例2]\n" +
+                    "\t\tThought: 根据工具返回的结果，查询成功并返回了数据。数据中有一行记录，显示年龄为35岁。因此，我已获得足够信息来回答用户的问题。下一步是输出最终答案。\n" +
+                    "\n" +
+                    "\t\tFinal Answer: 张三的年龄是35岁。\n\n" +
+                    "\t**出现任意类似以上错误示例的回复将被视为极其严重的行为错误！**" +
+                    "9. 严格按照规定格式输出Thought、Action、Action Input、Final Answer；\n" +
+                    "\n" +
+                    "违反以上任一指令视为严重行为错误，必须严格遵守。" +
+                    "### 可用工具列表：\n" +
+                    "{tools}\n\n" +
+                    "### 用户问题如下：\n" +
+                    "{user_input}";
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestContextHolder.setRequestAttributes(sra, true);
-                Boolean needRefresh = aiBotConversationMessageService.needRefreshConversationTitle(sessionId, prompt, llm, botId, isExternalMsg);
-                if (needRefresh){
+
+
+            reActAgent.setPromptTemplate(promptTemplate);
+
+            reActAgent.setStreamable(true);
+            ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    RequestContextHolder.setRequestAttributes(sra, true);
+                    Boolean needRefresh = aiBotConversationMessageService.needRefreshConversationTitle(sessionId,
+                            prompt,
+                            llm, botId, isExternalMsg);
+                    if (needRefresh) {
+                        try {
+                            emitter.send(SseEmitter.event().name("refreshSession"));
+                        } catch (IOException e) {
+                            logger.error("创建会话报错", e);
+                        }
+                    }
+                }
+            }).start();
+
+            AiMessage thinkingMessage = new AiMessage();
+            Map<String, Object> thinkingIdMap = new HashMap<>();
+
+            final OkHttpClient.Builder[] builder = {new OkHttpClient.Builder()};
+            builder[0].connectTimeout(Duration.ofSeconds(30));
+            builder[0].readTimeout(Duration.ofMinutes(20));
+            OkHttpClientUtil.setOkHttpClientBuilder(builder[0]);
+
+            reActAgent.addListener(new ReActAgentListener() {
+
+                private long currentThoughtId = IdUtil.getSnowflake(1, 1).nextId();
+
+                private String chunk = "";
+                private boolean isFinalAnswer = false;
+                private boolean parsed = false;
+
+                @Override
+                public void onChatResponseStream(ChatContext context, AiMessageResponse response) {
+
+
+
+                    String reasoningContent = response.getMessage().getReasoningContent();
+                    String fullReasoningContent = response.getMessage().getFullReasoningContent();
+                    String content = response.getMessage().getContent();
+
+                    if (StringUtils.hasLength(content)){
+                        logger.info("onChatResponseStream:" + content);
+                    }else{
+                        logger.info("onChatResponseStream:" + fullReasoningContent);
+                    }
+
+                    if (StringUtils.hasLength(reasoningContent)) {
+
+                        if (thinkingIdMap.get("id") == null) {
+                            thinkingIdMap.put("id", IdUtil.getSnowflake(1, 1).nextId());
+                        }
+                        thinkingIdMap.put("chainTitle","🧠 思考");
+
+
+                        thinkingMessage.setContent(reasoningContent);
+                        thinkingMessage.setFullContent(fullReasoningContent);
+                        thinkingMessage.setMetadataMap(thinkingIdMap);
+
+                        try {
+                            emitter.send(SseEmitter.event().name("thinking").data(JSON.toJSONString(thinkingMessage)));
+                        } catch (IOException e) {
+                            throw new BusinessException("发送思考事件报错");
+                        }
+
+                    } else {
+
+                        // 累积内容用于判断类型
+                        chunk += content;
+
+                        // 分阶段判断：先用少量内容做初步判断，再用更多内容做确认
+                        if (!parsed) {
+                            String lowerChunk = chunk.toLowerCase();
+
+                            // 第一阶段：如果内容足够少且能明确判断Final Answer，立即处理
+                            if (chunk.trim().length() >= 12) {
+                                if (lowerChunk.trim().startsWith("final answer:") ||
+                                        lowerChunk.trim().startsWith("final answer :") ||
+                                        lowerChunk.trim().startsWith("final answer ")) {
+                                    isFinalAnswer = true;
+                                    // 处理Final Answer，去掉"Final Answer:"前缀
+                                    String finalContent = chunk.replaceFirst("(?i)final answer\\s*:", "").trim();
+                                    AiMessage message = new AiMessage();
+                                    message.setContent(finalContent);
+                                    emitter.send(JSON.toJSONString(message));
+                                    parsed = true;
+                                    return;
+                                }
+                            }
+
+                            // 第二阶段：积累足够内容来判断ReAct格式
+                            if (chunk.trim().length() >= 50) {
+                                // 检查是否包含ReAct的关键模式
+                                boolean hasReActPattern = lowerChunk.contains("thought:") ||
+                                        lowerChunk.contains("thought ") ||
+                                        lowerChunk.matches(".*\\d+\\..*thought.*") ||  // 匹配 "1. xxx Thought" 模式
+                                        lowerChunk.contains("思考：") ||
+                                        lowerChunk.contains("分析：");
+
+                                if (hasReActPattern) {
+                                    isFinalAnswer = false;
+                                    // 发送Thought事件
+                                    AiMessage thoughtMessage = new AiMessage();
+                                    thoughtMessage.setContent(chunk);
+                                    thoughtMessage.setFullContent(chunk);
+                                    thoughtMessage.setMetadataMap(
+                                            Maps.of("showContent", chunk)
+                                                    .set("type", 1)
+                                                    .set("chainTitle", "💭 思路")
+                                                    .set("chainContent", chunk)
+                                                    .set("id", currentThoughtId + "")
+                                    );
+
+                                    try {
+                                        emitter.send(SseEmitter.event().name("thought").data(JSON.toJSONString(thoughtMessage)));
+                                    } catch (IOException e) {
+                                        throw new BusinessException("发送思路事件报错");
+                                    }
+                                    parsed = true;
+                                    return;
+                                }
+                            }
+
+                            // 第三阶段：如果累积内容过多仍无法判断，默认当作Final Answer
+                            if (chunk.trim().length() >= 100) {
+                                isFinalAnswer = true;
+                                AiMessage message = new AiMessage();
+                                message.setContent(chunk);
+                                emitter.send(JSON.toJSONString(message));
+                                parsed = true;
+                                return;
+                            }
+                        }
+
+                        // 如果已经解析过类型，继续按照对应类型处理后续内容
+                        if (parsed) {
+                            AiMessage aiMessage = new AiMessage();
+                            if (isFinalAnswer) {
+                                // Final Answer模式：直接发送内容
+                                aiMessage.setContent(content);
+                                emitter.send(JSON.toJSONString(aiMessage));
+                                System.out.println("发送final answer:" + content);
+                            } else {
+                                // Thought模式：发送thought事件
+                                aiMessage.setFullContent(content);
+                                aiMessage.setContent(content);
+                                aiMessage.setMetadataMap(
+                                        Maps.of("showContent", content)
+                                                .set("type", 1)
+                                                .set("chainTitle", "💭 思路")
+                                                .set("chainContent", content)
+                                                .set("id", currentThoughtId + "")
+                                );
+
+                                try {
+                                    emitter.send(SseEmitter.event().name("thought").data(JSON.toJSONString(aiMessage)));
+                                } catch (IOException e) {
+                                    throw new BusinessException("发送思路事件报错");
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                @Override
+                public void onFinalAnswer(String finalAnswer) {
+                    logger.info("onFinalAnswer,{}", finalAnswer);
+
+                    emitter.complete();
+                }
+
+                @Override
+                public void onStepParseError(String content) {
+                    logger.error("onStepParseError,content:{}", content);
+                    emitter.sendAndComplete(JSON.toJSONString(Maps.of("content", "\n解析工具调用步骤失败....请重试")));
+                }
+
+                @Override
+                public void onActionNotMatched(ReActStep step, List<Function> functions) {
+                    logger.error("onActionNotMatched,{}", functions);
+                    emitter.sendAndComplete(JSON.toJSONString(Maps.of("content", "没有找到可用工具....")));
+                }
+
+                @Override
+                public void onActionError(Exception e) {
+                    logger.error("onActionError", e);
+//                    emitter.send(JSON.toJSONString(Maps.of("content", "工具执行过程出现异常....正在尝试解决....")));
+                    AiMessage aiMessage = new AiMessage();
+                    aiMessage.setFullContent("工具执行过程出现异常....正在尝试解决....");
+                    aiMessage.setContent("工具执行过程出现异常....正在尝试解决....");
+                    aiMessage.setMetadataMap(
+                            Maps.of("showContent", "工具执行过程出现异常....正在尝试解决....")
+                                    .set("type", 1)
+                                    .set("chainTitle", "💭 思路")
+                                    .set("chainContent", "工具执行过程出现异常....正在尝试解决....")
+                                    .set("id", IdUtil.getSnowflake(1, 1).nextId() + "")
+                    );
+
                     try {
-                        emitter.send(SseEmitter.event().name("refreshSession"));
+                        emitter.send(SseEmitter.event().name("thought").data(JSON.toJSONString(aiMessage)));
+                    } catch (IOException ex) {
+                        throw new BusinessException("发送思路事件报错");
+                    }
+                }
+
+                @Override
+                public void onNonActionResponseStream(ChatContext context) {
+                    logger.info("onNonActionResponseStream");
+
+                    String fullContent = context.getLastAiMessage().getFullContent();
+                    AiMessage message = new AiMessage();
+                    message.setContent(fullContent);
+                    emitter.sendAndComplete(JSON.toJSONString(message));
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    logger.error("onError:", error);
+                    AiMessage aiMessage = new AiMessage();
+                    aiMessage.setContent("大模型调用出错，请检查配置");
+                    boolean hasUnsupportedApiError = containsUnsupportedApiError(error.getMessage());
+                    if (hasUnsupportedApiError) {
+                        String errMessage = error.getMessage()
+                                + "\n**以下是 AIFlowy 提供的可查找当前错误的方向**\n**1: 在 AIFlowy 中，Bot 对话需要大模型携带 function_calling 功能**" +
+                                "\n**2: 请查看当前模型是否支持 function_calling 调用？**";
+                        aiMessage.setContent(errMessage);
+                    }
+                    emitter.send(JSON.toJSONString(aiMessage));
+                    emitter.completeWithError(error);
+                }
+
+                @Override
+                public void onActionStart(ReActStep step) {
+
+                    logger.info("onActionStart");
+
+                    // 重置状态
+                    builder[0] = new OkHttpClient.Builder();
+                    builder[0].connectTimeout(Duration.ofSeconds(30));
+                    builder[0].readTimeout(Duration.ofMinutes(20));
+                    OkHttpClientUtil.setOkHttpClientBuilder(builder[0]);
+
+                    currentThoughtId = IdUtil.getSnowflake(1, 1).nextId();
+                    parsed = false;
+                    isFinalAnswer = false;
+                    chunk = "";
+
+                    if (StringUtils.hasLength(thinkingMessage.getFullContent())) {
+                        thinkingMessage.setFullContent("thinking:" + thinkingMessage.getFullContent());
+                        historiesPrompt.addMessage(thinkingMessage);
+                        thinkingMessage.setFullContent("");
+                        thinkingMessage.setContent("");
+                        thinkingMessage.setMetadataMap(null);
+                        thinkingIdMap.put("id", null);
+                    }
+
+
+                    RequestContextHolder.setRequestAttributes(sra, true);
+
+                    AiMessage toolCallMessage = new AiMessage();
+                    toolCallMessage.setContent(step.getAction());
+                    toolCallMessage.setFullContent(step.getAction());
+                    toolCallMessage.setMetadataMap(
+                            Maps.of("showContent", toolCallMessage.getContent())
+                                    .set("type", 1)
+                                    .set("chainTitle", "\n\n\uD83D\uDCCB 调用工具中..." + "\n\n")
+                                    .set("chainContent", step.getAction())
+                                    .set("id", IdUtil.getSnowflake(1, 1).nextId() + "")
+                    );
+                    historiesPrompt.addMessage(toolCallMessage);
+                    try {
+                        emitter.send(SseEmitter.event().name("toolCalling").data(JSON.toJSONString(toolCallMessage)));
                     } catch (IOException e) {
-                        logger.error("创建会话报错", e);
+                        throw new BusinessException("发送工具调用事件报错");
+                    }
+
+                    String actionInput = step.getActionInput();
+                    logger.info("onActionStart:{}", actionInput);
+                }
+
+                @Override
+                public void onActionEnd(ReActStep step, Object result) {
+                    logger.info("onActionEnd----> step:{},result:{}", step, result);
+
+                    currentThoughtId = IdUtil.getSnowflake(1, 1).nextId();
+                    parsed = false;
+                    isFinalAnswer = false;
+                    chunk = "";
+
+                    AiMessage aiMessage = new AiMessage();
+                    aiMessage.setFullContent("\uD83D\uDD0D 调用结果:" + result + "\n\n");
+                    aiMessage.setContent("\uD83D\uDD0D 调用结果:" + result + "\n\n");
+                    aiMessage.setMetadataMap(
+                            Maps.of("showContent", aiMessage.getContent())
+                                    .set("type", 2)
+                                    .set("chainTitle", "\uD83D\uDD0D 调用结果")
+                                    .set("chainContent", result.toString())
+                                    .set("id", IdUtil.getSnowflake(1, 1).nextId() + "")
+                    );
+                    historiesPrompt.addMessage(aiMessage);
+                    try {
+                        emitter.send(SseEmitter.event().name("callResult").data(JSON.toJSONString(aiMessage)));
+                    } catch (IOException e) {
+                        throw new BusinessException("发送工具调用结果事件报错");
                     }
                 }
-            }
-        }).start();
+            });
 
 
-        reActAgent.addListener(new ReActAgentListener() {
 
-            @Override
-            public void onFinalAnswer(String finalAnswer) {
-                logger.info("onFinalAnswer,{}",finalAnswer);
-                AiMessage message = new AiMessage();
-                message.setContent(finalAnswer);
-                emitter.sendAndComplete(JSON.toJSONString(message));
-            }
+            reActAgent.run();
 
-            @Override
-            public void onNonActionResponseStream(ChatContext context) {
-                logger.info("onNonActionResponseStream");
-                String fullContent = context.getLastAiMessage().getFullContent();
-                AiMessage message   = new AiMessage();
-                message.setContent(fullContent);
-                emitter.sendAndComplete(JSON.toJSONString(message));
-            }
-
-            @Override
-            public void onError(Exception error) {
-                logger.error("onError:", error);
-                AiMessage aiMessage = new AiMessage();
-                aiMessage.setContent("大模型调用出错，请检查配置");
-                boolean hasUnsupportedApiError = containsUnsupportedApiError(error.getMessage());
-                if (hasUnsupportedApiError) {
-                    String errMessage = error.getMessage() + "\n**以下是 AIFlowy 提供的可查找当前错误的方向**\n**1: 在 AIFlowy 中，Bot 对话需要大模型携带 function_calling 功能**" +
-                            "\n**2: 请查看当前模型是否支持 function_calling 调用？**";
-                    aiMessage.setContent(errMessage);
-                }
-                emitter.send(JSON.toJSONString(aiMessage));
-                emitter.completeWithError(error);
-            }
-
-            @Override
-            public void onActionStart(ReActStep step) {
-                logger.info("onActionStart");
-
-                AiMessage thoughtMessage = new AiMessage();
-                thoughtMessage.setContent(step.getThought() + "\n");
-                emitter.send(JSON.toJSONString(thoughtMessage));
-
-                AiMessage toolCallMessage = new AiMessage();
-                toolCallMessage.setContent("\uD83D\uDCCB 正在调用工具，请稍等" + "\n\n");
-                toolCallMessage.setFullContent("\uD83D\uDCCB 正在调用工具，请稍等" + "\n\n");
-                toolCallMessage.setMetadataMap(Maps.of("showContent",toolCallMessage.getContent()).set("type",0));
-                emitter.send(JSON.toJSONString(toolCallMessage));
-                historiesPrompt.addMessage(toolCallMessage);
-                String actionInput = step.getActionInput();
-                logger.info("onActionStart:{}", actionInput);
-                // 验证 JSON 格式
-                try {
-                    JSON.parseObject(actionInput);
-                    logger.info("Action Input JSON 格式正确");
-                } catch (Exception e) {
-                    logger.error("Action Input JSON 格式错误: " + actionInput);
-                    logger.info("开始json矫正");
-                    // 调用大模型矫正 JSON 格式
-                    StringBuilder prompt = new StringBuilder();
-                    prompt.append("你是一个 JSON 格式矫正专家。请修复下面的 JSON 格式错误。\n\n");
-                    prompt.append("## 需要修复的 JSON:\n");
-                    prompt.append("```\n");
-                    prompt.append(actionInput);
-                    prompt.append("\n```\n\n");
-                    prompt.append("## 修复要求:\n");
-                    prompt.append("1. 输出标准的 JSON 格式，必须以 { 开始，以 } 结束\n");
-                    prompt.append("2. 所有键名和字符串值必须用双引号包围\n");
-                    prompt.append("3. 移除多余的逗号、括号或其他语法错误\n");
-                    prompt.append("4. 保持原有的参数名和参数值不变，只修复格式\n");
-                    prompt.append("5. 不要添加任何解释或注释\n\n");
-                    prompt.append("## 常见错误修复示例:\n");
-                    prompt.append("错误: {sql: 'SELECT * FROM users'}\n");
-                    prompt.append("正确: {\"sql\": \"SELECT * FROM users\"}\n\n");
-                    prompt.append("错误: {\"name\": \"test\",}\n");
-                    prompt.append("正确: {\"name\": \"test\"}\n\n");
-                    prompt.append("错误: {'key': \"value\"}\n");
-                    prompt.append("正确: {\"key\": \"value\"}\n\n");
-                    prompt.append("请直接输出修复后的 JSON，不要包含任何其他内容:");
-
-                    logger.info("----------------------------矫正提示词-------------------------------");
-                    logger.info(prompt.toString());
-                    logger.info("--------------------------------------------------------------------");
-                    AiMessageResponse chat = llm.chat(new TextPrompt(prompt.toString()));
-                    AiMessage message = chat.getMessage();
-                    String replace = message.getContent().replace("```json", "").replace("```", "");
-                    logger.info("校正后json:" + replace);
-                    if (StringUtils.hasLength(replace)) {
-                        step.setActionInput(replace);
-                    }
-                }
-            }
-
-            @Override
-            public void onActionEnd(ReActStep step, Object result) {
-                logger.info("onActionEnd----> step:{},result:{}", step, result);
-                AiMessage aiMessage =  new AiMessage();
-                aiMessage.setFullContent("\uD83D\uDD0D Query Result:" + result.toString() + "\n\n");
-                aiMessage.setContent("\uD83D\uDD0D Query Result:" + result.toString() + "\n\n");
-                aiMessage.setMetadataMap(Maps.of("showContent",aiMessage.getContent()).set("type",0));
-                historiesPrompt.addMessage(aiMessage);
-                emitter.send(JSON.toJSONString(aiMessage));
-            }
-        });
-
-        reActAgent.run();
-
-        return emitter;
+            return emitter;
     }
 
     /**
