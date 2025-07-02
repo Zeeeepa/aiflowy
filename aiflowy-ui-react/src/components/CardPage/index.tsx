@@ -266,32 +266,22 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                             </Card>
                         </Col>
                     )) : (<>
-
-                        {
-                            optionIconPath?.noDataIconPath ? (
-                                <Empty
-                                    image={optionIconPath?.noDataIconPath}
-                                    className={"empty-container"}
-                                    description={
-                                        <Typography.Text style={{color: '#969799'}}>
-                                            {optionsText.noDataText || "暂无数据"}
-                                        </Typography.Text>
-                                    }
-                                >
-                                    <Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
-                                             onClick={() => {
-                                                 setIsEditOpen(true)
-                                             }}>
-                                        {optionsText.noDataAddButtonText || "创建"}</Button>
-                                </Empty>
-                            ) :
-                                (
-                                    <>
-                                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={"empty-container"}/>
-                                    </>
-                                )
-                        }
-
+                        <Empty
+                            image={optionIconPath?.noDataIconPath ? optionIconPath.noDataIconPath : Empty.PRESENTED_IMAGE_SIMPLE}
+                            className={"empty-container"}
+                            description={
+                                <Typography.Text style={{color: '#969799'}}>
+                                    {optionsText.noDataText || "暂无数据"}
+                                </Typography.Text>
+                            }
+                        >
+                            <Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+                                     onClick={() => {
+                                         setIsEditOpen(true)
+                                     }}>
+                                {optionsText.noDataAddButtonText || "创建"}
+                            </Button>
+                        </Empty>
 
                     </>)}
                 </Row>
@@ -300,6 +290,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         <Pagination
                             showQuickJumper
                             // showSizeChanger
+                            align="center"
                             defaultCurrent={1}
                             total={result?.data?.totalRow}
                             pageSize={pageSize}
