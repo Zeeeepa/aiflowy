@@ -271,7 +271,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                                   window.open(`/ai/knowledge/${item.id}`)
                               }}>
                                   <MenuUnfoldOutlined title="文档列表" />
-                                  <span>文档列表</span>
+                                  <span>列表</span>
                               </Space>
                               ,
 

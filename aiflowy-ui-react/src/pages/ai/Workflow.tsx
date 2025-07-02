@@ -1,11 +1,11 @@
 import React, {useRef, useState} from 'react';
 import {
     DownloadOutlined,
-    NodeIndexOutlined, SendOutlined, UploadOutlined,
+    NodeIndexOutlined, PlayCircleOutlined, UploadOutlined,
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
-import {Button, Form, Input, message, Modal, Spin, Upload} from "antd";
+import {Button, Form, Input, message, Modal, Space, Spin, Upload} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useGetManual, usePostFile} from "../../hooks/useApis.ts";
 
@@ -181,15 +181,27 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                           }}
                           customActions={(item, existNodes) => {
                               return [
-                                  <NodeIndexOutlined title="设计工作流" onClick={() => {
-                                      window.open(`/ai/workflow/design/${item.id}`, "_blank")
-                                  }}/>,
-                                  <DownloadOutlined title="导出工作流" onClick={() => {
-                                      exportWorkflow(item)
-                                  }} />,
-                                  <SendOutlined title="外部地址" onClick={() => {
-                                      window.open(window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/workflow/external/' + item.id, "_blank")
-                                  }}/>,
+                                  <Space>
+                                      <NodeIndexOutlined title="设计工作流" onClick={() => {
+                                          window.open(`/ai/workflow/design/${item.id}`, "_blank")
+                                      }}/>
+                                      <span>设计</span>
+                                  </Space>
+                                  ,
+                                  <Space>
+                                      <DownloadOutlined title="导出工作流" onClick={() => {
+                                          exportWorkflow(item)
+                                      }} />
+                                      <span>导出</span>
+                                  </Space>
+                                 ,
+                                  <Space>
+                                      <PlayCircleOutlined title="外部地址" onClick={() => {
+                                          window.open(window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/workflow/external/' + item.id, "_blank")
+                                      }}/>
+                                      <span>运行</span>
+                                  </Space>
+                                 ,
                                   ...existNodes
                               ]
                           }}

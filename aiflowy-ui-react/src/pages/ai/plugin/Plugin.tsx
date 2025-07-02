@@ -481,16 +481,21 @@ const Plugin: React.FC = () => {
 						plugins.map((item: any) => (
 							<Col span={6} key={item.id}>
 								<Card
+									className={"card-hover"}
 									actions={[
-										<MenuUnfoldOutlined title="工具列表" onClick={() => {
+										<Space  onClick={() => {
 											navigate('/ai/pluginTool', {
 												state: {
 													id: item.id,
 													pluginTitle: item.name,
 												}
 											});
-										}} />,
-										<EditOutlined key="edit" onClick={() => {
+										}}>
+											<MenuUnfoldOutlined title="工具列表" />
+											<span>工具</span>
+										</Space>
+									,
+										<Space onClick={() => {
 											setIsSaveOrUpdate(false);
 											form.setFieldsValue({
 												id: item.id,
@@ -508,7 +513,11 @@ const Plugin: React.FC = () => {
 											setIconPath(item.icon);
 											setAuthType(item.authType);
 											setAddPluginIsOpen(true);
-										}} />,
+										}} >
+											<EditOutlined key="edit" />
+											<span>编辑</span>
+										</Space>
+									,
 										<Dropdown menu={{
 											items: [
 												{
