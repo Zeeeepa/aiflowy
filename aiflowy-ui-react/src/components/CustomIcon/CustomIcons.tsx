@@ -287,12 +287,12 @@ export const CustomTasksIcon: React.FC = () => (
 
 export const CustomLogsIcon: React.FC = () => (
     <Space className="ant-menu-item-icon">
-        <svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g  transform="translate(-25.6667, -828.8333)">
-                    <g  transform="translate(24, 828)">
-                        <rect  x="0" y="0" width="20" height="20"></rect>
-                        <g  transform="translate(1.6667, 0.8333)">
+        <svg width="16.6666667px" height="18.3333333px" viewBox="0 0 16.6666667 18.3333333" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g transform="translate(-25.6667, -828.8333)">
+                    <g transform="translate(24, 828)">
+                        <rect x="0" y="0" width="20" height="20"></rect>
+                        <g transform="translate(1.6667, 0.8333)">
                             <path d="M3.1496063,0 L13.5170604,0 C15.2565399,1.24552005e-16 16.6666667,1.41012677 16.6666667,3.1496063 L16.6666667,15.183727 C16.6666667,16.9232066 15.2565399,18.3333333 13.5170604,18.3333333 L3.1496063,18.3333333 C1.41012677,18.3333333 6.57114013e-16,16.9232066 0,15.183727 L0,3.1496063 C2.31064406e-16,1.41012677 1.41012677,7.63626415e-16 3.1496063,0 Z" id="矩形" fill="currentColor"></path>
                             <rect fill="#FFFFFF" x="3.1496063" y="9.77417771" width="6.2992126" height="1.25" rx="0.625"></rect>
                             <rect fill="#FFFFFF" x="3.1496063" y="5.940108" width="10.2362205" height="1.25" rx="0.625"></rect>

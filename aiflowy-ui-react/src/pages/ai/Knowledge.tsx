@@ -257,7 +257,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                       columnsConfig={columnsColumns}
                       addButtonText={"新增知识库"}
                       avatarKey="icon"
-                      defaultAvatarSrc={"/favicon.png"}
+                      defaultAvatarSrc={"/src/assets/knowledgeIcon.png"}
                       editLayout={{labelWidth: 140}}
                       optionsText={{
                           addCardTitle: "创建知识库",

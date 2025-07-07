@@ -202,7 +202,7 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                           editModalTitle={"新增/编辑工作流"}
                           columnsConfig={columnsColumns}
                           addButtonText={"新增工作流"}
-                          defaultAvatarSrc={"/favicon.png"}
+                          defaultAvatarSrc={"/src/assets/workflowIcon.png"}
                           editLayout={{labelWidth: 140}}
                           optionsText={{
                               addCardTitle: "创建工作流",

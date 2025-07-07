@@ -289,13 +289,13 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                 {result?.data?.records?.length > 0 &&
                     <div style={{display: "flex", justifyContent: "center", paddingTop: "20px"}}>
                         <Pagination
-                            showQuickJumper
-                            // showSizeChanger
+                            showSizeChanger
                             align="center"
                             defaultCurrent={1}
+                            pageSizeOptions={["12", "24", "48", "96"]}
                             total={result?.data?.totalRow}
                             pageSize={pageSize}
-                            showTotal={(total) => `共 ${total} 条数据`}
+                            hideOnSinglePage={true}
                             onChange={(page) => {
                                 setLocalPageNumber(page)
                             }}

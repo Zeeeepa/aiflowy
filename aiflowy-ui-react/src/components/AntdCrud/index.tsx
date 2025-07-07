@@ -541,10 +541,10 @@ function AntdCrud<T>({
                            {
                                position: [paginationHidden ? "none" : "bottomCenter"],
                                pageSize: pageSize,
-                               showQuickJumper: true,
                                current: pageNumber,
                                total: totalRow || 0,
-                               showTotal: (total) => `共 ${total} 条数据`,
+                               showSizeChanger: true,
+                               hideOnSinglePage: true
                            }
                        }
 

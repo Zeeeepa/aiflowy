@@ -603,7 +603,7 @@ const Plugin: React.FC = () => {
 									]}
 								>
 									<Card.Meta
-										avatar={<Avatar src={item.icon || "/favicon.png"} style={{width: '48px', height: '48px'}} />}
+										avatar={<Avatar src={item.icon || "/src/assets/pluginIcon.png"} style={{width: '48px', height: '48px'}} />}
 										title={item.name}
 										description={
 											<Tooltip title={item.description}>
