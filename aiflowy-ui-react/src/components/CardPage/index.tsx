@@ -143,67 +143,80 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
     }, [localPageNumber, localPageSize, searchParams])
 
 
-    const buildActions = (item:any) => {
+    const buildActions = (item: any) => {
+        // 存储所有操作的数组
+        const allActions: ReactNode[] = [];
 
-        const actionsArr:ReactNode[] = [];
-
-        const editNode = (
-            savePermission ?
-                <Space onClick={() => {
-                    setEditData(item)
-                    setIsEditOpen(true)
-                }}>
-
-                    <EditOutlined key="edit"/>
-                    <span>编辑</span>
-                </Space> : null
-        )
-
-        if (editNode){
-            actionsArr.push(editNode)
-        }
-
-        const dropDownNode = (
-            removePermission ?
-            <Dropdown  menu={{
-                items: [
-                    ...(
-                            [{
-                                key: 'delete',
-                                label: '删除',
-                                icon: <CustomDeleteIcon/>,
-                                onClick: () => {
-                                    Modal.confirm({
-                                        title: '确定要删除吗?',
-                                        content: '此操作不可逆，请谨慎操作。',
-                                        onOk() {
-                                            doRemove({data: {id: item.id}}).then(doGet)
-                                        },
-                                        onCancel() {
-                                        },
-                                    });
-                                },
-                            }]
-                    )
-                ],
+        // 添加编辑操作
+        const editNode = savePermission ? (
+            <Space onClick={() => {
+                setEditData(item);
+                setIsEditOpen(true);
             }}>
-                <EllipsisOutlined key="ellipsis" title="更多操作"/>
-            </Dropdown> : null
-        )
+                <EditOutlined key="edit" />
+                <span>编辑</span>
+            </Space>
+        ) : null;
 
-
-
-        if (dropDownNode){
-            actionsArr.push(dropDownNode)
+        if (editNode) {
+            allActions.push(editNode);
         }
 
-        return [
-            ...customActions(item,
-                actionsArr
-            ),
-        ] as ReactNode[]
-    }
+        // 获取自定义操作
+        const customNodes = customActions(item, []);
 
+        // 如果有自定义操作，将它们添加到allActions
+        if (customNodes && customNodes.length > 0) {
+            allActions.push(...customNodes);
+        }
+
+        // 计算直接显示的操作数量（不包括删除操作）
+        const visibleActionsCount = Math.min(3, allActions.length);
+
+        // 直接显示的操作
+        const visibleActions = allActions.slice(0, visibleActionsCount);
+
+        // 需要放入下拉菜单的操作（除删除外的多余操作）
+        const dropdownActions = [...allActions.slice(visibleActionsCount)];
+
+        // 创建删除操作节点并添加到下拉菜单
+        if (removePermission) {
+            dropdownActions.push(
+                <Space onClick={() => {
+                    Modal.confirm({
+                        title: '确定要删除吗?',
+                        content: '此操作不可逆，请谨慎操作。',
+                        onOk() {
+                            doRemove({ data: { id: item.id } }).then(doGet);
+                        },
+                    });
+                }}>
+                    <CustomDeleteIcon key="delete-icon" />
+                    <span>删除</span>
+                </Space>
+            );
+        }
+
+        // 创建下拉菜单（如果有需要放入下拉菜单的操作）
+        let dropdownMenu = null;
+        if (dropdownActions.length > 0) {
+            dropdownMenu = (
+                <Dropdown
+                    menu={{
+                        items: dropdownActions.map((action, index) => ({
+                            key: `dropdown-${index}`,
+                            label: action,
+                        })),
+                    }}
+                >
+                    <EllipsisOutlined key="ellipsis" title="更多操作" />
+                </Dropdown>
+            );
+        }
+
+        // 返回组合后的操作列表
+        return dropdownMenu ? [...visibleActions, dropdownMenu] : visibleActions;
+    };
 
     return (
         <>
