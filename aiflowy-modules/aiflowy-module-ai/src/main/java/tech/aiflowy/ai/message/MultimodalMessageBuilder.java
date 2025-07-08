@@ -1,7 +1,6 @@
 package tech.aiflowy.ai.message;
 
 import com.agentsflex.core.llm.functions.Function;
-import com.agentsflex.core.message.HumanImageMessage;
 import com.agentsflex.core.message.HumanMessage;
 import com.agentsflex.core.message.Message;
 import com.agentsflex.core.prompt.ImagePrompt;

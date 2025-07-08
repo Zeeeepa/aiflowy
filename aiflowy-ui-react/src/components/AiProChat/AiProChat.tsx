@@ -934,8 +934,8 @@ export const AiProChat = ({
                             return;
                         }
 
-                        if (fileItems.length >= 1) {
-                            message.error("暂时仅支持上传一张图片!")
+                        if (fileItems.length >= 3) {
+                            message.error("暂时仅支持上传最多三张图片!")
                             return;
                         }
 
