@@ -83,7 +83,7 @@ export const RenderMarkdown: React.FC<{ content: string, fileList?: Array<string
     const md = markdownit({html: true, breaks: true});
     return (
         <Typography>
-            {fileList && fileList.length && fileList.map(file => {
+            {fileList && fileList.length > 0 && fileList.map(file => {
                 return <Image height={50} src={file}></Image>
             })}
             {/* biome-ignore lint/security/noDangerouslySetInnerHtml: used in demo */}
@@ -849,6 +849,7 @@ export const AiProChat = ({
     const [headerOpen, setHeaderOpen] = React.useState(false);
     const [fileItems, setFileItems] = React.useState<GetProp<AttachmentsProps, 'items'>>([]);
     const [fileUrlList, setFileUrlList] = useState<Array<{ uid: string, url: string }>>([])
+    const [fileUploading,setFileUploading] = useState(false);
 
     const {doPost: uploadFile} = usePost("/api/v1/commons/uploadPrePath");
 
@@ -882,6 +883,7 @@ export const AiProChat = ({
 
 
                     try {
+                        setFileUploading(true)
                         const resp = await uploadFile({
                             params: {
                                 prePath: "aibot/files/"
@@ -912,6 +914,8 @@ export const AiProChat = ({
                         setFileItems((prev) => {
                             return prev.filter(fileItem => fileItem.originFileObj?.uid !== uFile.uid);
                         })
+                    }finally {
+                        setFileUploading(false)
                     }
 
                 }}
@@ -927,6 +931,11 @@ export const AiProChat = ({
 
                         if (!imageExtensions.includes(extension)) {
                             message.error("仅支持图片文件!")
+                            return;
+                        }
+
+                        if (fileItems.length >= 1) {
+                            message.error("暂时仅支持上传一张图片!")
                             return;
                         }
 
@@ -1221,7 +1230,7 @@ export const AiProChat = ({
                             setRecording(nextRecording);
                         },
                     }}
-                    loading={sendLoading || isStreaming}
+                    loading={sendLoading || isStreaming || fileUploading}
                     disabled={inputDisabled}
                     header={senderHeader}
                     prefix={
@@ -1237,7 +1246,7 @@ export const AiProChat = ({
 
                         return <Space size="small">
                             <ClearButton
-                                disabled={sendLoading || isStreaming || !chats?.length || recording}  // 强制不禁用
+                                disabled={(sendLoading || isStreaming  || recording  || fileUploading) ? true :   !fileItems.length && !chats?.length}  // 强制不禁用
                                 title="删除对话记录"
                                 style={{fontSize: 20}}
                                 onClick={async (e) => {
@@ -1245,17 +1254,20 @@ export const AiProChat = ({
                                     setSendLoading(true)
                                     await clearMessage?.();
                                     setSendLoading(false)
+                                    setFileItems([])
+                                    setFileUrlList([])
+                                    setHeaderOpen(false)
                                 }}
                             />
                             <SpeechButton
-                                disabled={sendLoading || isStreaming}
+                                disabled={sendLoading || isStreaming  || fileUploading}
                             />
                             <SendButton
                                 type="primary"
                                 // onClick={() => handleSubmit(content)}
-                                disabled={inputDisabled || recording}
+                                disabled={inputDisabled || recording  || fileUploading}
                                 icon={<OpenAIOutlined/>}
-                                loading={sendLoading || isStreaming}
+                                loading={sendLoading || isStreaming }
                             />
                         </Space>
                     }}

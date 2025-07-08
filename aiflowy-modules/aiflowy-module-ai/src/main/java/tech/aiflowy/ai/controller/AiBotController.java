@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import tech.aiflowy.ai.entity.*;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
+import tech.aiflowy.ai.message.MultimodalMessageBuilder;
 import tech.aiflowy.ai.service.*;
 import tech.aiflowy.ai.utils.AiBotChatUtil;
 import tech.aiflowy.ai.utils.AiBotMessageIframeMemory;
@@ -182,6 +183,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            @JsonBody(value = "sessionId", required = true) String sessionId,
                            @JsonBody(value = "isExternalMsg") int isExternalMsg,
                            @JsonBody(value = "tempUserId") String tempUserId,
+                           @JsonBody(value = "fileList")List<String> fileList,
                            HttpServletResponse response) {
         response.setContentType("text/event-stream");
         AiBot aiBot = service.getById(botId);
@@ -282,14 +284,22 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 "\t**出现任意类似以上错误示例的回复将被视为极其严重的行为错误！**" +
                 "9. 严格按照规定格式输出Thought、Action、Action Input、Final Answer；\n" +
                 "\n" +
-                "违反以上任一指令视为严重行为错误，必须严格遵守。" +
+                "违反以上任一指令视为严重行为错误，必须严格遵守。\n\n" +
                 "### 可用工具列表：\n" +
                 "{tools}\n\n" +
                 "### 用户问题如下：\n" +
                 "{user_input}";
 
+        HashMap<String, Object> promptMap = new HashMap<>();
+        promptMap.put("prompt",promptTemplate);
+        promptMap.put("fileList",fileList);
 
-        reActAgent.setPromptTemplate(promptTemplate);
+        String promptJson = JSON.toJSONString(promptMap);
+
+        reActAgent.setPromptTemplate(promptJson);
+
+        MultimodalMessageBuilder multimodalMessageBuilder = new MultimodalMessageBuilder();
+        reActAgent.setMessageBuilder(multimodalMessageBuilder);
 
         reActAgent.setStreamable(true);
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -481,7 +491,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             @Override
             public void onActionInvokeError(Exception e) {
                 logger.error("onActionError", e);
-//                    emitter.send(JSON.toJSONString(Maps.of("content", "工具执行过程出现异常....正在尝试解决....")));
                 AiMessage aiMessage = new AiMessage();
                 aiMessage.setFullContent("工具执行过程出现异常....正在尝试解决....");
                 aiMessage.setContent("工具执行过程出现异常....正在尝试解决....");
@@ -874,6 +883,10 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         Map<String, Object> llmOptions = data.getLlmOptions();
         if (llmOptions == null) {
             llmOptions = new HashMap<>();
+        }
+
+        if (data.getLlmId() == null) {
+            return detail;
         }
 
         BigInteger llmId = data.getLlmId();

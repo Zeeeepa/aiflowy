@@ -201,7 +201,7 @@ const BotDesign: React.FC = () => {
     const {doRemove: doRemoveAiBotWorkflow} = useRemove("aiBotWorkflow");
     const [workflowOpen, setWorkflowOpen] = useState(false)
 
-    const pluginToolPermission = useCheckPermission("/api/v1/aiPluginTool/list");
+    const pluginToolPermission = useCheckPermission("/api/v1/aiPlugin/query");
     const {doPost: doPostPluginTool} = usePost('/api/v1/aiPluginTool/tool/list')
 
     const {doPost: doRemovePluginTool} = usePostManual('/api/v1/aiBotPlugins/doRemove')
@@ -241,6 +241,8 @@ const BotDesign: React.FC = () => {
 
     }, [messageResult]);
     useEffect(() => {
+
+        console.log(pluginToolPermission)
 
         if (pluginToolPermission){
             doPostPluginTool({data: {botId: params.id}}).then(r => {
@@ -424,16 +426,28 @@ const BotDesign: React.FC = () => {
                                 placeholder="请选择大模型"
                                 allowClear
                                 disabled={!llmQueryPermission || !botSavePermission}
-                                fieldNames={{label: 'title', value: 'id'}}
-                                options={[
-                                    ...llmResult?.data || []
-                                ]}
-                                value={llmQueryPermission ? detail?.data?.llmId : "无权配置"}
+                                // fieldNames={{label: 'title', value: 'id'}}
+                                // options={[
+                                //     ...llmResult?.data || []
+                                // ]}
+
+                                value={llmQueryPermission ? detail?.data?.llmId : "no_access"}
                                 onChange={(value: any) => {
                                     value = value || ''
-                                    updateBot({llmId: value})
+                                    updateBot({ llmId: value === 'no_access' ? '' : value || '' });
                                 }}
-                            />
+                            >
+                                {!llmQueryPermission && (
+                                    <Select.Option value="no_access" disabled>
+                                        无权配置
+                                    </Select.Option>
+                                )}
+                                {llmResult?.data?.map((llm: { title: string; id: string }) => (
+                                    <Select.Option key={llm.id} value={llm.id}>
+                                        {llm.title}
+                                    </Select.Option>
+                                ))}
+                            </Select>
                             <LlmSlider disabled={!botSavePermission} title="温度" min={0.1} max={1} step={0.1}
                                        defaultValue={detail?.data?.llmOptions?.temperature || 0.7}
                                        onChange={(value: number) => {
@@ -741,11 +755,11 @@ const BotDesign: React.FC = () => {
                                     <div>
                                         <span>
                                             外部访问地址 <a
-                                            href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data.id}
+                                            href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data?.id}
                                             target={"_blank"}>打开</a>
                                         </span>
                                         <TextArea readOnly disabled
-                                                  value={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/bot/chat/' + detail?.data.id}></TextArea>
+                                                  value={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/bot/chat/' + detail?.data?.id}></TextArea>
                                     </div>
                                 </div>,
                             },
@@ -790,6 +804,7 @@ const BotDesign: React.FC = () => {
                                                     botId: params.id,
                                                     sessionId: getSessionId(),
                                                     prompt: messages[messages.length - 1].content as string,
+                                                    fileList:messages[messages.length - 1].files as Array<string>
                                                 },
                                                 onMessage: (msg) => {
                                                     controller.enqueue(encoder.encode(msg))

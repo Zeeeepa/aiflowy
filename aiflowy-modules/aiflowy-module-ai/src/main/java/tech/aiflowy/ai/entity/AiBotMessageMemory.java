@@ -11,9 +11,7 @@ import com.agentsflex.core.message.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mybatisflex.core.query.QueryWrapper;
-import tech.aiflowy.common.satoken.util.SaTokenUtil;
 
-import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.*;
 
@@ -95,9 +93,7 @@ public class AiBotMessageMemory implements ChatMemory {
             Object type = metadataMap.get("type");
             if (type != null) {
                 String t = type.toString();
-                if ("reActWrapper".equals(type)){
-                    metadataMap.put("type",1);
-                }else{
+                if (!t.equals("1")){
                     metadataMap.put("type",2);
                 }
             }else {
@@ -106,7 +102,7 @@ public class AiBotMessageMemory implements ChatMemory {
 
             aiMessage.setOptions(metadataMap);
 
-        } else if (message instanceof SystemMessage) {
+        }else if (message instanceof SystemMessage) {
 
             aiMessage.setRole("system");
             aiMessage.setContent(((SystemMessage) message).getContent());
