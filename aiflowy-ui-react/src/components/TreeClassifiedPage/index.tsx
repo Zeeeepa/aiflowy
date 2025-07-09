@@ -152,6 +152,9 @@ const TreePage: React.FC<TreePageProps> = ({
                               borderRadius: '8px 0px 0px 8px'
                           }}
                           styles={{
+                              header: {
+                                  borderBottom: "none"
+                              },
                               body: {
                                   padding: "8px 8px"
                               }

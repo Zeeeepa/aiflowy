@@ -7,8 +7,8 @@ type CustomIconComponentProps = GetProps<typeof Icon>;
 
 const DeleteSvg = () => (
     <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            <g transform="translate(-930, -379)" fill="currentColor" fill-rule="nonzero">
+        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+            <g transform="translate(-930, -379)" fill="currentColor" fillRule="nonzero">
                 <g  transform="translate(918.073, 362.6268)">
                     <g transform="translate(3.927, 4.3732)">
                         <g transform="translate(8, 12)">

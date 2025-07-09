@@ -134,12 +134,6 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                 <NodeIndexOutlined title="设计工作流"/>
                 <span>设计</span>
             </Space>)
-            arr.push(<Space onClick={() => {
-                exportWorkflow(item)
-            }}>
-                <DownloadOutlined title="导出工作流"  />
-                <span>导出</span>
-            </Space>)
         }
         return arr;
     }
@@ -224,6 +218,12 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                                       <span>运行</span>
                                   </Space>
                                  ,
+                                  canSave&& <Space onClick={() => {
+                                      exportWorkflow(item)
+                                  }}>
+                                      <DownloadOutlined title="导出工作流"  />
+                                      <span>导出</span>
+                                  </Space>,
                                   ...existNodes
                               ]
                           }}
