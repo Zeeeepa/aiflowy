@@ -1,3 +1,0 @@
-export { default as CustomDeleteIcon } from "./CustomDeleteIcon";
-export { default as CustomBotsIcon } from "./CustomBotsIcon";
-// 添加更多图标...
