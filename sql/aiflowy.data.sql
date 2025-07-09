@@ -63,33 +63,33 @@ INSERT INTO `tb_sys_dict` VALUES (268213400717598720, 'test', 'test', 'test', 1,
 
 
 INSERT INTO `tb_sys_menu` VALUES (258052082618335232, 0, 0, '系统管理', '', '', 'ControlOutlined', 1, '', 999, 0, '2025-03-14 15:07:51', 1, '2025-04-08 11:12:00', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (258052774330368000, 258052082618335232, 0, '用户管理', '/sys/sysAccount', '', 'UserOutlined', 1, '', 0, 0, '2025-03-14 15:10:36', 1, '2025-03-14 15:10:36', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (258075705244676096, 258052082618335232, 0, '角色管理', '/sys/sysRole', '', 'FrownOutlined', 1, '', 11, 0, '2025-03-14 16:41:43', 1, '2025-03-14 16:41:43', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (258075850434703360, 258052082618335232, 0, '菜单管理', '/sys/sysMenu', '', 'ApartmentOutlined', 1, '', 21, 0, '2025-03-14 16:42:18', 1, '2025-03-14 16:42:18', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (258052774330368000, 258052082618335232, 0, '用户管理', '/sys/sysAccount', '', 'CustomUserIcon', 1, '', 0, 0, '2025-03-14 15:10:36', 1, '2025-03-14 15:10:36', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (258075705244676096, 258052082618335232, 0, '角色管理', '/sys/sysRole', '', 'CustomRoleIcon', 1, '', 11, 0, '2025-03-14 16:41:43', 1, '2025-03-14 16:41:43', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (258075850434703360, 258052082618335232, 0, '菜单管理', '/sys/sysMenu', '', 'CustomMenuIcon', 1, '', 21, 0, '2025-03-14 16:42:18', 1, '2025-03-14 16:42:18', 1, '', 0);
 INSERT INTO `tb_sys_menu` VALUES (258077347000119296, 258052774330368000, 1, '用户查询', '', '', NULL, 0, 'sysUser:list', 1, 0, '2025-03-14 16:48:14', 1, '2025-03-14 16:48:14', 1, '', 0);
 INSERT INTO `tb_sys_menu` VALUES (258079445137780736, 258052774330368000, 1, '用户保存', '', '', NULL, 1, 'sysUser:save', 2, 0, '2025-03-14 16:56:35', 1, '2025-03-14 16:56:35', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259048038847483904, 258052082618335232, 0, '部门管理', '/sys/sysDept', '', 'BankOutlined', 1, '', 31, 0, '2025-03-17 09:05:25', 1, '2025-03-17 09:05:25', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259065916854448128, 258052082618335232, 0, '岗位管理', '/sys/sysPosition', '', 'AuditOutlined', 1, '', 32, 0, '2025-03-17 10:16:28', 1, '2025-03-17 10:16:28', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259048038847483904, 258052082618335232, 0, '部门管理', '/sys/sysDept', '', 'CustomDepartIcon', 1, '', 31, 0, '2025-03-17 09:05:25', 1, '2025-03-17 09:05:25', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259065916854448128, 258052082618335232, 0, '岗位管理', '/sys/sysPosition', '', 'CustomPostIcon', 1, '', 32, 0, '2025-03-17 10:16:28', 1, '2025-03-17 10:16:28', 1, '', 0);
 INSERT INTO `tb_sys_menu` VALUES (259166589327630336, 0, 0, '欢迎回来', '/index', '', 'BorderlessTableOutlined', 1, '', 0, 0, '2025-03-17 16:56:30', 1, '2025-03-17 16:56:30', 1, '', 1);
 INSERT INTO `tb_sys_menu` VALUES (259168688849412096, 0, 0, '系统配置', '', '', NULL, 1, '', 99999, 0, '2025-03-17 17:04:51', 1, '2025-03-17 17:04:51', 1, '', 0);
 INSERT INTO `tb_sys_menu` VALUES (259168810450673664, 259168688849412096, 0, 'AI大模型', '/config/model', '', 'DeploymentUnitOutlined', 1, '', 0, 0, '2025-03-17 17:05:20', 1, '2025-03-17 17:05:20', 1, '', 1);
-INSERT INTO `tb_sys_menu` VALUES (259168916721754112, 259168688849412096, 0, '系统设置', 'sys/settings', '', 'SettingOutlined', 1, '', 12, 0, '2025-03-17 17:05:45', 1, '2025-04-17 15:54:39', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259169177682960384, 258052082618335232, 0, '数据字典', '/sys/dicts', '', 'AppstoreOutlined', 1, '', 51, 0, '2025-03-17 17:06:47', 1, '2025-04-14 13:35:41', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259169318720626688, 258052082618335232, 0, '日志管理', '/sys/logs', '', 'ExclamationCircleOutlined', 1, '', 61, 0, '2025-03-17 17:07:21', 1, '2025-04-14 13:35:34', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259168916721754112, 259168688849412096, 0, '系统设置', 'sys/settings', '', 'CustomSettingsIcon', 1, '', 12, 0, '2025-03-17 17:05:45', 1, '2025-04-17 15:54:39', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259169177682960384, 258052082618335232, 0, '数据字典', '/sys/dicts', '', 'CustomDictionaryIcon', 1, '', 51, 0, '2025-03-17 17:06:47', 1, '2025-04-14 13:35:41', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259169318720626688, 258052082618335232, 0, '日志管理', '/sys/logs', '', 'CustomLogsIcon', 1, '', 61, 0, '2025-03-17 17:07:21', 1, '2025-04-14 13:35:34', 1, '', 0);
 INSERT INTO `tb_sys_menu` VALUES (259169540360232960, 0, 0, 'AI能力', '', '', NULL, 1, '', 21, 0, '2025-03-17 17:08:14', 1, '2025-03-17 17:08:14', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259169689438380032, 259169540360232960, 0, '大模型商店', '/ai/ollama', '', 'SlackSquareFilled', 1, '', 1111, 0, '2025-03-17 17:08:49', 1, '2025-04-08 12:24:03', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259169837824466944, 259169540360232960, 0, 'Bots', '/ai/bots', '', 'TwitchOutlined', 1, '', 11, 0, '2025-03-17 17:09:24', 1, '2025-03-17 17:09:24', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259169982154661888, 259169540360232960, 0, '插件', '/ai/plugin', '', 'RobotOutlined', 1, '', 21, 0, '2025-03-17 17:09:59', 1, '2025-04-25 11:23:15', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259170117110587392, 259169540360232960, 0, '工作流', '/ai/workflow', '', 'BranchesOutlined', 1, '', 31, 0, '2025-03-17 17:10:31', 1, '2025-03-17 17:10:31', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259170422338478080, 259169540360232960, 0, '知识库', '/ai/knowledge', '', 'ReadOutlined', 1, '', 51, 0, '2025-03-17 17:11:44', 1, '2025-03-17 17:11:44', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (259170538264846336, 259169540360232960, 0, '大模型', '/ai/llms', '', 'SlidersOutlined', 1, '', 61, 0, '2025-03-17 17:12:11', 1, '2025-04-14 10:49:05', 1, '', 0);
-INSERT INTO `tb_sys_menu` VALUES (269220820365377536, 259170422338478080, 0, '知识库', '/ai/knowledge/document', '', 'ZhihuSquareFilled', 1, '', 1, 0, '2025-04-14 10:48:25', 1, '2025-04-14 10:50:19', 1, '', 1);
+INSERT INTO `tb_sys_menu` VALUES (259169689438380032, 259169540360232960, 0, '大模型商店', '/ai/ollama', '', 'CustomOllamaStoreIcon', 1, '', 1111, 0, '2025-03-17 17:08:49', 1, '2025-04-08 12:24:03', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259169837824466944, 259169540360232960, 0, 'Bots', '/ai/bots', '', 'CustomBotsIcon', 1, '', 11, 0, '2025-03-17 17:09:24', 1, '2025-03-17 17:09:24', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259169982154661888, 259169540360232960, 0, '插件', '/ai/plugin', '', 'CustomPluginIcon', 1, '', 21, 0, '2025-03-17 17:09:59', 1, '2025-04-25 11:23:15', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259170117110587392, 259169540360232960, 0, '工作流', '/ai/workflow', '', 'CustomWorkFlowIcon', 1, '', 31, 0, '2025-03-17 17:10:31', 1, '2025-03-17 17:10:31', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259170422338478080, 259169540360232960, 0, '知识库', '/ai/knowledge', '', 'CustomKnowledgeIcon', 1, '', 51, 0, '2025-03-17 17:11:44', 1, '2025-03-17 17:11:44', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (259170538264846336, 259169540360232960, 0, '大模型', '/ai/llms', '', 'CustomLlmIcon', 1, '', 61, 0, '2025-03-17 17:12:11', 1, '2025-04-14 10:49:05', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (269220820365377536, 259170422338478080, 0, '知识库', '/ai/knowledge/document', '', 'CustomKnowledgeIcon', 1, '', 1, 0, '2025-04-14 10:48:25', 1, '2025-04-14 10:50:19', 1, '', 1);
 INSERT INTO `tb_sys_menu` VALUES (269221948243083264, 259170422338478080, 1, '知识库', '/ai/knowledge/Document', '', 'BookFilled', 1, '', 1, 0, '2025-04-14 10:52:54', 1, '2025-04-14 10:52:54', 1, '', 1);
-INSERT INTO `tb_sys_menu` VALUES (270761213536096256, 259168688849412096, 0, '访问令牌', '/sys/sysApiKey', '', 'PoundOutlined', 1, '', 22, 0, '2025-04-18 16:49:24', 1, '2025-05-28 09:22:33', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (270761213536096256, 259168688849412096, 0, '访问令牌', '/sys/sysApiKey', '', 'CustomEyeIcon', 1, '', 22, 0, '2025-04-18 16:49:24', 1, '2025-05-28 09:22:33', 1, '', 0);
 
 
 -- v1.0.3 data start --
-INSERT INTO `tb_sys_menu` VALUES (282254669269082112, 258052082618335232, 0, '定时任务', '/sys/sysJob', '', 'ClockCircleOutlined', 1, '', 53, 0, '2025-05-20 10:00:17', 1, '2025-05-20 10:00:17', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (282254669269082112, 258052082618335232, 0, '定时任务', '/sys/sysJob', '', 'CustomTasksIcon', 1, '', 53, 0, '2025-05-20 10:00:17', 1, '2025-05-20 10:00:17', 1, '', 0);
 INSERT INTO `tb_sys_role_menu` VALUES (282254669390716928, 1, 282254669269082112);
 -- v1.0.3 data end --
 
@@ -236,8 +236,8 @@ DELETE FROM `tb_sys_role_menu` WHERE `menu_id` = 269220820365377536;
 DELETE FROM `tb_sys_menu` WHERE `id` = 269221948243083264;
 DELETE FROM `tb_sys_role_menu` WHERE `menu_id` = 269221948243083264;
 
----- 素材库相关菜单 start ----
-INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300008008381800448, 259169540360232960, 0, '素材库', '/ai/aiResource', '', 'FolderOpenFilled', 1, '', 52, 0, '2025-07-08 09:45:43', 1, '2025-07-08 09:45:43', 1, '', 0);
+-- 素材库相关菜单 start --
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300008008381800448, 259169540360232960, 0, '素材库', '/ai/aiResource', '', 'CustomSourceMaterialIcon', 1, '', 52, 0, '2025-07-08 09:45:43', 1, '2025-07-08 09:45:43', 1, '', 0);
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300008359986110464, 300008008381800448, 1, '查询', '', '', '', 0, '/api/v1/aiResource/query', 0, 0, '2025-07-08 09:47:07', 1, '2025-07-08 09:47:07', 1, '', 0);
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300012644643815424, 300008008381800448, 1, '保存', '', '', '', 0, '/api/v1/aiResource/save', 0, 0, '2025-07-08 10:04:08', 1, '2025-07-08 10:04:08', 1, '', 0);
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300013092268326912, 300008008381800448, 1, '删除', '', '', '', 1, '/api/v1/aiResource/remove', 0, 0, '2025-07-08 10:05:55', 1, '2025-07-08 10:05:55', 1, '', 0);
@@ -246,6 +246,6 @@ INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300008008490
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300008360078385152, 1, 300008359986110464);
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300012644702535680, 1, 300012644643815424);
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300013092310269952, 1, 300013092268326912);
----- 素材库相关菜单 end ----
+-- 素材库相关菜单 end -
 
 -- v1.1.0 data end --

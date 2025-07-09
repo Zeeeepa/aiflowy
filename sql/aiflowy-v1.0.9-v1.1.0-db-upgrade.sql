@@ -141,3 +141,23 @@ INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300008360078
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300012644702535680, 1, 300012644643815424);
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300013092310269952, 1, 300013092268326912);
 -- 素材库相关sql end --
+
+-- 菜单图标相关sql begin --
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomUserIcon' WHERE `id` = 258052774330368000;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomRoleIcon' WHERE `id` = 258075705244676096;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomMenuIcon' WHERE `id` = 258075850434703360;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomDepartIcon' WHERE `id` = 259048038847483904;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomPostIcon' WHERE `id` = 259065916854448128;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomSettingsIcon' WHERE `id` = 259168916721754112;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomDictionaryIcon' WHERE `id` = 259169177682960384;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomLogsIcon' WHERE `id` = 259169318720626688;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomOllamaStoreIcon' WHERE `id` = 259169689438380032;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomBotsIcon' WHERE `id` = 259169837824466944;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomPluginIcon' WHERE `id` = 259169982154661888;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomWorkFlowIcon' WHERE `id` = 259170117110587392;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomKnowledgeIcon' WHERE `id` = 259170422338478080;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomLlmIcon' WHERE `id` = 259170538264846336;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomEyeIcon' WHERE `id` = 270761213536096256;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomTasksIcon' WHERE `id` = 282254669269082112;
+UPDATE `tb_sys_menu` SET `menu_icon` = 'CustomSourceMaterialIcon' WHERE `id` = 300008008381800448;
+-- 菜单图标相关sql end --
