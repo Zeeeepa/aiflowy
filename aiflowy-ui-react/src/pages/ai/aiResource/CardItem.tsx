@@ -28,7 +28,7 @@ export const CardItem: React.FC<CardItemProps> = (props) => {
                 res = <Tag color="#E6F9FF"><span style={{color: "#0099CC"}}>文档</span></Tag>
                 break;
             default:
-                res = <Tag>其他</Tag>
+                res = <Tag color="#F6F6F6"><span style={{color: "#757575"}}>其他</span></Tag>
                 break;
         }
         return res;
