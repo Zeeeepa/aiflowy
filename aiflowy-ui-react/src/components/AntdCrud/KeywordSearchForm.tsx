@@ -11,8 +11,8 @@ interface KeywordSearchFormProps {
     resetText?: string,
     columns: ColumnsConfig<any>,
     addButtonText?: string,
-    customHandleButton?: any[],
-    setIsEditOpen: (open: boolean) => void,
+    customHandleButton?: React.ReactNode,
+    setIsEditOpen?: (open: boolean) => void,
     customMenuItems?: any[]
 }
 
@@ -90,7 +90,7 @@ const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
                         flex: 1
                     }}>
                         {hasSavePermission &&
-                            <Button type="primary" onClick={() => setIsEditOpen(true)}>
+                            <Button type="primary" onClick={() => setIsEditOpen?.(true)}>
                                 <PlusOutlined /> {addButtonText}
                             </Button>
                         }

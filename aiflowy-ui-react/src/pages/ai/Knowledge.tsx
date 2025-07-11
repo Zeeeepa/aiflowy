@@ -249,6 +249,9 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                           noDataText: "你还没有知识库，快来创建你的知识库吧！",
                           noDataAddButtonText: "创建知识库"
                       }}
+                      optionIconPath={{
+                          noDataIconPath: "/src/assets/knowledgeNoData.png"
+                      }}
                       customActions={(item, existNodes) => {
                           return [
                               <Space onClick={() => {

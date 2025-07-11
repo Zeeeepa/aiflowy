@@ -29,3 +29,13 @@
 .header-container .ant-card-head{
     border-bottom: 0;
 }
+.llm-sider--container .ant-card-head-wrapper{
+    margin: 0!important;
+    justify-content: center;
+}
+.llm-sider--container .ant-card-extra{
+    margin: 0!important;
+}
+.tree-item span div {
+    padding-top: 4px !important;
+}

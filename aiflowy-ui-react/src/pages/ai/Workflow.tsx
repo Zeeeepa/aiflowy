@@ -207,6 +207,9 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                               noDataText: "你还没有工作流，快来创建你的工作流吧!",
                               noDataAddButtonText: "创建工作流"
                           }}
+                          optionIconPath={{
+                              noDataIconPath: "/src/assets/workflowNoData.png"
+                          }}
                           customMenuItems={menuItems}
                           customActions={(item, existNodes) => {
                               return [

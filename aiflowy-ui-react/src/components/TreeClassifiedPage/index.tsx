@@ -144,7 +144,7 @@ const TreePage: React.FC<TreePageProps> = ({
                 style={{ height: "100%", width: '100%', overflow: 'hidden'}}
             >
                 <Sider style={{background: colorBgContainer, borderRadius: '8px 0px 0px 8px'}} width={220}
-                       collapsed={collapsed}>
+                       collapsed={collapsed} className="llm-sider--container">
                     <Card title={collapsed ? null : treeCardTitle}
                           loading={loading}
                           style={{
@@ -153,7 +153,7 @@ const TreePage: React.FC<TreePageProps> = ({
                           }}
                           styles={{
                               header: {
-                                  borderBottom: "none"
+                                  borderBottom: "none",
                               },
                               body: {
                                   padding: "8px 8px"
@@ -191,10 +191,7 @@ const TreePage: React.FC<TreePageProps> = ({
                           </Space>}
                     >
                         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-
-                            <div style={{ display: "flex", flexDirection: "column", gap: "8px",
-
-                            } } >
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                 {listData.map((item) => (
                                     <div
                                         onClick={() => onSelect(item)}
@@ -203,16 +200,25 @@ const TreePage: React.FC<TreePageProps> = ({
                                             collapsed && 'collapsed-only-icon'
                                         }`}
                                     >
-                                        <span style={{ display: "flex", alignItems: "center", height: "100%" }}>
-                                            {item?.icon}
-                                        </span>
+                <span style={{
+                    display: "flex",
+                    height: "100%",
+                    justifyContent: collapsed && item.title === '全部' ? 'center' : 'flex-start'
+                }}>
+                    {item?.icon}
+                </span>
                                         {!collapsed && (
-                                            <div style={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+                                            <div style={{ display: "flex", flexGrow: 1 }}>
                                                 {item.title}
                                             </div>
                                         )}
                                         {(collapsed && item.title == '全部') && (
-                                            <div style={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+                                            <div style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                flexGrow: 1,
+                                                justifyContent: 'center'
+                                            }}>
                                                 {item.title}
                                             </div>
                                         )}
