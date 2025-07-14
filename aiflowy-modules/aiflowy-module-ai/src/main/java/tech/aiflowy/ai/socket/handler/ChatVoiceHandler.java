@@ -29,11 +29,9 @@ public class ChatVoiceHandler extends TextWebSocketHandler {
     }
 
     public static void sendJsonVoiceMessage(String sessionId,String messageSessionId,String voiceJson){
-        logger.info("进入发送语音消息方法");
         WebSocketSession session = sessionMap.get(sessionId);
 
         if (session != null && session.isOpen()) {
-            logger.info("发送语音消息给{}，消息：{}",sessionId,voiceJson);
             try {
                 Map<String,String> map = new HashMap<>();
                 map.put("data",voiceJson);
