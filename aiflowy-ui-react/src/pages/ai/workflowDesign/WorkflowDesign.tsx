@@ -219,7 +219,7 @@ export const WorkflowDesign = () => {
             message.error('执行错误')
             setExecuteResult(msg)
             collapseItems.map((item: any) => {
-                item.extra = <Spin indicator={<ExclamationCircleOutlined style={{color: "#EABB00"}} />} />
+                item.extra = <Spin indicator={<ExclamationCircleOutlined style={{color: "#EABB00"}}/>}/>
             })
             setCollapseItems([...collapseItems])
         }
@@ -231,14 +231,14 @@ export const WorkflowDesign = () => {
                         item.children = ""
                     }
                     if (msg.status === 'end') {
-                        item.extra = <Spin indicator={<CheckCircleOutlined style={{color: 'green'}} />} />
+                        item.extra = <Spin indicator={<CheckCircleOutlined style={{color: 'green'}}/>}/>
                         item.children = msg.res ?
                             <div style={{wordWrap: "break-word",}}>
                                 <JsonView src={msg.res}/>
                             </div> : ""
                     }
                     if (msg.status === 'nodeError') {
-                        item.extra = <Spin indicator={<CloseCircleOutlined style={{color: 'red'}} />} />
+                        item.extra = <Spin indicator={<CloseCircleOutlined style={{color: 'red'}}/>}/>
                         item.children = <JsonView src={msg.errorMsg}/>
                     }
                     if (msg.status === 'confirm') {
@@ -259,65 +259,120 @@ export const WorkflowDesign = () => {
         const confirmKey = msg.suspendForParameters[0].name;
 
         item.children = <>
-            <div style={{fontWeight: "bold", marginBottom: "10px"}}>{msg.chainMessage}</div>
+            <div style={{
+                fontWeight: "bold",
+                backgroundColor: "#0066FF",
+                borderRadius: "8px",
+                padding: "12px 21px",
+                marginBottom: "-24px"
+            }}>
+                <div style={{
+                    color: "#fff",
+                    marginBottom: "24px",
+                    wordBreak: "break-all",
+                }}>
+                    {msg.chainMessage}
+                </div>
+            </div>
             <Form
                 form={confirmForm}
                 style={{
                     backgroundColor: "#F5F8FD",
                     borderRadius: "8px",
                     padding: "24px 24px 8px 24px",
-            }}
+                }}
             >
-                {msg.suspendForParameters.map((ops: any,i: number) => {
+                {msg.suspendForParameters.map((ops: any, i: number) => {
                     // formLabel formDescription
                     if (ops.selectionMode === 'confirm') {
                         return null
                     }
                     const selectKey = ops.name;
-                    const selectionDataType = ops.selectionDataType?ops.selectionDataType:"text"
-                    const selectionMode = ops.selectionMode?ops.selectionMode:"single"
+                    const selectionDataType = ops.selectionDataType ? ops.selectionDataType : "text"
+                    const selectionMode = ops.selectionMode ? ops.selectionMode : "single"
                     const selectionData = ops.selectionData
 
                     return (
-                        <Form.Item
-                            key={i}
-                            style={{wordBreak: "break-all"}}
-                            name={selectKey}
-                            rules={[{ required: true, message: '请选择内容' }]}
-                        >
-                            {selectionMode === 'single' ?
-                                <ConfirmItem selectionDataType={selectionDataType} selectionData={selectionData} />:
-                                <ConfirmItemMulti selectionDataType={selectionDataType} selectionData={selectionData} />
+                        <>
+                            <div
+                                style={{
+                                    fontWeight: "bold",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    wordBreak: "break-all",
+                                }}>
+                                <div style={{
+                                    display: "inline-block",
+                                    width: "2px",
+                                    borderRadius: "1px",
+                                    height: "16px",
+                                    marginLeft: "-24px",
+                                    marginRight: "24px",
+                                    backgroundColor: "#0066FF"
+                                }}>
+                                    &nbsp;
+                                </div>
+                                {ops.formLabel}
+                            </div>
+                            <div style={{
+                                marginBottom: "20px",
+                                color: "#969799",
+                                wordBreak: "break-all",
+                            }}>
+                                {ops.formDescription}
+                            </div>
+                            <Form.Item
+                                key={i}
+                                style={{
+                                    wordBreak: "break-all",
+                                }}
+                                name={selectKey}
+                                rules={[{required: true, message: '请选择内容'}]}
+                            >
+                                {selectionMode === 'single' ?
+                                    <ConfirmItem selectionDataType={selectionDataType} selectionData={selectionData}/> :
+                                    <ConfirmItemMulti selectionDataType={selectionDataType}
+                                                      selectionData={selectionData}/>
+                                }
+                            </Form.Item>
+                            {i !== (msg.suspendForParameters.length - 1) &&
+                                <div style={{
+                                    width: "calc(100% + 48px)",
+                                    borderBottom: "1px solid #D8DEE6",
+                                    marginLeft: "-24px",
+                                    marginRight: "-24px",
+                                    marginBottom: "24px"
+                                }}></div>
                             }
-                        </Form.Item>
+                        </>
                     )
                 })}
-                <Form.Item>
-                    <Space style={{float: "right"}}>
-                        <Button
-                            ref={confirmBtnRef}
-                            type="primary"
-                            disabled={item.confirmBtnDisabled}
-                            onClick={() => {
-                                confirmForm.validateFields().then((values) => {
-                                    const value = {
-                                        chainId: msg.chainId,
-                                        confirmParams: {
-                                            [confirmKey]: 'yes',
-                                            ...values
-                                        }
-                                    }
-                                    handleConfirmSubmit(value)
-                                }).catch(() => {
-                                    message.warning("请选择内容")
-                                })
-                            }}
-                        >
-                            确认
-                        </Button>
-                    </Space>
-                </Form.Item>
             </Form>
+            <div style={{marginTop: "20px", display: "flex", justifyContent: "flex-end"}}>
+                <Space>
+                    <Button
+                        ref={confirmBtnRef}
+                        type="primary"
+                        disabled={item.confirmBtnDisabled}
+                        onClick={() => {
+                            confirmForm.validateFields().then((values) => {
+                                const value = {
+                                    chainId: msg.chainId,
+                                    confirmParams: {
+                                        [confirmKey]: 'yes',
+                                        ...values
+                                    }
+                                }
+                                handleConfirmSubmit(value)
+                            }).catch(() => {
+                                message.warning("请选择内容")
+                            })
+                        }}
+                    >
+                        确认
+                    </Button>
+                </Space>
+            </div>
         </>
     }
 
@@ -495,7 +550,7 @@ export const WorkflowDesign = () => {
                 <div style={{marginTop: "10px"}}>
                     <div>执行步骤：</div>
                     <div style={{marginTop: "10px"}}>
-                        <Collapse activeKey={activeCol} items={collapseItems} onChange={(k:any) => {
+                        <Collapse activeKey={activeCol} items={collapseItems} onChange={(k: any) => {
                             setActiveCol(k)
                         }}/>
                     </div>
@@ -510,7 +565,7 @@ export const WorkflowDesign = () => {
                 onClose={onSingleRunClose}
                 open={singleRunOpen}
             >
-            <SingleRun ref={singleRunRef} workflowId={params.id} node={currentNode} />
+                <SingleRun ref={singleRunRef} workflowId={params.id} node={currentNode}/>
             </Drawer>
 
             <div style={{height: 'calc(100vh - 50px)', display: "flex"}} className={"agentsflow"}>
@@ -534,12 +589,14 @@ export const WorkflowDesign = () => {
                             <FormOutlined/>
                         </div>
                         <div style={{display: "flex", gap: "10px"}}>
-                            <Button type={"default"} loading={runLoading} onClick={showRunningParameters}> <SendOutlined/> 试运行</Button>
-                            <Button type={"primary"} loading={saveLoading} onClick={saveHandler}>保存 (Ctrl + s)</Button>
+                            <Button type={"default"} loading={runLoading} onClick={showRunningParameters}>
+                                <SendOutlined/> 试运行</Button>
+                            <Button type={"primary"} loading={saveLoading} onClick={saveHandler}>保存 (Ctrl +
+                                s)</Button>
                         </div>
                     </div>
                     {showTinyflow ?
-                        <Spin spinning={pageLoading} >
+                        <Spin spinning={pageLoading}>
                             <Tinyflow ref={tinyflowRef} data={workflowData}
                                       provider={provider}
                                       onNodeExecute={async (node) => {
