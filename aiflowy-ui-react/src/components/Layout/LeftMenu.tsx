@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu } from 'antd';
+import {Menu, Skeleton} from 'antd';
 import { useNavigate } from "react-router-dom";
 import Sider from "antd/es/layout/Sider";
 import logo from "/favicon.svg";
@@ -125,7 +125,8 @@ const LeftMenu: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
                                 paddingRight: '4px',
                             }}
                         />
-                    ) : <>loading...</>}
+                    ) : <><div style={{ height: '100%', width: '100%', padding: 12, display: 'flex', justifyContent: 'center'}}> <Skeleton
+                        paragraph={{rows: 4, width: ['100%', '100%', '100%', '100%']}} active /></div></>}
                 </div>
             </div>
         </Sider>

@@ -20,7 +20,7 @@ import {
 	Pagination,
 	Radio,
 	Row,
-	Select, SelectProps,
+	Select, SelectProps, Skeleton,
 	Space,
 	Spin,
 	Tooltip, Typography,
@@ -444,7 +444,8 @@ const Plugin: React.FC = () => {
 								{loadingCategories? (
 
 									<div style={{   width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-										<Spin spinning={loadingCategories} />
+										<Skeleton
+											paragraph={{rows: 4, width: ['100%', '100%', '100%', '100%']}} active />
 									</div>
 								):(
 
@@ -524,7 +525,14 @@ const Plugin: React.FC = () => {
 
 					{/* 右侧插件内容 */}
 					<div style={{ flex: 1, maxWidth: 'calc(100% - 230px)', overflow: "auto",padding: '20px 22px 16px 22px'}}>
-						<Spin spinning={loading} >
+						{
+							loading &&
+								<div style={{position: "relative", height: "400px", width: "100%"}}>
+									<Spin spinning={loading} style={{position: "absolute", top: "50%", left: "50%"}}>
+									</Spin>
+								</div>
+						}
+
 							<Row className={"card-row"} gutter={[16, 16]}>
 
 								{loading ? (
@@ -670,26 +678,29 @@ const Plugin: React.FC = () => {
 									)
 									:
 									(<>
-										<Empty
-											image={pluginNoDataLogon}
-											className={"empty-container"}
-											description={
-												<Typography.Text style={{color: '#969799'}}>
-													{"暂无数据"}
-												</Typography.Text>
-											}
-										>
+										{
+											!loading &&
+											<Empty
+												image={pluginNoDataLogon}
+												className={"empty-container"}
+												description={
+													<Typography.Text style={{color: '#969799'}}>
+														{"暂无数据"}
+													</Typography.Text>
+												}
+											>
 
-											{hasSavePermission && (
-												<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
-														 onClick={() => {
-															 setAddPluginIsOpen(true)
-														 }}>
-													{"创建插件"}
-												</Button>
-											)}
+												{hasSavePermission && (
+													<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+															 onClick={() => {
+																 setAddPluginIsOpen(true)
+															 }}>
+														{"创建插件"}
+													</Button>
+												)}
 
-										</Empty>
+											</Empty>
+										}
 
 									</>)
 								}
@@ -712,7 +723,6 @@ const Plugin: React.FC = () => {
 								/>
 							</div>
 
-						</Spin>
 					</div>
 
 					{/* 新增插件模态框 */}

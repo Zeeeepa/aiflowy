@@ -32,25 +32,21 @@ const Layout: React.FC = () => {
                         <div>
                             {options.showLeftMenu && <LeftMenu collapsed={options.leftMenuCollapsed ?? false}/>}
                         </div>
-
                         <AntdLayout>
                             <div style={{position: 'sticky', top: 0, zIndex: 1}}>
                                 <Header collapsed={options.leftMenuCollapsed ?? false}/>
                             </div>
-                            <div>
-                                <AntdLayout>
-                                    {options.showBreadcrumb && <Breadcrumb/>}
-                                    <div style={{height: '100%',  overflow: 'auto'}}>
-                                        <Content style={{ borderRadius: '3px'}}>
-                                            {/*<CheckPerms>*/}
-                                            <Outlet/>
-                                            {/*</CheckPerms>*/}
-                                        </Content>
-                                    </div>
+                            <AntdLayout>
+                                {options.showBreadcrumb && <Breadcrumb/>}
+                                <div style={{height: '100%',  overflow: 'auto'}}>
+                                    <Content style={{ borderRadius: '3px'}}>
+                                        {/*<CheckPerms>*/}
+                                        <Outlet/>
+                                        {/*</CheckPerms>*/}
+                                    </Content>
+                                </div>
 
-                                </AntdLayout>
-                            </div>
-
+                            </AntdLayout>
                         </AntdLayout>
                     </AntdLayout>
                 </div>

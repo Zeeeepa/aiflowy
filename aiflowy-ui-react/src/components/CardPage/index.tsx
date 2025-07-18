@@ -218,7 +218,9 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                       onCancel={closeEdit}
                       layout={editLayout}
             />
-            <Spin spinning={loading}>
+
+
+
 
                 <KeywordSearchForm
                     tableAlias={tableAlias}
@@ -270,7 +272,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                 />
                             </Card>
                         </Col>
-                    )) : (<>
+                    )) : (!loading && <>
                         <Empty
                             image={optionIconPath?.noDataIconPath ? optionIconPath.noDataIconPath : defaultNoDataLogo}
                             className={"empty-container"}
@@ -295,7 +297,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
 
                     </>)}
                 </Row>
-                {result?.data?.records?.length > 0 &&
+                {result?.data?.records?.length > 0 ?
                     <div style={{display: "flex", justifyContent: "center", paddingTop: "20px"}}>
                         <Pagination
                             showSizeChanger
@@ -319,8 +321,15 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                 setUrlParams({...urlParams, pageSize: size, pageNumber: 1})
                             }}
                         />
-                    </div>}
-            </Spin>
+                    </div> :
+                    <div style={{position: "relative", height: "400px", width: "100%"}}>
+                        <Spin spinning={loading} style={{position: "absolute", top: "50%", left: "50%"}}>
+                        </Spin>
+                    </div>
+
+
+                }
+
         </div>
     )
 })

@@ -3,7 +3,6 @@ import { App, Button, Checkbox, Flex, Form, Input } from "antd";
 import styles from "./login.module.less";
 import loginBg from "../../assets/login-bg.png";
 import loginImage from "../../assets/login-image.jpg";
-import loginIcon from "../../../public/favicon.svg";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useAppStore } from "../../store/appStore.ts";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -96,7 +95,7 @@ const Login: React.FC = () => {
             style={{ backgroundImage: `url(${loginBg})` }}
         >
             <div className={styles.logoLogin}>
-                <img src={loginIcon} alt="Login Image" />
+                <img src={"/favicon.svg"} alt="Login Image" />
             </div>
 
             <div className={styles.formContainer} style={{  top: `calc(50% - ${522 / 2}px)`,

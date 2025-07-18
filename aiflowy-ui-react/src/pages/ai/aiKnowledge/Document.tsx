@@ -526,13 +526,13 @@ const Document: React.FC = () => {
                                     />
                                 </div>)
                                 :
-                                <div>
+                                <div  style={{overflow: 'visible', height: 'calc(100vh - 150px)'}}>
                                     <Modal title="详情" open={isDocChunkModalOpen} onOk={handleOk}
                                            onCancel={handleCancel} width={800}>
                                         <p>{isDocChunkContent}</p>
                                     </Modal>
 
-                                    <Table columns={columnsChunk} dataSource={docResult?.data.records}
+                                    <Table columns={columnsChunk} dataSource={docResult?.data.records} scroll={{x: 1000, y: 'calc(100vh - 350px)'}}
                                            pagination={{
                                                position: ['bottomCenter'],
                                                current: paginationCk.current,
@@ -545,7 +545,6 @@ const Document: React.FC = () => {
                                            rowKey="id"
                                            loading={chunkLoading}
                                            onChange={handleTableChangeCk}
-                                           scroll={{x: 500, y: 800}} // 水平滚动宽度 1000px，垂直滚动高度 400px
                                     />
                                     {/*    文本分割修改模态框*/}
                                     <Modal title="文本修改" width={1000} height={800} open={isTxtBoxEditModalOpen}
