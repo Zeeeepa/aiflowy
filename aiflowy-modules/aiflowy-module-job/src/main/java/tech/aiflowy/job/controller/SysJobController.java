@@ -1,6 +1,8 @@
 package tech.aiflowy.job.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.date.DateUtil;
+import org.quartz.CronExpression;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 系统任务表 控制层。
@@ -53,6 +56,19 @@ public class SysJobController extends BaseCurdController<SysJobService, SysJob> 
         service.deleteJob(ids);
         service.updateById(sysJob);
         return Result.success();
+    }
+
+    @GetMapping("/getNextTimes")
+    public Result getNextTimes(String cronExpression) throws  Exception{
+        CronExpression ex = new CronExpression(cronExpression);
+        List<String> times = new ArrayList<>();
+        Date date = new Date();
+        for (int i = 0; i < 5; i++) {
+            Date next = ex.getNextValidTimeAfter(date);
+            times.add(DateUtil.formatDateTime(next));
+            date = next;
+        }
+        return Result.success(times);
     }
 
     @Override

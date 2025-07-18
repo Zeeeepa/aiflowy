@@ -39,7 +39,7 @@ const Layout: React.FC = () => {
                             <AntdLayout>
                                 {options.showBreadcrumb && <Breadcrumb/>}
                                 <div style={{height: '100%',  overflow: 'auto'}}>
-                                    <Content style={{ borderRadius: '3px'}}>
+                                    <Content style={{ borderRadius: '3px', height: '100%'}}>
                                         {/*<CheckPerms>*/}
                                         <Outlet/>
                                         {/*</CheckPerms>*/}

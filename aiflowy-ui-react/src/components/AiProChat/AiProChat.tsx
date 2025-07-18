@@ -10,11 +10,7 @@ import {
 } from '@ant-design/x';
 import {Avatar, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
 import {
-    CopyOutlined,
     FolderAddOutlined,
-    PauseCircleOutlined,
-    PlayCircleOutlined,
-    SyncOutlined,
 } from '@ant-design/icons';
 
 import logo from "/favicon.png";
@@ -26,6 +22,10 @@ import senderIconSelected from "../../assets/senderIconSelected.png"
 import clearButtonIcon from "../../assets/clearButton.png"
 import fileIcon from "../../assets/fileLink.png"
 import uploadIfle from "../../assets/uploadIfle.png"
+import CustomPlayIcon from "../CustomIcon/CustomPlayIcon.tsx";
+import CustomSpeakerIcon from "../CustomIcon/CustomSpeakerIcon.tsx";
+import CustomRefreshIcon from "../CustomIcon/CustomRefreshIcon.tsx";
+import CustomCopyIcon from "../CustomIcon/CustomCopyIcon.tsx";
 // const fooAvatar: React.CSSProperties = {
 //     color: '#fff',
 //     backgroundColor: '#87d068',
@@ -960,13 +960,14 @@ export const AiProChat = ({
             return (
                 <div style={{
                     display: 'flex',
+                    width: '100%',
                     flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
                     paddingTop: '103px'
                 }}>
                     <Avatar size={88} src={botAvatar} style={{marginBottom: '16px'}}/>
-                    <div className={"bot-chat-title"}>{helloMessage}</div>
+                    <div className={"bot-chat-title"}  style={{ whiteSpace: 'pre-line', textAlign: 'center' }}  >{helloMessage}</div>
                     <div className={"bot-chat-description"}>{options?.botDescription}</div>
                 </div>
             );
@@ -992,46 +993,7 @@ export const AiProChat = ({
                     ),
                     footer: (
                         <Space>
-                            {(chat.role === 'assistant') && !isStreaming && (<Button
-                                color="default"
-                                variant="text"
-                                size="small"
-                                icon={<SyncOutlined/>}
-                                onClick={() => {
-                                    // 点击按钮时重新生成该消息
-                                    if (chat.role === 'assistant') {
-                                        handleRegenerate(index);
-                                    }
-                                }}
-                            />)}
 
-                            {
-                                !isStreaming && <Button
-                                    color="default"
-                                    variant="text"
-                                    size="small"
-                                    icon={<CopyOutlined/>}
-                                    onClick={async () => {
-                                        try {
-                                            await navigator.clipboard.writeText(chat.content);
-                                            message.success('复制成功');
-                                        } catch (error) {
-                                            console.error(error);
-                                            message.error('复制失败');
-                                        }
-                                    }}
-                                />
-                            }
-                            {(chat.role === 'user' && showQaButton) && !isStreaming && <Button
-                                color="default"
-                                variant="text"
-                                size="small"
-
-                                icon={<FolderAddOutlined/>}
-                                onClick={async () => {
-                                    handleQaClick(chat, index)
-                                }}
-                            ></Button>}
                             {(
                                 chat.role === "assistant" && llmDetail?.options?.voiceEnabled &&
                                 !isStreaming &&
@@ -1041,7 +1003,7 @@ export const AiProChat = ({
                                     size="small"
                                     loading={findVoiceLoading}
                                     icon={chat.options?.messageSessionId && playingSessionId === chat.options?.messageSessionId ?
-                                        <PauseCircleOutlined/> : <PlayCircleOutlined/>}
+                                        <CustomPlayIcon/> : <CustomSpeakerIcon/>}
                                     onClick={async () => {
                                         // 如果没有 messageSessionId，先获取音频
                                         if (!chat.options || !chat.options.messageSessionId || !(voiceMapRef.current.has(chat.options.messageSessionId) && voiceMapRef.current.get(chat.options.messageSessionId)!.length > 0)) {
@@ -1089,6 +1051,49 @@ export const AiProChat = ({
 
                                 </Button>
                             )}
+
+                            {(chat.role === 'assistant') && !isStreaming && (<Button
+                                color="default"
+                                variant="text"
+                                size="small"
+                                icon={<CustomRefreshIcon/>}
+                                onClick={() => {
+                                    // 点击按钮时重新生成该消息
+                                    if (chat.role === 'assistant') {
+                                        handleRegenerate(index);
+                                    }
+                                }}
+                            />)}
+
+
+                            {
+                                !isStreaming && <Button
+                                    color="default"
+                                    variant="text"
+                                    size="small"
+                                    icon={<CustomCopyIcon/>}
+                                    onClick={async () => {
+                                        try {
+                                            await navigator.clipboard.writeText(chat.content);
+                                            message.success('复制成功');
+                                        } catch (error) {
+                                            console.error(error);
+                                            message.error('复制失败');
+                                        }
+                                    }}
+                                />
+                            }
+                            {(chat.role === 'user' && showQaButton) && !isStreaming && <Button
+                                color="default"
+                                variant="text"
+                                size="small"
+
+                                icon={<FolderAddOutlined/>}
+                                onClick={async () => {
+                                    handleQaClick(chat, index)
+                                }}
+                            ></Button>}
+
                         </Space>
                     ),
                     role: chat.role === 'user' ? 'local' : 'ai',
@@ -1406,7 +1411,6 @@ export const AiProChat = ({
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                background: '#fff',
                 ...appStyle,
                 ...style,
             }}

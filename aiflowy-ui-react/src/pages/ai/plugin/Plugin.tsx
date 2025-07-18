@@ -536,11 +536,7 @@ const Plugin: React.FC = () => {
 							<Row className={"card-row"} gutter={[16, 16]}>
 
 								{loading ? (
-									<div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center',
-										alignItems: 'center',  height: '100%', width: '100%' }}>
-										<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={"empty-container"}/>
-									</div>
-
+									<></>
 								) : plugins.length > 0 ? (
 
 										plugins.map((item: any) => (
@@ -679,7 +675,7 @@ const Plugin: React.FC = () => {
 									:
 									(<>
 										{
-											!loading &&
+											(!loading && plugins.length === 0) &&
 											<Empty
 												image={pluginNoDataLogon}
 												className={"empty-container"}

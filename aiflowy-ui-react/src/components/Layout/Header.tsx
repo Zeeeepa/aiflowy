@@ -14,6 +14,7 @@ import {useAppStore} from "../../store/appStore.ts";
 import UpdatePassword from "./UpdatePassword.tsx";
 import Settings from "./Settings.tsx";
 import {useLayout} from "../../hooks/useLayout.tsx";
+import rightTopBotIcon from "../../assets/rightTopBot.png"
 
 type HeaderProps = {
     collapsed: boolean,
@@ -78,9 +79,11 @@ const Header: React.FC<HeaderProps> = ({collapsed}) => {
 
                     <Space align={"center"} size={"large"}
                            style={{textAlign: "right", color: "#fff"}}>
-                        <Button type="primary" shape="circle" icon={"🤖"} onClick={() => {
+
+                        <Avatar src={rightTopBotIcon} style={{width: "40px", height: "40px", cursor: "pointer"}} onClick={()=>{
                             setOpenAIChatModal(!openAiChatModal)
                         }}/>
+
 
                         <Dropdown menu={{items: avatarItems}} placement="bottomRight">
                             <div style={{fontSize: "14px", color: "#333", cursor: "pointer"}}>

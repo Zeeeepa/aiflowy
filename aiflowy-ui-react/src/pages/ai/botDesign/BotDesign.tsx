@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {useLayout} from '../../../hooks/useLayout.tsx';
 import {Row} from 'antd/lib/index';
 import {App, Avatar, Badge, Button, Col, Collapse, Form, Input, Modal, Select, Space, Switch, Tooltip} from 'antd';
-import Title from 'antd/es/typography/Title';
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import {
     useDetail,
@@ -26,13 +25,17 @@ import {PluginTools} from "./PluginTools.tsx";
 import { processArray} from "../../../libs/parseAnswerUtil.tsx";
 import {useSseWithEvent} from "../../../hooks/useSseWithEvent.ts";
 import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
-
+import "./botDesign.less"
 const colStyle: React.CSSProperties = {
-    background: '#fafafa',
-    padding: '8px',
+    background: '#FFFFFF',
+    borderRadius: '8px',
     border: "1px solid #eee",
-    height: 'calc(100vh - 68px)',
     overflowY: 'hidden',
+    padding: '0 12px 12px 12px',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1
 };
 
 
@@ -121,7 +124,6 @@ export const ListItem: React.FC<{
 
 const BotDesign: React.FC = () => {
 
-    const [span] = useState(8)
     const params = useParams();
     const {result: detail, doGet: reGetDetail} = useDetail("aiBot", params.id);
     const {message} = App.useApp()
@@ -401,38 +403,49 @@ const BotDesign: React.FC = () => {
                                     }
                                 }).then(doGetKnowledge)
                             }}/>
-            <div style={{height: 'calc(100vh - 68px)', display: "flex"}} className={"agentsflow"}>
-                <Row style={{width: "100%"}}>
-                    <Col span={span} style={colStyle}>
-                        <Title level={5}>系统提示词（System Prompt）</Title>
-                        <DebouncedTextArea value={systemPrompt} style={{height: "calc(100% - 30px)"}} autoSize={false}
-                                           onChangeImmediately={(e) => {
 
-                                               if (!botSavePermission) {
-                                                   message.warning("你没有配置bot的权限！")
-                                                   return;
-                                               }
 
-                                               setSystemPrompt(e.target.value)
-                                           }}
-                                           onChange={e => {
+            <div style={{ display: "flex", padding: "16px", height:"100%", boxSizing: "border-box", overflow: "hidden"}}>
+                <Row style={{width: "100%", height: "100%", boxSizing: "border-box", gap: 12, flexWrap: "nowrap", display: "flex"}}>
+                    <Col  style={colStyle}>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    系统提示词（System Prompt）
+                            </span>
+                        </div>
+                            <DebouncedTextArea value={systemPrompt} style={{flex: 1, borderRadius: "8px", backgroundColor: "#F7F7F7"}} autoSize={false}
+                            onChangeImmediately={(e) => {
 
-                                               if (!botSavePermission) {
-                                                   return;
-                                               }
+                            if (!botSavePermission) {
+                            message.warning("你没有配置bot的权限！")
+                            return;
+                        }
 
-                                               doUpdateBotLLMOptions({systemPrompt: e.target.value})
-                                           }}/>
+                            setSystemPrompt(e.target.value)
+                        }}
+                            onChange={e => {
+
+                            if (!botSavePermission) {
+                            return;
+                        }
+
+                            doUpdateBotLLMOptions({systemPrompt: e.target.value})
+                        }}/>
+
                     </Col>
-                    <Col span={span} style={{...colStyle,overflowY:"scroll"}}>
-                        <div style={{margin: "10px 0 5px", color: "#666"}}>大模型</div>
+                    <Col  style={{...colStyle,overflowY:"scroll"}}>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    大模型
+                            </span>
+                        </div>
                         <div style={{
                             background: "#f5f5f5",
-                            borderRadius: "3px",
                             padding: "10px 20px",
                             display: "flex",
                             flexDirection: "column",
-                            gap: "10px"
+                            gap: "10px",
+                            borderRadius: "8px",
                         }}>
                             <Select
                                 style={{width: "100%"}}
@@ -483,7 +496,11 @@ const BotDesign: React.FC = () => {
                                        }}/>
                         </div>
 
-                        <div style={{margin: "10px 0 5px", color: "#666"}}>技能</div>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    技能
+                            </span>
+                        </div>
                         <Collapse items={[
                             {
                                 key: 'workflow',
@@ -492,7 +509,7 @@ const BotDesign: React.FC = () => {
                                                           setWorkflowOpen(true)
                                                       }}/>,
                                 children:
-                                    <div>
+                                    <div style={{borderRadius: "8px",}}>
                                         {workflowResult?.data?.length ?
                                             workflowResult?.data?.map((item: any) => {
                                                 return <ListItem key={item.id} title={item.workflow.title}
@@ -620,8 +637,11 @@ const BotDesign: React.FC = () => {
                             },
                         ]} bordered={false}/>
 
-
-                        <div style={{margin: "20px 0 5px", color: "#666"}}>对话设置</div>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    对话设置
+                            </span>
+                        </div>
                         <Collapse items={[
                             {
                                 key: 'questions',
@@ -634,7 +654,7 @@ const BotDesign: React.FC = () => {
                                                           // })
                                                       }}/>,
                                 children: (
-                                    <div style={{padding: '0'}}>
+                                    <div style={{padding: '0', borderRadius: '8px'}}>
                                         {presetQuestions.length > 0 ? (
                                             <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
                                                 {presetQuestions.map((question, index) => (
@@ -754,7 +774,11 @@ const BotDesign: React.FC = () => {
                         ]} bordered={false}/>
 
 
-                        <div style={{margin: "20px 0 5px", color: "#666"}}>发布</div>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    发布
+                            </span>
+                        </div>
                         <Collapse items={[
                             {
                                 key: 'embed',
@@ -764,7 +788,8 @@ const BotDesign: React.FC = () => {
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
-                                        marginBottom: '10px'
+                                        marginBottom: '10px',
+                                        borderRadius: '8px',
                                     }}>
                                         <span>启用匿名访问</span>
                                         <Switch
@@ -828,8 +853,12 @@ const BotDesign: React.FC = () => {
                     </Col>
 
 
-                    <Col span={span} style={colStyle}>
-                        <Title level={5}>预览</Title>
+                    <Col  style={colStyle}>
+                        <div className={"bot-design-container"}>
+                            <span  className={"bot-design-text-title"}>
+                                    预览
+                            </span>
+                        </div>
                         <div style={{height: "calc(100vh - 122px)", width: "100%"}} className={"bot-chat"}>
                             <AiProChat
                                 sessionId={getSessionId()}
