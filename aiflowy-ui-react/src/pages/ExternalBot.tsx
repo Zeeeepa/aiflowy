@@ -427,6 +427,7 @@ export const ExternalBot: React.FC = () => {
                     botAvatar={botInfo?.data?.icon}
                     clearMessage={() => clearMessage(params.id, getExternalSessionId(), localStorage.getItem("tempUserId"))}
                     inputDisabled={inputDisabled}
+                    sessionId={getExternalSessionId()}
                     prompts={presetQuestions}
                     options={{
                         botTitle: botInfo?.data?.title,
