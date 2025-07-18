@@ -11,7 +11,7 @@
     cursor: pointer;
     position: relative;
     box-shadow: 0 0 0 1px #d9d9d9;
-    transition: box-shadow 0.2s ease-in-out;
+    transition: all 0.2s;
 }
 
 .custom-radio-option:hover {
@@ -19,8 +19,9 @@
 }
 
 .custom-radio-option.selected {
-    box-shadow: 0 0 0 2px #0066FF;
+    box-shadow: 0 0 0 1px #0066FF;
     padding: 8px; /* 调整内边距以适应边框 */
+    background: rgba(0,102,255,0.06);
 }
 
 .custom-radio-option.selected::after {
