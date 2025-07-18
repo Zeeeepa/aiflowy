@@ -1,9 +1,10 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react'
+import React, {forwardRef, useCallback, useImperativeHandle, useState} from 'react'
 import {ModalProps} from "antd/es/modal/interface";
 import {Form, Input, message, Modal, Spin, theme} from "antd";
 import {DictSelect} from "../../components/DictSelect";
 import {useGetManual, usePostManual} from "../../hooks/useApis.ts";
 import {DynamicItem} from '../../libs/workflowUtil'
+import CronGeneratorModal from "../../components/Custom/CronGeneratorModal.tsx";
 
 export type SysJobModalProps = {
     ref?: any,
@@ -125,8 +126,24 @@ export const SysJobModal: React.FC<SysJobModalProps> = forwardRef((props, ref) =
         })
     }
 
+    const [cronModalVisible, setCronModalVisible] = useState(false)
+
+    const handleOk = useCallback((value: string) => {
+        form.setFieldsValue({
+            cronExpression: value
+        });
+        setCronModalVisible(false);
+    }, [form]);
+
     return (
         <>
+            <CronGeneratorModal
+                visible={cronModalVisible}
+                handleCancel={() => {
+                    setCronModalVisible(false)
+                }}
+                handleOk={handleOk}
+            />
             <Modal
                 title={formData?.id ? "修改" : "新增"}
                 confirmLoading={loading}
@@ -139,8 +156,8 @@ export const SysJobModal: React.FC<SysJobModalProps> = forwardRef((props, ref) =
                     <Form
                         form={form}
                         name="basic"
-                        labelCol={{span: 8}}
-                        wrapperCol={{span: 16}}
+                        labelCol={{span: 6}}
+                        wrapperCol={{span: 18}}
                         style={formStyle}
                         //initialValues={formData}
                         onFinish={onFinish}
@@ -183,7 +200,7 @@ export const SysJobModal: React.FC<SysJobModalProps> = forwardRef((props, ref) =
                             name="cronExpression"
                             rules={[{required: true, message: '请输入cron表达式'}]}
                         >
-                            <Input/>
+                            <Input suffix={<a onClick={() => setCronModalVisible(true)}>点击生成</a>}/>
                         </Form.Item>
 
                         <Form.Item
