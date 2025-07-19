@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
 import java.math.BigInteger;
+import java.util.List;
+
 import tech.aiflowy.common.web.exceptions.BusinessException;
 import cn.dev33.satoken.annotation.SaIgnore;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,13 +44,18 @@ public class AiBotApiKeyController extends BaseCurdController<AiBotApiKeyService
         return Result.success(apiKey);
     }
 
-    @GetMapping("test")
-    public Result testDecode(@RequestParam String apiKey){
 
-        BigInteger botId = service.decryptApiKey(apiKey);
-        return Result.success(botId);
+    @Override
+    public Result list(AiBotApiKey entity, Boolean asTree, String sortKey, String sortType) {
 
+        Result result = super.list(entity, asTree, sortKey, sortType);
+        List<AiBotApiKey> data = result.get("data");
+        if (data != null && !data.isEmpty()) {
+            data.forEach(item -> {
+                item.setSalt(null);
+            });
+        }
+
+        return result;
     }
-
-
 }

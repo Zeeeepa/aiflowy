@@ -41,7 +41,7 @@ public class AiBotApiKeyServiceImpl extends ServiceImpl<AiBotApiKeyMapperMapper,
     @Resource
     private AiBotService aiBotService;
 
-    @Value("${aiflowy.aiBot.apiKeyMasterKey}")
+    @Value("${aiflowy.aiBot.apiKeyMasterKey:x9y8z7w6v5u4t3s2r1q0p9o8n7m6l5k4}")
     private String masterKey;
 
     /**

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useLayout} from '../../../hooks/useLayout.tsx';
 import {Row} from 'antd/lib/index';
 import {App, Avatar, Badge, Button, Col, Collapse, Form, Input, Modal, Select, Space, Switch, Tooltip} from 'antd';
-import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import {DeleteOutlined, ExclamationCircleFilled, PlusOutlined} from "@ant-design/icons";
 import {
     useDetail,
     useGetManual,
@@ -22,10 +22,12 @@ import TextArea from "antd/es/input/TextArea";
 import {getSessionId} from "../../../libs/getSessionId.ts";
 import {AiProChat, ChatMessage} from "../../../components/AiProChat/AiProChat";
 import {PluginTools} from "./PluginTools.tsx";
-import { processArray} from "../../../libs/parseAnswerUtil.tsx";
+import {processArray} from "../../../libs/parseAnswerUtil.tsx";
 import {useSseWithEvent} from "../../../hooks/useSseWithEvent.ts";
 import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
 import "./botDesign.less"
+import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
+
 const colStyle: React.CSSProperties = {
     background: '#FFFFFF',
     borderRadius: '8px',
@@ -43,10 +45,10 @@ type CollapseLabelProps = {
     text: string,
     onClick: () => void,
     plusDisabled?: boolean
-    badgeCount?:number
+    badgeCount?: number
 }
 
-const CollapseLabel: React.FC<CollapseLabelProps> = ({text, onClick, plusDisabled = false,badgeCount = 0}) => {
+const CollapseLabel: React.FC<CollapseLabelProps> = ({text, onClick, plusDisabled = false, badgeCount = 0}) => {
     return <div style={{
         display: "flex",
         alignItems: "center",
@@ -55,14 +57,14 @@ const CollapseLabel: React.FC<CollapseLabelProps> = ({text, onClick, plusDisable
         <span>{text}</span>
         {!plusDisabled && <div style={{
             display: "flex",
-            justifyContent:"space-between",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap:"15px",
+            gap: "15px",
         }}>
             <Badge
                 className="site-badge-count-109"
                 count={badgeCount}
-                style={{ backgroundColor: '#52c41a' }}
+                style={{backgroundColor: '#52c41a'}}
             />
             <PlusOutlined onClick={(event) => {
                 event.stopPropagation();
@@ -71,6 +73,7 @@ const CollapseLabel: React.FC<CollapseLabelProps> = ({text, onClick, plusDisable
         </div>}
     </div>
 }
+
 export interface PresetQuestion {
     key: string;
     description: string;
@@ -93,7 +96,7 @@ export const ListItem: React.FC<{
             borderRadius: "3px"
         }}>
             <div style={{"width": "40px"}}>
-                <Avatar shape="square" src={icon || "/favicon.png"} />
+                <Avatar shape="square" src={icon || "/favicon.png"}/>
             </div>
             <div style={{flexGrow: 1}}>
                 <div>{title}</div>
@@ -151,15 +154,15 @@ const BotDesign: React.FC = () => {
 
     // const {doUpdate} = useUpdate("aiBot");
 
-    const {doPost:updateBotLlmId} = usePost("/api/v1/aiBot/updateLlmId")
+    const {doPost: updateBotLlmId} = usePost("/api/v1/aiBot/updateLlmId")
 
     const updateBot = (values: any) => {
 
         updateBotLlmId({
-                data: {
-                    ...values,
-                    id: params.id,
-                }
+            data: {
+                ...values,
+                id: params.id,
+            }
         }).then(reGetDetail)
             .then(() => {
                 message.success("保存成功")
@@ -208,6 +211,7 @@ const BotDesign: React.FC = () => {
         setPresetQuestions(detail?.data?.options?.presetQuestions || [])
         setAnonymousEnabled(detail?.data?.options?.anonymousEnabled ?? false)
         setVoicePlayEnabled(detail?.data?.options?.voiceEnabled ?? false)
+        getApiKeyList();
     }, [detail]);
 
     const {result: workflowResult, doGet: doGetWorkflow} = useList("aiBotWorkflow", {"botId": params.id});
@@ -245,6 +249,11 @@ const BotDesign: React.FC = () => {
 
     const defaultWelcomeMessage = "欢迎使用AIFlowy";
 
+
+    const {doPost:addApiKey} = usePost("/api/v1/aiBotApiKey/addKey")
+    const {result:apiKeyResult,doGet:getApiKeyList} = useGetManual("/api/v1/aiBotApiKey/list")
+    const {doRemove:doRemoveApiKey} = useRemove("aiBotApiKey")
+
     useEffect(() => {
 
 
@@ -256,7 +265,7 @@ const BotDesign: React.FC = () => {
     }, [messageResult]);
     useEffect(() => {
 
-        if (pluginToolPermission){
+        if (pluginToolPermission) {
             doPostPluginTool({data: {botId: params.id}}).then(r => {
                 setPluginToolData(r?.data?.data)
             })
@@ -271,6 +280,7 @@ const BotDesign: React.FC = () => {
             getLlmLst({
                 params: {supportFunctionCalling: true}
             }).then();
+
         }
     }, [llmQueryPermission]);
 
@@ -288,17 +298,17 @@ const BotDesign: React.FC = () => {
             }
         })
     }
-    const handleProblemCancel = () =>{
+    const handleProblemCancel = () => {
         setIsOpenProblemPreset(false)
     }
     // 创建表单实例
     const [form] = Form.useForm();
 
-    const [anonymousEnabled,setAnonymousEnabled] = useState<boolean>(false)
-    const [anonymousSwitchLoading,setAnonymousSwitchLoading] = useState<boolean>(false)
+    const [anonymousEnabled, setAnonymousEnabled] = useState<boolean>(false)
+    const [anonymousSwitchLoading, setAnonymousSwitchLoading] = useState<boolean>(false)
 
-    const [voicePlayEnabled,setVoicePlayEnabled] = useState<boolean>(false)
-    const [voicePlaySwitchLoading,setVoicePlaySwitchLoading] = useState<boolean>(false)
+    const [voicePlayEnabled, setVoicePlayEnabled] = useState<boolean>(false)
+    const [voicePlaySwitchLoading, setVoicePlaySwitchLoading] = useState<boolean>(false)
 
     return (
         <>
@@ -370,7 +380,7 @@ const BotDesign: React.FC = () => {
                     }
 
                     doRemovePlugin({data: {pluginToolId: item.id, botId: params.id}}).then(res => {
-                        if (res?.data?.errorCode === 0){
+                        if (res?.data?.errorCode === 0) {
                             message.success('删除成功')
                             // 重新获取插件数据
                             doPostPluginTool({data: {botId: params.id}}).then(r => {
@@ -405,37 +415,47 @@ const BotDesign: React.FC = () => {
                             }}/>
 
 
-            <div style={{ display: "flex", padding: "16px", height:"100%", boxSizing: "border-box", overflow: "hidden"}}>
-                <Row style={{width: "100%", height: "100%", boxSizing: "border-box", gap: 12, flexWrap: "nowrap", display: "flex"}}>
-                    <Col  style={colStyle}>
+            <div
+                style={{display: "flex", padding: "16px", height: "100%", boxSizing: "border-box", overflow: "hidden"}}>
+                <Row style={{
+                    width: "100%",
+                    height: "100%",
+                    boxSizing: "border-box",
+                    gap: 12,
+                    flexWrap: "nowrap",
+                    display: "flex"
+                }}>
+                    <Col style={colStyle}>
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     系统提示词（System Prompt）
                             </span>
                         </div>
-                            <DebouncedTextArea value={systemPrompt} style={{flex: 1, borderRadius: "8px", backgroundColor: "#F7F7F7"}} autoSize={false}
-                            onChangeImmediately={(e) => {
+                        <DebouncedTextArea value={systemPrompt}
+                                           style={{flex: 1, borderRadius: "8px", backgroundColor: "#F7F7F7"}}
+                                           autoSize={false}
+                                           onChangeImmediately={(e) => {
 
-                            if (!botSavePermission) {
-                            message.warning("你没有配置bot的权限！")
-                            return;
-                        }
+                                               if (!botSavePermission) {
+                                                   message.warning("你没有配置bot的权限！")
+                                                   return;
+                                               }
 
-                            setSystemPrompt(e.target.value)
-                        }}
-                            onChange={e => {
+                                               setSystemPrompt(e.target.value)
+                                           }}
+                                           onChange={e => {
 
-                            if (!botSavePermission) {
-                            return;
-                        }
+                                               if (!botSavePermission) {
+                                                   return;
+                                               }
 
-                            doUpdateBotLLMOptions({systemPrompt: e.target.value})
-                        }}/>
+                                               doUpdateBotLLMOptions({systemPrompt: e.target.value})
+                                           }}/>
 
                     </Col>
-                    <Col  style={{...colStyle,overflowY:"scroll"}}>
+                    <Col style={{...colStyle, overflowY: "scroll"}}>
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     大模型
                             </span>
                         </div>
@@ -455,7 +475,7 @@ const BotDesign: React.FC = () => {
                                 value={llmQueryPermission ? detail?.data?.llmId : "no_access"}
                                 onChange={(value: any) => {
                                     value = value || ''
-                                    updateBot({ llmId: value === 'no_access' ? '' : value || '' });
+                                    updateBot({llmId: value === 'no_access' ? '' : value || ''});
                                 }}
                             >
                                 {!llmQueryPermission && (
@@ -497,7 +517,7 @@ const BotDesign: React.FC = () => {
                         </div>
 
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     技能
                             </span>
                         </div>
@@ -638,7 +658,7 @@ const BotDesign: React.FC = () => {
                         ]} bordered={false}/>
 
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     对话设置
                             </span>
                         </div>
@@ -672,31 +692,31 @@ const BotDesign: React.FC = () => {
                                                         <span>{question.description}</span>
                                                         <Button
                                                             type="text"
-                                                            icon={<DeleteOutlined />}
+                                                            icon={<DeleteOutlined/>}
                                                             onClick={() => {
                                                                 const newQuestions = [...presetQuestions];
                                                                 newQuestions.splice(index, 1);
                                                                 setPresetQuestions(newQuestions);
-                                                                    updateBotOptions({
-                                                                        data: {
-                                                                            options: { presetQuestions: newQuestions },
-                                                                            id: params.id,
-                                                                        }
-                                                                    }).then((res) => {
-                                                                        if (res?.data?.errorCode === 0){
-                                                                            reGetDetail().then(response =>{
-                                                                                setPresetQuestions(response?.data?.data?.options.presetQuestions)
-                                                                            })
-                                                                        }
+                                                                updateBotOptions({
+                                                                    data: {
+                                                                        options: {presetQuestions: newQuestions},
+                                                                        id: params.id,
+                                                                    }
+                                                                }).then((res) => {
+                                                                    if (res?.data?.errorCode === 0) {
+                                                                        reGetDetail().then(response => {
+                                                                            setPresetQuestions(response?.data?.data?.options.presetQuestions)
+                                                                        })
+                                                                    }
 
-                                                                    })
+                                                                })
                                                             }}
                                                         />
                                                     </div>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div style={{ color: '#999', textAlign: 'center', padding: '8px 0' }}>
+                                            <div style={{color: '#999', textAlign: 'center', padding: '8px 0'}}>
                                                 暂无预设问题，点击右上角"+"添加
                                             </div>
                                         )}
@@ -738,7 +758,8 @@ const BotDesign: React.FC = () => {
                                 key: 'voicePlay',
                                 label: <CollapseLabel text="语音播报" onClick={() => {
                                 }} plusDisabled/>,
-                                children: <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                                children: <div
+                                    style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                                     <span>启用语音播报</span>
                                     <Switch
                                         checked={voicePlayEnabled}
@@ -759,7 +780,7 @@ const BotDesign: React.FC = () => {
                                                     id: params.id,
                                                 }
                                             })
-                                            if (resp?.data?.errorCode === 0){
+                                            if (resp?.data?.errorCode === 0) {
                                                 const reGetResp = await reGetDetail();
                                                 console.log(reGetResp.data?.data?.options.voiceEnabled)
                                                 setVoicePlayEnabled(reGetResp.data?.data?.options.voiceEnabled)
@@ -775,7 +796,7 @@ const BotDesign: React.FC = () => {
 
 
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     发布
                             </span>
                         </div>
@@ -812,7 +833,7 @@ const BotDesign: React.FC = () => {
                                                         id: params.id,
                                                     }
                                                 })
-                                                if (resp?.data?.errorCode === 0){
+                                                if (resp?.data?.errorCode === 0) {
                                                     const reGetResp = await reGetDetail();
                                                     setAnonymousEnabled(reGetResp.data?.data?.options.anonymousEnabled)
                                                 }
@@ -827,15 +848,38 @@ const BotDesign: React.FC = () => {
                                             href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data?.id}
                                             target={"_blank"}>打开</a>
                                         </span>
-                                        <TextArea readOnly disabled style={{resize:"none"}}
+                                        <TextArea readOnly disabled style={{resize: "none"}}
                                                   value={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data?.id}></TextArea>
                                     </div>
                                 </div>,
                             },
                             {
                                 key: 'api',
-                                label: <CollapseLabel text="API" onClick={() => {
-                                }} plusDisabled/>,
+                                label: <CollapseLabel text="ApiKey" onClick={() => {
+
+                                    Modal.confirm({
+                                        title: "确认",
+                                        icon: <ExclamationCircleFilled/>,
+                                        content: "将要新增用于调用此 bot 的 apiKey , 是否确认?",
+                                        centered: true,
+                                        maskClosable: true,
+                                        onOk:  async () => {
+                                           const resp = await addApiKey({
+                                                data:{
+                                                    botId:params.id,
+                                                }
+                                            })
+
+                                            if (resp?.data?.errorCode === 0) {
+                                                message.success("添加成功")
+
+                                                // 发送请求获取新的apiKey列表
+                                                await getApiKeyList();
+                                            }
+                                        }
+                                    })
+
+                                }}/>,
                                 children: <div>
                                     <div>
                                         <span>
@@ -843,8 +887,63 @@ const BotDesign: React.FC = () => {
                                             href={'https://aiflowy.tech/zh/development/ai/apiKey.html'}
                                             target={"_blank"}>打开</a>
                                         </span>
-                                        <TextArea readOnly disabled style={{resize:"none"}}
+                                        <TextArea readOnly disabled style={{resize: "none"}}
                                                   value={'https://aiflowy.tech/zh/development/ai/apiKey.html'}></TextArea>
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            flexDirection: "column"
+                                        }}>
+                                            {apiKeyResult && apiKeyResult.data.length ? apiKeyResult.data.map((item:any) => {
+                                                return (
+                                                    <>
+                                                        <div key={item.id} style={{
+                                                            width: "100%",
+                                                            background: "#ffffff",
+                                                            height: "32px",
+                                                            borderRadius: "4px",
+                                                            marginTop: "12px",
+                                                            boxSizing: "border-box",
+                                                            padding: "6px 12px 6px 11px",
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            alignItems: "center",
+                                                        }}>
+                                                            <div style={{height:"20px",color:"#1a1a1a",fontSize:"14px"}}>{item.apiKey}</div>
+                                                            <Button color="danger" variant="link"  icon={<CustomDeleteIcon/>} onClick={() => {
+
+                                                                Modal.confirm({
+                                                                    title: "确认",
+                                                                    icon: <ExclamationCircleFilled/>,
+                                                                    content: "将删除此 apiKey ,此操作不可逆, 是否确认?",
+                                                                    centered: true,
+                                                                    maskClosable: true,
+                                                                    onOk:  async () => {
+                                                                        doRemoveApiKey({
+                                                                            data:{
+                                                                                id:item.id,
+                                                                            }
+                                                                        }).then(() => {
+                                                                            getApiKeyList().then();
+                                                                        })
+                                                                    }
+                                                                })
+
+                                                            }}>
+                                                                删除
+                                                            </Button>
+                                                        </div>
+                                                    </>
+                                                )
+                                            })
+                                                :
+                                                <div style={{color: '#999', textAlign: 'center', padding: '8px 0'}}>
+                                                    暂无 apiKey，点击右上角 + 号新增 apiKey
+                                                </div>
+
+                                            }
+
+                                        </div>
                                     </div>
                                 </div>
                             },
@@ -853,9 +952,9 @@ const BotDesign: React.FC = () => {
                     </Col>
 
 
-                    <Col  style={colStyle}>
+                    <Col style={colStyle}>
                         <div className={"bot-design-container"}>
-                            <span  className={"bot-design-text-title"}>
+                            <span className={"bot-design-text-title"}>
                                     预览
                             </span>
                         </div>
@@ -878,7 +977,7 @@ const BotDesign: React.FC = () => {
                                                     botId: params.id,
                                                     sessionId: getSessionId(),
                                                     prompt: messages[messages.length - 1].content as string,
-                                                    fileList:messages[messages.length - 1].files as Array<string>
+                                                    fileList: messages[messages.length - 1].files as Array<string>
                                                 },
                                                 onMessage: (msg) => {
                                                     controller.enqueue(encoder.encode(msg))
@@ -899,7 +998,7 @@ const BotDesign: React.FC = () => {
 
             <Modal
                 title="问题预设"
-                closable={{ 'aria-label': 'Custom Close Button' }}
+                closable={{'aria-label': 'Custom Close Button'}}
                 open={isOpenProblemPreset}
                 onCancel={() => setIsOpenProblemPreset(false)}
                 footer={null}
@@ -950,15 +1049,15 @@ const BotDesign: React.FC = () => {
                             key={num}
                             label={`预设问题 ${num}`}
                             name={`question${num}`}
-                            initialValue={presetQuestions[num-1]?.description || ''}
+                            initialValue={presetQuestions[num - 1]?.description || ''}
                         >
-                            <Input />
+                            <Input/>
                         </Form.Item>
                     ))}
                     <Form.Item label={null}>
-                        <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Space style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <Button onClick={handleProblemCancel}>取消</Button>
-                            <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
+                            <Button type="primary" htmlType="submit" style={{marginRight: 8}}>
                                 确定
                             </Button>
                         </Space>
