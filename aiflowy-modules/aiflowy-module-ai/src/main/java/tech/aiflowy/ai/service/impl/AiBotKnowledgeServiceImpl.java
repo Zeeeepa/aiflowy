@@ -6,6 +6,10 @@ import tech.aiflowy.ai.service.AiBotKnowledgeService;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.util.List;
+import com.mybatisflex.core.query.QueryWrapper;
+
 /**
  *  服务层实现。
  *
@@ -15,4 +19,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AiBotKnowledgeServiceImpl extends ServiceImpl<AiBotKnowledgeMapper, AiBotKnowledge> implements AiBotKnowledgeService {
 
+    @Override
+    public List<AiBotKnowledge> listByBotId(BigInteger botId) {
+
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.eq("bot_id",botId);
+
+        return list(queryWrapper);
+    }
 }

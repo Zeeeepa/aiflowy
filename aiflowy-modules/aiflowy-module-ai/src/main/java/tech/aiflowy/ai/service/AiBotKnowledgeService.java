@@ -3,6 +3,9 @@ package tech.aiflowy.ai.service;
 import tech.aiflowy.ai.entity.AiBotKnowledge;
 import com.mybatisflex.core.service.IService;
 
+import java.math.BigInteger;
+import java.util.List;
+
 /**
  *  服务层。
  *
@@ -11,4 +14,5 @@ import com.mybatisflex.core.service.IService;
  */
 public interface AiBotKnowledgeService extends IService<AiBotKnowledge> {
 
+    List<AiBotKnowledge> listByBotId(BigInteger botId);
 }

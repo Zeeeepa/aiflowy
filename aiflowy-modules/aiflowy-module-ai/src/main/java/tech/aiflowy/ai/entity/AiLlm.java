@@ -103,13 +103,12 @@ public class AiLlm extends AiLlmBase {
         }
     }
 
-
     private Llm ollamaLlm() {
         OllamaLlmConfig ollamaLlmConfig = new OllamaLlmConfig();
         ollamaLlmConfig.setEndpoint(getLlmEndpoint());
         ollamaLlmConfig.setApiKey(getLlmApiKey());
         ollamaLlmConfig.setModel(getLlmModel());
-       //        ollamaLlmConfig.setDebug(true);
+        // ollamaLlmConfig.setDebug(true);
         return new OllamaLlm(ollamaLlmConfig);
     }
 
@@ -119,39 +118,39 @@ public class AiLlm extends AiLlmBase {
         openAiLlmConfig.setApiKey(getLlmApiKey());
         openAiLlmConfig.setModel(getLlmModel());
         openAiLlmConfig.setDefaultEmbeddingModel(getLlmModel());
-        openAiLlmConfig.setDebug(true);
+        // openAiLlmConfig.setDebug(true);
         Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
         String chatPath = properties.getProperty("chatPath");
         String embedPath = properties.getProperty("embedPath");
 
         Map<String, Object> options = getOptions();
 
-        if (StringUtils.hasLength(chatPath)){
+        if (StringUtils.hasLength(chatPath)) {
             openAiLlmConfig.setChatPath(chatPath);
-        }else {
-            if (options != null){
-                String chatPathFromOptions = (String)options.get("chatPath");
-                if (StringUtils.hasLength(chatPathFromOptions)){
+        } else {
+            if (options != null) {
+                String chatPathFromOptions = (String) options.get("chatPath");
+                if (StringUtils.hasLength(chatPathFromOptions)) {
                     chatPath = chatPathFromOptions;
                     openAiLlmConfig.setChatPath(chatPath);
-                };
+                }
+                ;
             }
 
         }
 
-        if (StringUtils.hasLength(embedPath)){
+        if (StringUtils.hasLength(embedPath)) {
             openAiLlmConfig.setEmbedPath(embedPath);
-        }else {
+        } else {
             if (options != null) {
-                String embedPathFromOptions = (String)options.get("embedPath");
-                if (StringUtils.hasLength(embedPathFromOptions)){
+                String embedPathFromOptions = (String) options.get("embedPath");
+                if (StringUtils.hasLength(embedPathFromOptions)) {
                     embedPath = embedPathFromOptions;
                     openAiLlmConfig.setEmbedPath(embedPath);
                 }
             }
 
         }
-
         return new OpenAILlm(openAiLlmConfig);
     }
 
@@ -164,26 +163,25 @@ public class AiLlm extends AiLlmBase {
         String appId = properties.getProperty("appId");
         String apiSecret = properties.getProperty("apiSecret");
 
-        Map<String,Object> options = getOptions();
+        Map<String, Object> options = getOptions();
 
-        if (!StringUtils.hasLength(version) && options != null){
-            String versionFromOptions = (String)options.get("version");
-            if (StringUtils.hasLength(versionFromOptions)){
+        if (!StringUtils.hasLength(version) && options != null) {
+            String versionFromOptions = (String) options.get("version");
+            if (StringUtils.hasLength(versionFromOptions)) {
                 version = versionFromOptions;
             }
         }
 
-        if (!StringUtils.hasLength(appId) && options != null){
-            String appIdFromOptions = (String)options.get("appId");
-            if (StringUtils.hasLength(appIdFromOptions)){
+        if (!StringUtils.hasLength(appId) && options != null) {
+            String appIdFromOptions = (String) options.get("appId");
+            if (StringUtils.hasLength(appIdFromOptions)) {
                 appId = appIdFromOptions;
             }
         }
 
-
-        if (!StringUtils.hasLength(apiSecret) && options != null){
-            String apiSecretFromOptions = (String)options.get("apiSecret");
-            if (StringUtils.hasLength(apiSecretFromOptions)){
+        if (!StringUtils.hasLength(apiSecret) && options != null) {
+            String apiSecretFromOptions = (String) options.get("apiSecret");
+            if (StringUtils.hasLength(apiSecretFromOptions)) {
                 apiSecret = apiSecretFromOptions;
             }
         }
@@ -192,6 +190,7 @@ public class AiLlm extends AiLlmBase {
         sparkLlmConfig.setVersion(version);
         sparkLlmConfig.setAppId(appId);
         sparkLlmConfig.setApiKey(getLlmApiKey());
+        // sparkLlmConfig.setDebug(true);
 
         return new SparkLlm(sparkLlmConfig);
     }
