@@ -1,7 +1,8 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
 import {Table, Input, Select, Button, Space, Form, Switch, Tooltip} from 'antd';
 import type {ExpandableConfig} from 'antd/es/table/interface';
-import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
+import {PlusOutlined} from '@ant-design/icons';
+import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
 
 export interface TreeTableNode {
     key: string;
@@ -186,20 +187,23 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
     // @ts-ignore
     const columns = [
         {
-            title: <span>参数名称<span style={{color: 'red'}}>*</span></span>,
+            title: <span><span style={{color: 'red'}}>*</span>参数名称</span>,
             dataIndex: 'name',
             key: 'name',
             width: '20%',
-            onCell: () => ({style: {paddingLeft: 2}}),
             // @ts-ignore
             render: (text: string, record: TreeTableNode) => {
                 const fieldError = errors[record.key]?.name;
+                // 计算层级：key 中 "-" 的数量代表层级（根节点 key 无 "-"，层级为 0）
                 const level = String(record.key).split('-').length - 1;
-                const indentSize = 2;
+                // 缩进尺寸（每个层级缩进 20px，可按需调整）
+                const indentSize = 20;
+                // 根节点（level=0）不缩进，子节点从 level=1 开始缩进
+                const indentWidth = level > 0 ? level * indentSize : 0;
 
                 if (!editable) {
                     return (
-                        <div style={{paddingLeft: level * indentSize}}>
+                        <div style={{paddingLeft: indentWidth}}>
                             {record.name || ''}
                         </div>
                     );
@@ -220,9 +224,7 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                     const newData = updateNode(data);
                     updateData(newData);
                 };
-                // if (record.type ==== 'Array'){
-                //
-                // }
+
                 return (
                     <div style={{
                         display: 'flex',
@@ -231,30 +233,36 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                         justifyContent: "flex-start"
                     }}>
                         <div style={{display: 'flex', alignItems: "center"}}>
-                            <div style={{width: level * indentSize}}></div>
+                            {/* 根节点不缩进，子节点按层级缩进 */}
+                            <div style={{width: indentWidth}}></div>
                             <Input
                                 variant="filled"
                                 value={record.name || ''}
                                 onChange={handleChange}
                                 size="middle"
                                 disabled={record.name === 'arrayItem'}
-                                style={{flex: 1}}
+                                style={{
+                                    flex: 1,
+                                    background: '#FFFFFF',
+                                    borderRadius: 4,
+                                    border: '1px solid #D9D9D9'
+                                }}
                             />
-
                         </div>
+                        {/* 错误提示也使用相同的缩进逻辑 */}
                         {fieldError && <div style={{
                             color: 'red',
                             fontSize: '12px',
                             top: '90%',
-                            marginLeft: level * indentSize,
+                            marginLeft: indentWidth, // 这里同步修改
                             position: 'absolute',
-                        }}>{fieldError}{level}</div>}
+                        }}>{fieldError}</div>}
                     </div>
                 );
             },
         },
         {
-            title: <span>参数描述<span style={{color: 'red'}}>*</span></span>,
+            title: <span><span style={{color: 'red'}}>*</span>参数描述</span>,
             dataIndex: 'description',
             key: 'description',
             width: '20%',
@@ -290,6 +298,11 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                             value={record.description || ''}
                             onChange={handleChange}
                             disabled={!editable}
+                            style={{
+                                background: '#FFFFFF',
+                                borderRadius: 4,
+                                border: '1px solid #D9D9D9'
+                            }}
                         />
                         {fieldError && <div style={{
                             color: 'red',
@@ -302,7 +315,7 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
             },
         },
         {
-            title: <span>参数类型<span style={{color: 'red'}}>*</span></span>,
+            title: <span><span style={{color: 'red'}}>*</span>参数类型</span>,
             dataIndex: 'type',
             key: 'type',
             width: '10%',
@@ -388,8 +401,11 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                     <Form.Item style={{margin: 0}}>
                         <Select
                             value={record.type || 'String'}
-                            variant="filled"
                             onChange={handleChange}
+                            style={{
+                                backgroundColor: '#fff',
+                                border: '1px solid #d9d9d9',
+                            }}
                             options={record.name === 'arrayItem' ?
                                 [
                                     {label: 'Array[String]', value: 'Array[String]'},
@@ -418,7 +434,7 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
         ...(!isEditOutput
             ? [
                 {
-                    title: <span>传入方法<span style={{color: 'red'}}>*</span></span>,
+                    title: <span><span style={{color: 'red'}}>*</span>传入方法</span>,
                     dataIndex: 'method',
                     key: 'method',
                     width: '10%',
@@ -454,7 +470,6 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                                 <Select
                                     value={record.method || 'Query'}
                                     onChange={handleChange}
-                                    variant="filled"
                                     options={[
                                         {label: 'Query', value: 'Query'},
                                         {label: 'Body', value: 'Body'},
@@ -530,6 +545,11 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                                 value={record.defaultValue || ''}
                                 onChange={handleChange}
                                 disabled={!editable}
+                                style={{
+                                    background: '#FFFFFF',
+                                    borderRadius: 4,
+                                    border: '1px solid #D9D9D9'
+                                }}
                             />
                         );
                     },
@@ -592,10 +612,12 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                             <Button
                                 type="link"
                                 danger
-                                icon={<DeleteOutlined/>}
+                                icon={<CustomDeleteIcon/>}
                                 onClick={() => deleteNode(record.key)}
                                 size="small"
-                            />
+                            >
+                                删除
+                            </Button>
                         </Space>
                     ),
                 },
@@ -625,7 +647,7 @@ const PluginInputAndOutputData: React.ForwardRefRenderFunction<PluginInputDataRe
                     {/*<Button type="primary" onClick={handleSubmitParams}>*/}
                     {/*    提交参数*/}
                     {/*</Button>*/}
-                    <Button type="default" onClick={addNewRootNode}>
+                    <Button type="default" onClick={addNewRootNode} icon={<PlusOutlined/>} className={'plugin-add-button'}>
                         新增参数
                     </Button>
                 </div>

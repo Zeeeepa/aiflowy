@@ -5,7 +5,7 @@ import {Button, Collapse, Form, Input, message, Modal, Select, Spin} from "antd"
 import {usePost, usePostManual} from "../../../hooks/useApis.ts";
 import './less/pluginToolEdit.less'
 import {
-    EditOutlined, LeftOutlined,
+    EditOutlined, LeftOutlined, PlayCircleOutlined
 } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import PluginInputAndOutputData, {TreeTableNode} from "./PluginInputAndOutputData.tsx";
@@ -101,7 +101,7 @@ const PluginToolEdit: React.FC = () => {
             <span>
                 {isEditInput ? (
                     <div style={{ display: 'flex', gap: '8px' }}>
-                        <Button type="primary" size="small" onClick={() => {
+                        <Button onClick={() => {
                             if (index === '2') {
                                 setIsEditInput(false);
                             } else if (index === '3') {
@@ -118,7 +118,6 @@ const PluginToolEdit: React.FC = () => {
                         }}>取消</Button>
                         <Button
                             type="primary"
-                            size="small"
                             onClick={(e) => {
                                 e.stopPropagation();
 
@@ -159,25 +158,27 @@ const PluginToolEdit: React.FC = () => {
                         </Button>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', gap: '8px' }} onClick={()=>{
+                    <div style={{ display: 'flex', gap: '8px' }} >
 
-                        if (index === '1' && !editStates['1']) {
-                            formBasicInfo.setFieldsValue({
-                                id: pluginToolInfo?.data?.data?.id,
-                                name: pluginToolInfo?.data?.data?.name,
-                                description: pluginToolInfo?.data?.data?.description,
-                                basePath: pluginToolInfo?.data?.data?.basePath ? pluginToolInfo?.data?.data?.basePath : `/${pluginToolInfo?.data?.data?.name}`,
-                                baseUrl: pluginToolInfo?.data?.aiPlugin?.baseUrl,
-                                requestMethod: pluginToolInfo?.data?.data?.requestMethod,
-                            });
-                        }else if (index === '2') {
-                            setIsEditInput(true);
-                        } else if (index === '3'){
-                            setIsEditOutput(true);
-                        }
-                    }}>
-                        <EditOutlined />
-                        <span>编辑</span>
+                        <Button type="primary"  icon={<EditOutlined/>} onClick={()=>{
+
+                            if (index === '1' && !editStates['1']) {
+                                formBasicInfo.setFieldsValue({
+                                    id: pluginToolInfo?.data?.data?.id,
+                                    name: pluginToolInfo?.data?.data?.name,
+                                    description: pluginToolInfo?.data?.data?.description,
+                                    basePath: pluginToolInfo?.data?.data?.basePath ? pluginToolInfo?.data?.data?.basePath : `/${pluginToolInfo?.data?.data?.name}`,
+                                    baseUrl: pluginToolInfo?.data?.aiPlugin?.baseUrl,
+                                    requestMethod: pluginToolInfo?.data?.data?.requestMethod,
+                                });
+                            }else if (index === '2') {
+                                setIsEditInput(true);
+                            } else if (index === '3'){
+                                setIsEditOutput(true);
+                            }
+                        }}>
+                            编辑
+                        </Button>
                     </div>
                 )}
             </span>
@@ -333,14 +334,14 @@ const PluginToolEdit: React.FC = () => {
 
     return (
         <>
-            <div style={{ backgroundColor: '#F7F7F7',height: '100vh', overflow: 'auto', padding: '24px' }}>
+            <div style={{ backgroundColor: '#F7F7F7',height: '100%', overflow: 'hidden', padding: '24px' }}>
 
                 <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, paddingBottom: '24px'}}>
                     <div>
                         <Button onClick={() => navigate(-1)}  icon={<LeftOutlined/>}>返回</Button>
                     </div>
                     <div>
-                        <Button onClick={() => {
+                        <Button icon={<PlayCircleOutlined/>} onClick={() => {
                             doPostSearch(
                                 {  data: {
                                         aiPluginToolId: id
@@ -353,15 +354,15 @@ const PluginToolEdit: React.FC = () => {
                     </div>
                 </div>
 
-                <div className={"plugin-tool-edit-collapse"}>
+                <div className={"plugin-tool-edit-collapse"} style={{height: '100%', paddingBottom: '50px', overflow: 'auto'}}>
                     <Collapse
                         bordered={false}
+                        collapsible="header"
                         defaultActiveKey={['1', '2', '3']}
                         items={collapseItems.map(item => ({
                             ...item,
                         }))}
-
-                        style={{ backgroundColor: '#F7F7F7' }} // 整体背景色（可选）
+                        className="plugin-collapse"
                     />
                 </div>
 
