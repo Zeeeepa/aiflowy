@@ -2,11 +2,9 @@
 package tech.aiflowy.ai.controller;
 
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.config.impl.WxMpDefaultConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +12,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tech.aiflowy.ai.entity.AiBot;
 import tech.aiflowy.ai.message.thirdPart.MessageHandlerService;
-import tech.aiflowy.ai.utils.MessageTypeConstants;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import cn.dev33.satoken.annotation.SaIgnore;
+import tech.aiflowy.ai.service.AiBotApiKeyService;
+import org.springframework.util.StringUtils;
+import tech.aiflowy.ai.service.AiBotService;
+import tech.aiflowy.common.web.exceptions.BusinessException;
 
 @RestController
 @RequestMapping("/api/v1/message")
@@ -35,6 +38,12 @@ public class ThirdPartMessageController {
 
     @Resource
     private MessageHandlerService messageHandlerService;
+
+    @Resource
+    private AiBotApiKeyService aiBotApiKeyService;
+
+    @Resource
+    private AiBotService aiBotService;
 
 
     /**
@@ -90,10 +99,51 @@ public class ThirdPartMessageController {
         @RequestParam ("apiKey") String apiKey
     ) {
 
-        if (wxMpService == null) {
+        if (!StringUtils.hasLength(apiKey)) {
             log.error("微信服务未配置");
             return "";
         }
+
+        // 解析 apiKey
+        BigInteger botId = aiBotApiKeyService.decryptApiKey(apiKey);
+        if (botId == null){
+            log.error("apiKey 解析失败");
+            return "";
+        }
+
+        // 查询 bot信息
+        AiBot aiBot = aiBotService.getById(botId);
+        if (aiBot == null || aiBot.getOptions() == null){
+            log.error("bot 不存在或未配置微信公众号信息");
+            return "";
+        }
+
+        Map<String, Object> options = aiBot.getOptions();
+
+        
+        String appId = (String) options.get("weChatMpAppId");
+        String secret = (String) options.get("weChatMpSecret");
+        String token = (String) options.get("weChatMpToken");
+        String aesKey = (String) options.get("weChatMpAesKey");
+
+        // 获取 weChat 配置
+        if (
+            !StringUtils.hasText(appId) ||
+                !StringUtils.hasText(secret) ||
+                !StringUtils.hasText(token)
+            ) {
+                throw new BusinessException("未配置完整微信公众号信息！");
+        }
+
+        WxMpDefaultConfigImpl config = new WxMpDefaultConfigImpl();
+        config.setAppId(appId); // 设置微信公众号的appid
+        config.setSecret(secret); // 设置微信公众号的app corpSecret
+        config.setToken(token); // 设置微信公众号的token
+        config.setAesKey(aesKey); // 设置微信公众号的EncodingAESKey
+
+        wxMpService.setWxMpConfigStorage(config);
+        
+
 
         log.info("微信签名验证: signature={}, timestamp={}, nonce={}, echostr={}",
             signature, timestamp, nonce, echostr);

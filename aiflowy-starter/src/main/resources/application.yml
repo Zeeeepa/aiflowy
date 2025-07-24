@@ -124,12 +124,6 @@ voiceInput:
       appId:
       token:
       cluster:
-weChat:
-  mp:
-    enabled: 
-    appId: 
-    secret:
-    token:
-    aesKey:
+
 
 

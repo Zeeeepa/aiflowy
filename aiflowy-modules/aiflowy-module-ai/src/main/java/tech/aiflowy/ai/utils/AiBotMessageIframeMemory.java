@@ -124,15 +124,6 @@ public class AiBotMessageIframeMemory implements ChatMemory {
             aiMessage.setContent(((SystemMessage) message).getContent());
         }
         if (StrUtil.isNotEmpty(aiMessage.getContent())) {
-//            AiBotConversationMessage aiBotConversation = aiBotConversationMessageService.getById(aiMessage.getSessionId());
-//            if (aiBotConversation == null) {
-//                AiBotConversationMessage conversation = new AiBotConversationMessage();
-//                conversation.setSessionId(aiMessage.getSessionId());
-//                conversation.setTitle(aiMessage.getContent());
-//                conversation.setBotId(aiMessage.getBotId());
-//                conversation.setCreated(new Date());
-//                aiBotConversationMessageService.save(conversation);
-//            }
 
             List<AiBotConversationMessage> aiBotConversationMessages = (List<AiBotConversationMessage>) cache.get(tempUserId + ":" + botId);
             if (aiBotConversationMessages == null || aiBotConversationMessages.isEmpty()) {
