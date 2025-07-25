@@ -155,11 +155,12 @@ public class AiLlmServiceImpl extends ServiceImpl<AiLlmMapper, AiLlm> implements
 
         try {
             AiMessageResponse chatResponse = transLlm.chat(textPrompt);
-            JSONObject jsonObject = JSON.parseObject(chatResponse.getResponse());
-            if (jsonObject.get("object") == null || "".equals((String) jsonObject.get("object"))) {
+            String content = chatResponse.getMessage().getContent();
+            String fullContent = chatResponse.getMessage().getFullContent();
+            if (!StringUtils.hasLength(content) && !StringUtils.hasLength(fullContent)){
                 throw new BusinessException("校验未通过，请前往后端日志查看详情！");
             }
-            log.info("校验结果：{}", jsonObject);
+            log.info("校验结果：response:{},aiMessage:{}", chatResponse.getResponse(),chatResponse.getMessage());
         } catch (Exception e) {
             log.error("模型配置校验失败:{}", e.getMessage());
             throw new BusinessException("校验未通过，请前往后端日志查看详情！");
