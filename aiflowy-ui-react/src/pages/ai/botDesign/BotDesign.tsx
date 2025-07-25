@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 
 import {useLayout} from '../../../hooks/useLayout.tsx';
 import {Row} from 'antd/lib/index';
 import {App, Avatar, Badge, Button, Col, Collapse, Form, Input, Modal, Select, Space, Switch, Tooltip} from 'antd';
-import {DeleteOutlined, ExclamationCircleFilled, PlusOutlined} from "@ant-design/icons";
+import {CopyOutlined, DeleteOutlined, ExclamationCircleFilled, PlusOutlined, SettingOutlined} from "@ant-design/icons";
 import {
     useDetail,
     useGetManual,
@@ -191,7 +191,7 @@ const BotDesign: React.FC = () => {
         })
     }
 
-    const {doPost: updateBotOptions} = usePostManual("/api/v1/aiBot/updateOptions")
+    const {doPost: updateBotOptions, loading: updateBotOptionsLoading} = usePostManual("/api/v1/aiBot/updateOptions")
     const doUpdateBotOptions = (values: any) => {
         updateBotOptions({
             data: {
@@ -251,9 +251,9 @@ const BotDesign: React.FC = () => {
     const defaultWelcomeMessage = "欢迎使用AIFlowy";
 
 
-    const {doPost:addApiKey} = usePost("/api/v1/aiBotApiKey/addKey")
-    const {result:apiKeyResult,doGet:getApiKeyList} = useGetManual("/api/v1/aiBotApiKey/list")
-    const {doRemove:doRemoveApiKey} = useRemove("aiBotApiKey")
+    const {doPost: addApiKey} = usePost("/api/v1/aiBotApiKey/addKey")
+    const {result: apiKeyResult, doGet: getApiKeyList} = useGetManual("/api/v1/aiBotApiKey/list")
+    const {doRemove: doRemoveApiKey} = useRemove("aiBotApiKey")
 
     useEffect(() => {
 
@@ -311,6 +311,12 @@ const BotDesign: React.FC = () => {
     const [voicePlayEnabled, setVoicePlayEnabled] = useState<boolean>(false)
     const [voicePlaySwitchLoading, setVoicePlaySwitchLoading] = useState<boolean>(false)
     const aiProChatRef = useRef<AiProChatHandle>(null);
+
+
+    const [weChatMpForm] = Form.useForm();
+    const [weChatMpModalOpen, setWeChatMpModalOpen] = useState<boolean>(false);
+
+
 
     const handleClearChat = async () => {
         await aiProChatRef.current?.clearChatMessage();
@@ -860,7 +866,7 @@ const BotDesign: React.FC = () => {
                             },
                             {
                                 key: 'api',
-                                label: <CollapseLabel text="ApiKey" onClick={() => {
+                                label: <CollapseLabel text="ApiKey" badgeCount={apiKeyResult?.data?.length ?? 0} onClick={() => {
 
                                     Modal.confirm({
                                         title: "确认",
@@ -868,10 +874,10 @@ const BotDesign: React.FC = () => {
                                         content: "将要新增用于调用此 bot 的 apiKey , 是否确认?",
                                         centered: true,
                                         maskClosable: true,
-                                        onOk:  async () => {
-                                           const resp = await addApiKey({
-                                                data:{
-                                                    botId:params.id,
+                                        onOk: async () => {
+                                            const resp = await addApiKey({
+                                                data: {
+                                                    botId: params.id,
                                                 }
                                             })
 
@@ -899,48 +905,53 @@ const BotDesign: React.FC = () => {
                                             justifyContent: "center",
                                             flexDirection: "column"
                                         }}>
-                                            {apiKeyResult && apiKeyResult?.data?.length ? apiKeyResult?.data?.map((item:any) => {
-                                                return (
-                                                    <>
-                                                        <div key={item.id} style={{
-                                                            width: "100%",
-                                                            background: "#ffffff",
-                                                            height: "32px",
-                                                            borderRadius: "4px",
-                                                            marginTop: "12px",
-                                                            boxSizing: "border-box",
-                                                            padding: "6px 12px 6px 11px",
-                                                            display: "flex",
-                                                            justifyContent: "space-between",
-                                                            alignItems: "center",
-                                                        }}>
-                                                            <div style={{height:"20px",color:"#1a1a1a",fontSize:"14px"}}>{item.apiKey}</div>
-                                                            <Button color="danger" variant="link"  icon={<CustomDeleteIcon/>} onClick={() => {
-
-                                                                Modal.confirm({
-                                                                    title: "确认",
-                                                                    icon: <ExclamationCircleFilled/>,
-                                                                    content: "将删除此 apiKey ,此操作不可逆, 是否确认?",
-                                                                    centered: true,
-                                                                    maskClosable: true,
-                                                                    onOk:  async () => {
-                                                                        doRemoveApiKey({
-                                                                            data:{
-                                                                                id:item.id,
-                                                                            }
-                                                                        }).then(() => {
-                                                                            getApiKeyList().then();
-                                                                        })
-                                                                    }
-                                                                })
-
+                                            {apiKeyResult && apiKeyResult?.data?.length ? apiKeyResult?.data?.map((item: any) => {
+                                                    return (
+                                                        <Fragment key={item.id}>
+                                                            <div  style={{
+                                                                width: "100%",
+                                                                background: "#ffffff",
+                                                                height: "32px",
+                                                                borderRadius: "4px",
+                                                                marginTop: "12px",
+                                                                boxSizing: "border-box",
+                                                                padding: "6px 12px 6px 11px",
+                                                                display: "flex",
+                                                                justifyContent: "space-between",
+                                                                alignItems: "center",
                                                             }}>
-                                                                删除
-                                                            </Button>
-                                                        </div>
-                                                    </>
-                                                )
-                                            })
+                                                                <div style={{
+                                                                    height: "20px",
+                                                                    color: "#1a1a1a",
+                                                                    fontSize: "14px"
+                                                                }}>{item.apiKey}</div>
+                                                                <Button color="danger" variant="link"
+                                                                        icon={<CustomDeleteIcon/>} onClick={() => {
+
+                                                                    Modal.confirm({
+                                                                        title: "确认",
+                                                                        icon: <ExclamationCircleFilled/>,
+                                                                        content: "将删除此 apiKey ,此操作不可逆, 是否确认?",
+                                                                        centered: true,
+                                                                        maskClosable: true,
+                                                                        onOk: async () => {
+                                                                            doRemoveApiKey({
+                                                                                data: {
+                                                                                    id: item.id,
+                                                                                }
+                                                                            }).then(() => {
+                                                                                getApiKeyList().then();
+                                                                            })
+                                                                        }
+                                                                    })
+
+                                                                }}>
+                                                                    删除
+                                                                </Button>
+                                                            </div>
+                                                        </Fragment>
+                                                    )
+                                                })
                                                 :
                                                 <div style={{color: '#999', textAlign: 'center', padding: '8px 0'}}>
                                                     暂无 apiKey，点击右上角 + 号新增 apiKey
@@ -950,6 +961,94 @@ const BotDesign: React.FC = () => {
 
                                         </div>
                                     </div>
+                                </div>
+                            },
+                            {
+                                key: 'weChat',
+                                label: <CollapseLabel text="发布到微信公众号" plusDisabled onClick={() => {
+                                }}/>,
+                                children: <div>
+                                    {
+                                        (detail?.data?.options?.weChatMpAppId && detail?.data?.options?.weChatMpSecret && detail?.data?.options?.weChatMpToken)
+                                            ?
+                                            <div style={{
+                                                width: "100%",
+                                                background: "#ffffff",
+                                                height: "32px",
+                                                borderRadius: "4px",
+                                                marginTop: "12px",
+                                                boxSizing: "border-box",
+                                                padding: "6px 12px 6px 11px",
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                            }}>
+                                                <div>已配置</div>
+                                                <div style={{display: "flex", gap: "5px"}}>
+                                                    <Button color="primary" variant="link" icon={<SettingOutlined/>}
+                                                            onClick={() => {
+
+                                                                if (!botSavePermission) {
+                                                                    message.error("你没有配置 bot 的权限！")
+                                                                    return;
+                                                                }
+
+                                                                setWeChatMpModalOpen(true)
+                                                            }}>
+                                                        编辑
+                                                    </Button>
+
+                                                    <Button color="danger" variant="link" icon={<CustomDeleteIcon/>}
+                                                            onClick={() => {
+
+                                                                if (!botSavePermission) {
+                                                                    message.error("你没有配置 bot 的权限！")
+                                                                    return;
+                                                                }
+                                                                weChatMpForm.setFieldValue("weChatMpAppId", "");
+                                                                weChatMpForm.setFieldValue("weChatMpSecret", "");
+                                                                weChatMpForm.setFieldValue("weChatMpToken", "");
+                                                                weChatMpForm.setFieldValue("weChatMpAesKey", "");
+
+                                                                const fieldsValue = weChatMpForm.getFieldsValue(['weChatMpAppId','weChatMpSecret','weChatMpToken','weChatMpAesKey']);
+                                                                // 清空 bot 上的微信公众号配置
+                                                                doUpdateBotOptions(fieldsValue);
+                                                                reGetDetail().then();
+
+                                                            }}>
+                                                        移除
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            :
+                                            <div style={{
+                                                width: "100%",
+                                                background: "#ffffff",
+                                                height: "32px",
+                                                borderRadius: "4px",
+                                                marginTop: "12px",
+                                                boxSizing: "border-box",
+                                                padding: "6px 12px 6px 11px",
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                            }}>
+                                                <div>未配置</div>
+                                                <Button color="primary" variant="link" icon={<SettingOutlined/>}
+                                                        onClick={() => {
+
+                                                            if (!botSavePermission) {
+                                                                message.error("你没有配置 bot 的权限！")
+                                                                return;
+                                                            }
+
+                                                            setWeChatMpModalOpen(true)
+                                                        }}>
+                                                    编辑
+                                                </Button>
+                                            </div>
+
+                                    }
                                 </div>
                             },
                         ]} bordered={false}/>
@@ -1070,6 +1169,76 @@ const BotDesign: React.FC = () => {
                         <Space style={{display: 'flex', justifyContent: 'flex-end'}}>
                             <Button onClick={handleProblemCancel}>取消</Button>
                             <Button type="primary" htmlType="submit" style={{marginRight: 8}}>
+                                确定
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Form>
+            </Modal>
+            <Modal
+                title={"微信公众号配置"}
+                closable={!updateBotOptionsLoading}
+                open={weChatMpModalOpen}
+                footer={null}
+                afterOpenChange={(open) => {
+                    if (open) {
+                        setTimeout(() => {
+                            const formData = {
+                                weChatMpAppId: detail?.data?.options?.weChatMpAppId || '',
+                                weChatMpSecret: detail?.data?.options?.weChatMpSecret || '',
+                                weChatMpToken: detail?.data?.options?.weChatMpToken || '',
+                                weChatMpAesKey: detail?.data?.options?.weChatMpAesKey || ''
+                            };
+                            weChatMpForm.setFieldsValue(formData);
+                        }, 0);
+                    }
+                }}
+                onCancel={
+                    () => {
+                        setWeChatMpModalOpen(false)
+                    }
+                }
+            >
+                <Form layout="vertical" form={weChatMpForm} disabled={!botSavePermission}
+                      onFinish={async (values: Record<string, string>) => {
+                          doUpdateBotOptions(values);
+                          await reGetDetail();
+                          setWeChatMpModalOpen(false);
+                      }}
+                >
+                    <Form.Item label={<div>接口地址(将这个地址复制到微信公众平台)<Button icon={<CopyOutlined />} color="primary" variant="link" onClick={async () => {
+                        try {
+                            await navigator.clipboard.writeText(`${import.meta.env.VITE_APP_SERVER_ENDPOINT}/api/v1/message/wechat?apiKey=此处填写bot上生成的apiKey`);
+                            message.success("复制成功")
+                        }catch (error){
+                            message.error("复制失败")
+                        }
+
+
+                    }}/> </div>}>
+                        <TextArea style={{resize: "none"}} disabled={true}
+                                  value={`${import.meta.env.VITE_APP_SERVER_ENDPOINT}/api/v1/message/wechat?apiKey=此处填写bot上生成的apiKey`}
+                        />
+                    </Form.Item>
+                    <Form.Item label={"AppId"} key={"weChatMpAppId"} name={"weChatMpAppId"} required={true}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label={"AppSecret"} key={"weChatMpSecret"} name={"weChatMpSecret"} required={true}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label={"Token"} key={"weChatMpToken"} name={"weChatMpToken"} required={true}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label={"EncodingAESKey"} name={"EncodingAESKey"} key={"weChatMpAesKey"}>
+                        <Input/>
+                    </Form.Item>
+                    <Form.Item label={null}>
+                        <Space style={{display: 'flex', justifyContent: 'flex-end'}}>
+                            <Button onClick={() => {
+                                setWeChatMpModalOpen(false)
+                            }} disabled={updateBotOptionsLoading}>取消</Button>
+                            <Button type="primary" htmlType="submit" style={{marginRight: 8}}
+                                    loading={updateBotOptionsLoading}>
                                 确定
                             </Button>
                         </Space>
