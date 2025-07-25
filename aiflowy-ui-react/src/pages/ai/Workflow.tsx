@@ -11,6 +11,8 @@ import TextArea from "antd/es/input/TextArea";
 import {useGetManual, usePostFile} from "../../hooks/useApis.ts";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 import {SysJobModal} from "../system/SysJobModal.tsx";
+import workflowIcon from "../../assets/workflowIcon.png"
+import workflowNoData from "../../assets/workflowNoData.png"
 
 const columnsColumns: ColumnsConfig<any> = [
     {
@@ -212,7 +214,7 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                           editModalTitle={"新增/编辑工作流"}
                           columnsConfig={columnsColumns}
                           addButtonText={"新增工作流"}
-                          defaultAvatarSrc={"/src/assets/workflowIcon.png"}
+                          defaultAvatarSrc={workflowIcon}
                           editLayout={{labelWidth: 140}}
                           optionsText={{
                               addCardTitle: "创建工作流",
@@ -220,7 +222,7 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                               noDataAddButtonText: "创建工作流"
                           }}
                           optionIconPath={{
-                              noDataIconPath: "/src/assets/workflowNoData.png"
+                              noDataIconPath: workflowNoData
                           }}
                           customMenuItems={menuItems}
                           customActions={(item, existNodes) => {

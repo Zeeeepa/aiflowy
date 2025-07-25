@@ -3,6 +3,7 @@ import { Button, Input, Table } from 'antd';
 import type { TableColumnsType } from 'antd';
 import {usePostManual} from "../../../hooks/useApis.ts";
 import JsonViewer from "./JsonViewer.tsx";
+import {PlayCircleOutlined} from "@ant-design/icons";
 
 export interface DataType {
     key: string;
@@ -146,7 +147,7 @@ const CustomTable: React.FC<CustomTableProps> = ({ data, pluginToolTitle, plugin
                             padding: '10px',
                         }}
                     >
-                        <Button type="primary" size="middle" onClick={handleSubmit}>
+                        <Button type="primary" size="middle" onClick={handleSubmit} icon={<PlayCircleOutlined />}>
                             运行
                         </Button>
                     </div>

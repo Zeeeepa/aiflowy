@@ -5,7 +5,8 @@ import CardPage from "../../components/CardPage";
 import {Button, Form, Input, Modal, Space} from "antd";
 import {useGetManual} from "../../hooks/useApis.ts";
 import PreviewContainer from "./aiKnowledge/PreviewContainer.tsx";
-
+import knowledgeIcon from "../../assets/knowledgeIcon.png"
+import knowledgeNoData from "../../assets/knowledgeNoData.png"
 
 const columnsColumns: ColumnsConfig<any> = [
     {
@@ -242,7 +243,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                       columnsConfig={columnsColumns}
                       addButtonText={"新增知识库"}
                       avatarKey="icon"
-                      defaultAvatarSrc={"/src/assets/knowledgeIcon.png"}
+                      defaultAvatarSrc={knowledgeIcon}
                       editLayout={{labelWidth: 140}}
                       optionsText={{
                           addCardTitle: "创建知识库",
@@ -250,7 +251,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                           noDataAddButtonText: "创建知识库"
                       }}
                       optionIconPath={{
-                          noDataIconPath: "/src/assets/knowledgeNoData.png"
+                          noDataIconPath: knowledgeNoData
                       }}
                       customActions={(item, existNodes) => {
                           return [

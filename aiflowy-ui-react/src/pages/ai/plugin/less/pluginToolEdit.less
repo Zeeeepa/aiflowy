@@ -10,13 +10,11 @@
 }
 .compact-view {
   div {
-    margin-bottom: 8px;
-    line-height: 1.4;
-    font-size: 14px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    height: 52px;
+    line-height: 52px;
+    //&:last-child {
+    //  margin-bottom: 20px;
+    //}
   }
 
   strong {
@@ -35,6 +33,38 @@
   margin-bottom: 0px;
 }
 
+//.basic-info-update{
+//  margin-bottom: 20px;
+//  height: 20px;
+//  line-height: 20px;
+//}
+
 .plugin-tool-edit-collapse .ant-collapse-header {
-  padding: 12px 0px!important;
+  padding: 12px;
+  .ant-collapse-header-text{
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 500;
+    font-size: 16px;
+    color: #1A1A1A;
+    line-height: 22px;
+    text-align: left;
+    font-style: normal;
+  }
+}
+
+.plugin-collapse {
+
+  // 移除默认边框和内边距
+  .ant-collapse-item {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+  }
+
+
+}
+
+.plugin-add-button{
+  background: rgba(0,102,255,0.08);
+  color: #0066FF;
 }

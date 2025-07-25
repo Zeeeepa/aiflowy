@@ -8,7 +8,7 @@ import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
 import {Space} from "antd";
 import noDataIcon from "../../assets/BotNoData.png"
-
+import botIcon from "../../assets/botIcon.png"
 
 const columnsColumns: ColumnsConfig<any> = [
     {
@@ -59,7 +59,7 @@ const Bots: React.FC<{ paramsToUrl: boolean }> = () => {
                       columnsConfig={columnsColumns}
                       addButtonText={"新增 Bot"}
                       avatarKey="icon"
-                      defaultAvatarSrc={"/src/assets/botIcon.png"}
+                      defaultAvatarSrc={botIcon}
                       editLayout={{labelWidth: 80}}
                       optionsText={{
                           addCardTitle: "创建Bots",

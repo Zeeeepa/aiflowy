@@ -41,6 +41,7 @@ import CustomClassifyIcon from "../../../components/CustomIcon/CustomClassifyIco
 import pluginNoDataLogon from '../../../assets/pluginNoData.png'
 import KeywordSearchForm from "../../../components/AntdCrud/KeywordSearchForm.tsx";
 import CustomCardDropdownMenuDeleteIcon from "../../../components/CustomIcon/CustomCardDropdownMenuDeleteIcon.tsx";
+import pluginIcon from "../../../assets/pluginIcon.png"
 
 interface Category {
 	id: number;
@@ -654,7 +655,7 @@ const Plugin: React.FC = () => {
 													]}
 												>
 													<Card.Meta
-														avatar={<Avatar src={item.icon || "/src/assets/pluginIcon.png"} style={{width: '48px', height: '48px'}} />}
+														avatar={<Avatar src={item.icon || pluginIcon} style={{width: '48px', height: '48px'}} />}
 														title={item.name}
 														description={
 															<Tooltip title={item.description}>
@@ -727,13 +728,24 @@ const Plugin: React.FC = () => {
 						open={addPluginIsOpen}
 						onOk={handleAddPluginOk}
 						onCancel={handleAddPluginCancel}
-						footer={null}
+						footer={<Space>
+							<Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
+								<Button onClick={handleAddPluginCancel}>取消</Button>
+								<Button type="primary" onClick={()=>form.submit()} style={{ marginRight: 8 }}>
+									确定
+								</Button>
+							</Space>
+						</Space>}
+						centered={true}
+						width={'40%'}
+
 					>
+
 						<Form
 							form={form}
 							layout="vertical"
 							name="basic"
-							style={{ width: '100%' }}
+							style={{ width: '100%', height: '80vh', overflowY: 'auto', padding: '20px' }}
 							initialValues={{ authType: 'none', position: 'headers' }}
 							onFinish={onFinish}
 							onFinishFailed={onFinishFailed}
@@ -838,14 +850,14 @@ const Plugin: React.FC = () => {
 									</Form.Item>
 								</>
 							)}
-							<Form.Item label={null}>
-								<Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-									<Button onClick={handleAddPluginCancel}>取消</Button>
-									<Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
-										确定
-									</Button>
-								</Space>
-							</Form.Item>
+							{/*<Form.Item label={null}>*/}
+							{/*	<Space style={{ display: 'flex', justifyContent: 'flex-end' }}>*/}
+							{/*		<Button onClick={handleAddPluginCancel}>取消</Button>*/}
+							{/*		<Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>*/}
+							{/*			确定*/}
+							{/*		</Button>*/}
+							{/*	</Space>*/}
+							{/*</Form.Item>*/}
 						</Form>
 					</Modal>
 

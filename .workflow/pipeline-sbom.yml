@@ -1,0 +1,24 @@
+version: '1.0'
+name: pipeline-sbom
+displayName: pipeline-sbom
+triggers:
+  trigger: manual
+  push:
+    branches:
+      prefix:
+        - ''
+stages:
+  - name: stage-4d6a9b8b
+    displayName: 未命名
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: sc@sbom
+        name: sbom
+        displayName: SBOM 扫描
+        scan: code
+        codePath: ./
+        notify: []
+        strategy:
+          retry: '0'
