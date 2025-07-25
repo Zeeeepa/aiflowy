@@ -249,3 +249,17 @@ INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300013092310
 -- 素材库相关菜单 end -
 
 -- v1.1.0 data end --
+
+-- v1.1.3 data start --
+
+-- 数据中枢菜单 --
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300817858217091072, 259169540360232960, 0, '数据中枢', '/datacenter/table', '', 'BookFilled', 1, '', 53, 0, '2025-07-10 15:23:46', 1, '2025-07-10 15:24:36', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300818298270883840, 300817858217091072, 1, '查询', '', '', '', 1, '/api/v1/datacenterTable/query', 0, 0, '2025-07-10 15:25:31', 1, '2025-07-10 15:25:31', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300818387710222336, 300817858217091072, 1, '保存', '', '', '', 1, '/api/v1/datacenterTable/save', 0, 0, '2025-07-10 15:25:53', 1, '2025-07-10 15:25:53', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300818488214134784, 300817858217091072, 1, '删除', '', '', '', 1, '/api/v1/datacenterTable/remove', 0, 0, '2025-07-10 15:26:17', 1, '2025-07-10 15:26:17', 1, '', 0);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300817858284199936, 1, 300817858217091072);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300818298325409792, 1, 300818298270883840);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300818387789914112, 1, 300818387710222336);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300818488344158208, 1, 300818488214134784);
+
+-- v1.1.3 data end --

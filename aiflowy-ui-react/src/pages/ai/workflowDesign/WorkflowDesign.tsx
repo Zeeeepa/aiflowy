@@ -26,11 +26,15 @@ import '../style/workflow.design.css'
 import {ConfirmItem} from "./components/ConfirmItem.tsx";
 import {ConfirmItemMulti} from "./components/ConfirmItemMulti.tsx";
 import confirmIcon from '../../../assets/confirm-icon.png'
+import {SaveToDatacenterNode} from "./customNode/saveToDatacenter.ts"
+import {SearchDatacenterNode} from "./customNode/searchDatacenter.ts";
+
 export const WorkflowDesign = () => {
 
     const {message} = App.useApp()
     const params = useParams();
 
+    const {result: tables} = useGet('/api/v1/datacenterTable/list')
     const {result: workflow} = useDetail("aiWorkflow", params.id);
     const {doUpdate} = useUpdate("aiWorkflow");
     const {result: llms} = useGet('/api/v1/aiLlm/list')
@@ -434,6 +438,24 @@ export const WorkflowDesign = () => {
         ...customNode,
         'plugin-node': PluginNode({
             onChosen: handleChosen
+        }),
+        'save-to-datacenter-node': SaveToDatacenterNode({
+            tables: tables?.data?[
+                { label: '请选择数据表', value: '' },
+                ...tables.data.map((item: any) => ({
+                    label: item.tableName,
+                    value: item.id
+                }))
+            ]:[{label: '请选择数据表', value: ''}]
+        }),
+        'search-datacenter-node': SearchDatacenterNode({
+            tables: tables?.data?[
+                { label: '请选择数据表', value: '' },
+                ...tables.data.map((item: any) => ({
+                    label: item.tableName,
+                    value: item.id
+                }))
+            ]:[{label: '请选择数据表', value: ''}]
         })
     };
 

@@ -19,6 +19,7 @@
         <module>aiflowy-module-common</module>
         <module>aiflowy-module-ai</module>
         <module>aiflowy-module-job</module>
+        <module>aiflowy-module-datacenter</module>
     </modules>
 
     <properties>

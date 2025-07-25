@@ -886,4 +886,47 @@ CREATE TABLE `tb_ai_bot_api_key`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'bot apiKey 表' ROW_FORMAT = Dynamic;
 -- v1.1.2 ddl end --
 
+-- v1.1.3 ddl start  -----------
+
+-- ----------------------------
+-- Table structure for tb_datacenter_table since v1.1.3
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_datacenter_table`;
+CREATE TABLE `tb_datacenter_table`  (
+  `id` bigint UNSIGNED NOT NULL COMMENT '主键',
+  `dept_id` bigint UNSIGNED NOT NULL COMMENT '部门ID',
+  `tenant_id` bigint UNSIGNED NOT NULL COMMENT '租户ID',
+  `table_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '数据表名',
+  `table_desc` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '数据表描述',
+  `actual_table` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '物理表名',
+  `status` tinyint NOT NULL DEFAULT 0 COMMENT '数据状态',
+  `created` datetime NOT NULL COMMENT '创建时间',
+  `created_by` bigint UNSIGNED NOT NULL COMMENT '创建者',
+  `modified` datetime NOT NULL COMMENT '修改时间',
+  `modified_by` bigint UNSIGNED NOT NULL COMMENT '修改者',
+  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '扩展项',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '数据中枢表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_datacenter_table_fields since v1.1.3
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_datacenter_table_fields`;
+CREATE TABLE `tb_datacenter_table_fields`  (
+  `id` bigint UNSIGNED NOT NULL COMMENT '主键',
+  `table_id` bigint UNSIGNED NOT NULL COMMENT '数据表ID',
+  `field_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '字段名称',
+  `field_desc` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '字段描述',
+  `field_type` int NOT NULL COMMENT '字段类型',
+  `required` int NOT NULL DEFAULT 0 COMMENT '是否必填',
+  `created` datetime NOT NULL COMMENT '创建时间',
+  `created_by` bigint UNSIGNED NOT NULL COMMENT '创建者',
+  `modified` datetime NOT NULL COMMENT '修改时间',
+  `modified_by` bigint UNSIGNED NOT NULL COMMENT '修改者',
+  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '扩展项',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '数据中枢字段表' ROW_FORMAT = Dynamic;
+
+-- v1.1.3 ddl end --------------
+
 SET FOREIGN_KEY_CHECKS = 1;

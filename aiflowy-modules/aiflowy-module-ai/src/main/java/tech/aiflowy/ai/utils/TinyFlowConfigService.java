@@ -74,6 +74,10 @@ public class TinyFlowConfigService {
         SqlNodeParser sqlNodeParser = new SqlNodeParser();
         // 下载文件节点
         DownloadNodeParser downloadNodeParser = new DownloadNodeParser();
+        // 保存数据节点
+        SaveToDatacenterNodeParser saveDaveParser = new SaveToDatacenterNodeParser();
+        // 查询数据节点
+        SearchDatacenterNodeParser searchDatacenterNodeParser = new SearchDatacenterNodeParser();
 
         ChainParser chainParser = tinyflow.getChainParser();
         chainParser.addNodeParser(docNodeParser.getNodeName(), docNodeParser);
@@ -81,6 +85,8 @@ public class TinyFlowConfigService {
         chainParser.addNodeParser(pluginToolNodeParser.getNodeName(), pluginToolNodeParser);
         chainParser.addNodeParser(sqlNodeParser.getNodeName(), sqlNodeParser);
         chainParser.addNodeParser(downloadNodeParser.getNodeName(), downloadNodeParser);
+        chainParser.addNodeParser(saveDaveParser.getNodeName(), saveDaveParser);
+        chainParser.addNodeParser(searchDatacenterNodeParser.getNodeName(), searchDatacenterNodeParser);
     }
 
     public void setSearchEngineProvider(Tinyflow tinyflow) {
