@@ -199,21 +199,24 @@ CREATE TABLE `TB_QRTZ_TRIGGERS`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_bot`;
 CREATE TABLE `tb_ai_bot`  (
-  `id` bigint(0) UNSIGNED NOT NULL COMMENT '主键ID',
-  `dept_id` bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
-  `tenant_id` bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
-  `title` varchar(128) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '标题',
-  `description` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '描述',
-  `icon` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '图标',
-  `llm_id` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT 'LLM ID',
-  `llm_options` text CHARACTER SET utf8mb4 NULL COMMENT 'LLM选项',
-  `options` text CHARACTER SET utf8mb4 NULL COMMENT '选项',
-  `created` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `created_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建者ID',
-  `modified` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
-  `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+  `id` bigint UNSIGNED NOT NULL COMMENT '主键ID',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '别名',
+  `dept_id` bigint UNSIGNED NOT NULL COMMENT '部门ID',
+  `tenant_id` bigint UNSIGNED NOT NULL COMMENT '租户ID',
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
+  `description` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+  `icon` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标',
+  `llm_id` bigint UNSIGNED NULL DEFAULT NULL COMMENT 'LLM ID',
+  `llm_options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT 'LLM选项',
+  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '选项',
+  `created` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `created_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建者ID',
+  `modified` datetime NULL DEFAULT NULL COMMENT '修改时间',
+  `modified_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
+  `status` tinyint(1) NULL DEFAULT NULL COMMENT '数据状态',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `tb_ai_bot_alias_uindex`(`alias`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_ai_bot_conversation_message
@@ -396,28 +399,30 @@ CREATE TABLE `tb_ai_document_history`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_knowledge`;
 CREATE TABLE `tb_ai_knowledge`  (
-  `id` bigint(0) UNSIGNED NOT NULL,
-  `dept_id` bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
-  `tenant_id` bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
-  `icon` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT 'ICON',
-  `title` varchar(128) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '标题',
-  `description` varchar(512) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '描述',
-  `slug` varchar(128) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT 'URL 别名',
+  `id` bigint UNSIGNED NOT NULL,
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '别名',
+  `dept_id` bigint UNSIGNED NOT NULL COMMENT '部门ID',
+  `tenant_id` bigint UNSIGNED NOT NULL COMMENT '租户ID',
+  `icon` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'ICON',
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
+  `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+  `slug` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'URL 别名',
   `vector_store_enable` tinyint(1) NULL DEFAULT NULL COMMENT '是否启用向量存储',
-  `vector_store_type` varchar(32) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '向量数据库类型',
-  `vector_store_collection` varchar(32) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '向量数据库集合',
-  `vector_store_config` text CHARACTER SET utf8mb4 NULL COMMENT '向量数据库配置',
-  `vector_embed_llm_id` bigint(0) NULL DEFAULT NULL COMMENT 'Embedding 模型ID',
-  `created` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `created_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建用户ID',
-  `modified` datetime(0) NULL DEFAULT NULL COMMENT '最后一次修改时间',
-  `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '最后一次修改用户ID',
-  `options` text CHARACTER SET utf8mb4 NULL COMMENT '其他配置',
-  `rerank_llm_id` bigint(0) NULL DEFAULT NULL COMMENT '重排模型id',
-  `search_engine_enable` tinyint(1) NULL COMMENT '是否启用搜索引擎',
-  `english_name` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '英文名称',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COMMENT = '知识库' ROW_FORMAT = Dynamic;
+  `vector_store_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库类型',
+  `vector_store_collection` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库集合',
+  `vector_store_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '向量数据库配置',
+  `vector_embed_llm_id` bigint NULL DEFAULT NULL COMMENT 'Embedding 模型ID',
+  `created` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `created_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建用户ID',
+  `modified` datetime NULL DEFAULT NULL COMMENT '最后一次修改时间',
+  `modified_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '最后一次修改用户ID',
+  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其他配置',
+  `rerank_llm_id` bigint NULL DEFAULT NULL COMMENT '重排模型id',
+  `search_engine_enable` tinyint(1) NULL DEFAULT NULL COMMENT '是否启用搜索引擎',
+  `english_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `tb_ai_knowledge_alias_uindex`(`alias`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '知识库' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_ai_llm
@@ -454,23 +459,25 @@ CREATE TABLE `tb_ai_llm`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_plugin`;
 CREATE TABLE `tb_ai_plugin`  (
-  `id` bigint(0) NOT NULL COMMENT '插件id',
-  `name` varchar(30) CHARACTER SET utf8mb4 NOT NULL COMMENT '名称',
-  `description` varchar(500) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '描述',
-  `type` int(0) NULL DEFAULT NULL COMMENT '类型',
-  `base_url` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '基础URL',
-  `auth_type` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '认证方式  【apiKey/none】',
-  `created` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `icon` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '图标地址',
-  `position` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '认证参数位置 【headers, query】',
-  `headers` varchar(1000) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '请求头',
-  `token_key` varchar(1000) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT 'token键',
-  `token_value` varchar(2000) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT 'token值',
-  `dept_id` bigint(0) NULL DEFAULT NULL COMMENT '部门id',
-  `tenant_id` bigint(0) NULL DEFAULT NULL COMMENT '租户id',
-  `created_by` bigint(0) NULL DEFAULT NULL COMMENT '创建人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+  `id` bigint NOT NULL COMMENT '插件id',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '别名',
+  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+  `type` int NULL DEFAULT NULL COMMENT '类型',
+  `base_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '基础URL',
+  `auth_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '认证方式  【apiKey/none】',
+  `created` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标地址',
+  `position` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '认证参数位置 【headers, query】',
+  `headers` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '请求头',
+  `token_key` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'token键',
+  `token_value` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'token值',
+  `dept_id` bigint NULL DEFAULT NULL COMMENT '部门id',
+  `tenant_id` bigint NULL DEFAULT NULL COMMENT '租户id',
+  `created_by` bigint NULL DEFAULT NULL COMMENT '创建人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `tb_ai_plugin_alias_uindex`(`alias`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_ai_plugin_categories
@@ -540,20 +547,22 @@ CREATE TABLE `tb_ai_plugins`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_workflow`;
 CREATE TABLE `tb_ai_workflow`  (
-  `id` bigint(0) UNSIGNED NOT NULL COMMENT 'ID 主键',
-  `dept_id` bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
-  `tenant_id` bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
-  `title` varchar(128) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '标题',
-  `description` varchar(512) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '描述',
-  `icon` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT 'ICON',
-  `content` text CHARACTER SET utf8mb4 NULL COMMENT '工作流设计的 JSON 内容',
-  `created` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `created_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建人',
-  `modified` datetime(0) NULL DEFAULT NULL COMMENT '最后修改时间',
-  `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '最后修改的人',
-  `english_name` varchar(256) CHARACTER SET utf8mb4 NULL DEFAULT NULL COMMENT '英文名称',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 ROW_FORMAT = Dynamic;
+  `id` bigint UNSIGNED NOT NULL COMMENT 'ID 主键',
+  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '别名',
+  `dept_id` bigint UNSIGNED NOT NULL COMMENT '部门ID',
+  `tenant_id` bigint UNSIGNED NOT NULL COMMENT '租户ID',
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
+  `description` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+  `icon` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'ICON',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '工作流设计的 JSON 内容',
+  `created` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `created_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建人',
+  `modified` datetime NULL DEFAULT NULL COMMENT '最后修改时间',
+  `modified_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '最后修改的人',
+  `english_name` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `tb_ai_workflow_alias_uindex`(`alias`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_sys_account

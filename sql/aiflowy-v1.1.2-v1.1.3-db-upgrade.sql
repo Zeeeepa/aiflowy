@@ -49,3 +49,36 @@ INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300818387789
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300818488344158208, 1, 300818488214134784);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+ALTER TABLE tb_ai_bot
+    ADD alias VARCHAR(255) NOT NULL DEFAULT '' COMMENT '别名' AFTER id;
+
+UPDATE tb_ai_bot SET alias = CONCAT('bot_', id) WHERE alias = '';
+
+CREATE UNIQUE INDEX tb_ai_bot_alias_uindex
+    ON tb_ai_bot (alias);
+
+ALTER TABLE tb_ai_plugin
+    ADD alias VARCHAR(255) NOT NULL DEFAULT '' COMMENT '别名' AFTER id;
+
+UPDATE tb_ai_plugin SET alias = CONCAT('plugin', id) WHERE alias = '';
+
+CREATE UNIQUE INDEX tb_ai_plugin_alias_uindex
+    ON tb_ai_plugin (alias);
+
+ALTER TABLE tb_ai_workflow
+    ADD alias VARCHAR(255) NOT NULL DEFAULT '' COMMENT '别名' AFTER id;
+
+UPDATE tb_ai_workflow SET alias = CONCAT('workflow', id) WHERE alias = '';
+
+CREATE UNIQUE INDEX tb_ai_workflow_alias_uindex
+    ON tb_ai_workflow (alias);
+
+ALTER TABLE tb_ai_knowledge
+    ADD alias VARCHAR(255) NOT NULL DEFAULT '' COMMENT '别名' AFTER id;
+
+UPDATE tb_ai_knowledge SET alias = CONCAT('knowledge', id) WHERE alias = '';
+
+CREATE UNIQUE INDEX tb_ai_knowledge_alias_uindex
+    ON tb_ai_knowledge (alias);
