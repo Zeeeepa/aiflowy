@@ -1,14 +1,16 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import TreeClassifiedPage from "../../components/TreeClassifiedPage";
 import CrudPage from "../../components/CrudPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
-import {Button, Form, FormInstance, Input, message, Select, Switch, Tag} from "antd";
+import {Button, Form, FormInstance, Input, message, Modal, Select, Switch, Tag, theme} from "antd";
 import CustomLeftArrowIcon from "../../components/CustomIcon/CustomLeftArrowIcon.tsx";
 import KeywordSearchForm from "../../components/AntdCrud/KeywordSearchForm.tsx";
 import {RawValueType} from 'rc-select/lib/interface';
 import {EditLayout} from "../../components/AntdCrud/EditForm.tsx";
 import {usePost} from "../../hooks/useApis.ts";
 import {convertAttrsToObject} from "../../libs/utils.ts";
+import {PlusOutlined} from "@ant-design/icons";
+import {useForm} from "antd/es/form/Form";
 
 
 const columns: ColumnsConfig<any> = [
@@ -109,33 +111,9 @@ const columns: ColumnsConfig<any> = [
             type: "input",
         },
         editCondition: (data: any) => {
-            return  data?.brand === "ollama"
+            return data?.brand === "ollama"
         }
     },
-    // {
-    //     title: 'App Id',
-    //     dataIndex: 'options.appId',
-    //     key: 'options.appId',
-    //     hidden: true,
-    //     form: {
-    //         type: "input",
-    //     },
-    //     editCondition: (data: any) => {f
-    //         return data?.brand === "spark" || data?.brand === "ollama"
-    //     }
-    // },
-    // {
-    //     title: 'Version',
-    //     dataIndex: 'options.version',
-    //     key: 'options.version',
-    //     hidden: true,
-    //     form: {
-    //         type: "input",
-    //     },
-    //     editCondition: (data) => {
-    //         return data?.brand === "spark";
-    //     }
-    // },
     {
         title: '对话路径',
         dataIndex: 'options.chatPath',
@@ -348,9 +326,7 @@ const ModelNameInput: React.FC<{
         // 如果是编辑模式且表单中有brand值，使用表单中的值
         if (isEditMode && formBrandValue) {
             effectiveBrandValue = formBrandValue;
-        }
-
-        else if (isEditMode && !brandValue && !formBrandValue) {
+        } else if (isEditMode && !brandValue && !formBrandValue) {
             // 检查是否有其他相关字段有值，说明是从数据库加载的数据
             const hasDbData = formValues.llmEndpoint || formValues['options.chatPath'] || formValues.llmModel;
             if (hasDbData) {
@@ -597,14 +573,11 @@ const ModelNameInput: React.FC<{
                                 const llmList = findModelListByBrandKey(brandValue);
 
                                 const find = llmList.find((llm: any) => {
-                                    return  fieldValue === llm.llmModel
+                                    return fieldValue === llm.llmModel
                                 })
                                 if (!find) {
                                     form.setFieldValue('llmModel', '');
                                 }
-                                ;
-
-
                             }
 
                             form.setFieldValue('options.isCustomInput', checked);
@@ -620,12 +593,14 @@ const ModelNameInput: React.FC<{
     );
 }
 
+
 const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
 
     const crudRef = useRef<{ openAddModal: () => void, onSearch: (values: any) => void, formReset: () => void }>(null);
 
     const [groupId, setGroupId] = useState('')
     const [treeData, setTreeData] = useState<any[]>([]);
+
 
     const {doPost: verifyLlmConfig, loading: verifyLoading} = usePost("/api/v1/aiLlm/verifyLlmConfig");
 
@@ -773,6 +748,57 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
         }
     }
 
+    const {token} = theme.useToken();
+    const [quickAddModalShow, setQuickAddModalShow] = useState<boolean>()
+    const [quickAddFrom] = useForm();
+
+    const [refreshTrigger,setRefreshTrigger] = useState(0);
+
+    const {doPost: doQuickAdd, loading: quickAddLoading} = usePost("/api/v1/aiLlm/quickAdd");
+
+    const treeOptions = useMemo(() => {
+
+        return treeData.map((item) => {
+
+            return {
+                label: item.title,
+                value: item.key,
+            }
+        }).filter(item => {
+            return item.value !== "ollama"
+        });
+
+    }, [treeData])
+
+    const submitForm = async () => {
+       const resp =  await doQuickAdd({
+            data: quickAddFrom.getFieldsValue(),
+        })
+
+        if(resp.data.errorCode === 0) {
+            message.success("添加成功！")
+
+        }else{
+            message.error("添加失败，请稍后重试！")
+        }
+
+        closeQuickAddModal();
+        setRefreshTrigger(refreshTrigger == 0 ? 1 : 0)
+    }
+
+    const formStyle = {
+        maxWidth: 'none',
+        background: token.colorFillAlter,
+        borderRadius: token.borderRadiusLG,
+        padding: 24,
+        marginBottom: '20px'
+    };
+
+    const closeQuickAddModal = () => {
+        quickAddFrom.resetFields();
+        setQuickAddModalShow(false)
+    }
+
     return (
         <div style={{margin: "24px"}}>
             <KeywordSearchForm
@@ -781,6 +807,9 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
                 }}
                 addButtonText="新增大模型"
                 columns={columns}
+                customHandleButton={<Button icon={<PlusOutlined/>} type="primary" onClick={() => {
+                    setQuickAddModalShow(true)
+                }}>一键添加</Button>}
                 tableAlias={"aiLlm"}
                 onSearch={(values: any) => {
                     crudRef.current?.onSearch(values)
@@ -803,10 +832,49 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
                                     <CustomLeftArrowIcon/>
                                 }
                                 onTreeSelect={setGroupId}>
-                <CrudPage columnsConfig={columns} tableAlias="aiLlm" params={{brand: groupId}} key={groupId}
-                          needHideSearchForm={true}
+                <CrudPage columnsConfig={columns}  tableAlias="aiLlm" params={{brand: groupId}} key={groupId}
+                          needHideSearchForm={true} externalRefreshTrigger={refreshTrigger}
                           editLayout={editLayout} ref={crudRef} formRenderFactory={customFormRenderFactory}/>
             </TreeClassifiedPage>
+            <Modal
+                title={"一键添加大模型"}
+                closable={!quickAddLoading}
+                maskClosable={!quickAddLoading}
+                open={quickAddModalShow}
+                onCancel={closeQuickAddModal}
+                onOk={() => {
+                    quickAddFrom.submit();
+                }}
+                cancelButtonProps={{
+                    disabled: !quickAddLoading,
+                }}
+                okButtonProps={{
+                    loading: quickAddLoading,
+                }}
+            >
+                <Form style={formStyle} form={quickAddFrom} onFinish={submitForm}>
+                    <Form.Item
+                        label={"供应商"}
+                        name={"brand"}
+                        rules={[
+                            {required: true, message: '请选择供应商'}
+                        ]}
+                    >
+                        <Select
+                            placeholder={"选择供应商"}
+                            allowClear
+                            filterOption={(input, option) =>
+                                ((option?.label ?? '') as string).toLowerCase().includes(input.toLowerCase())
+                            }
+                            options={treeOptions}
+                        />
+                    </Form.Item>
+                    <Form.Item label={"Api Key"} name={"apiKey"} required={false}>
+                        <Input/>
+                    </Form.Item>
+
+                </Form>
+            </Modal>
         </div>
     )
 };
