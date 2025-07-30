@@ -237,7 +237,7 @@ const BotDesign: React.FC = () => {
     const {doRemove: doRemoveAiBotWorkflow} = useRemove("aiBotWorkflow");
     const [workflowOpen, setWorkflowOpen] = useState(false)
 
-    const pluginToolPermission = useCheckPermission("/api/v1/aiPlugin/query");
+
     const {doPost: doPostPluginTool} = usePost('/api/v1/aiPluginTool/tool/list')
 
     const {doPost: doRemovePluginTool} = usePostManual('/api/v1/aiBotPlugins/doRemove')
@@ -251,9 +251,10 @@ const BotDesign: React.FC = () => {
 
 
     const llmQueryPermission = useCheckPermission("/api/v1/aiLlm/query")
-
     const botSavePermission = useCheckPermission("/api/v1/aiBot/save")
     const botRemovePermission = useCheckPermission("/api/v1/aiBot/remove")
+    const pluginToolPermission = useCheckPermission("/api/v1/aiPlugin/query");
+
     const {result: llmResult, doGet: getLlmLst} = useGetManual("/api/v1/aiLlm/list",);
 
     const {start: startChat} = useSseWithEvent("/api/v1/aiBot/chat");
@@ -280,14 +281,14 @@ const BotDesign: React.FC = () => {
     }, [messageResult]);
     useEffect(() => {
 
-        if (pluginToolPermission) {
+        if (pluginToolPermission && detail?.data?.id) {
             doPostPluginTool({data: {botId: detail?.data?.id}}).then(r => {
                 setPluginToolData(r?.data?.data)
             })
         }
 
 
-    }, [pluginToolPermission]);
+    }, [pluginToolPermission,detail]);
 
 
     useEffect(() => {
