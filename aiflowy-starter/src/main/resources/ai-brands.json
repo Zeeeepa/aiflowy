@@ -416,15 +416,6 @@
 
         },
         {
-          "llmModel":"Qwen2-VL-72B-Instruct",
-          "supportChat":true,
-          "supportFunctionCalling":true,
-          "multimodal":true,
-          "title":"Qwen2-VL-72B-Instruct",
-          "description":"Qwen2-VL-72B-Instruct是一款强大的视觉语言模型，支持图像与文本的多模态处理，能够精确识别图像内容并生成相关描述或回答。"
-
-        },
-        {
           "llmModel":"InternVL3-78B",
           "supportChat":true,
           "supportFunctionCalling":true,

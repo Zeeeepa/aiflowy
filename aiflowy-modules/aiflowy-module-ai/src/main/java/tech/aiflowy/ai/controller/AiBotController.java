@@ -77,6 +77,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import tech.aiflowy.ai.message.NormalMessageBuilder;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import tech.aiflowy.ai.message.MultimodalMessage;
 
 /**
  * 控制层。
@@ -306,7 +308,9 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
-        String systemPrompt = llmOptions != null ? (String) llmOptions.get("systemPrompt") : null;
+        String systemPrompt = llmOptions != null ? 
+        (String) llmOptions.get("systemPrompt") == null || !StringUtils.hasLength((String)llmOptions.get("systemPrompt")) ? "你是一个AI助手，请根据用户的问题给出清晰、准确的回答。" : (String)llmOptions.get("systemPrompt")
+        : null;
         AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
 
         if (aiLlm == null) {
@@ -411,9 +415,23 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         WebSocket finalWebSocket = webSocket;
 
-        return reActChat(emitter, aiLlm, functions, prompt, fileList, historiesPrompt, chatOptions, finalWebSocket, finalAnswerContentBuffer, messageSessionId, voiceEnabled, builder);
+        Boolean reActEnabled = (Boolean) options.get("reActModeEnabled");
+
+        if (reActEnabled == null || !reActEnabled) {
+            // 普通模式
+            return normalChat(emitter, aiLlm, functions, prompt, fileList, historiesPrompt, chatOptions, finalWebSocket,
+                finalAnswerContentBuffer, messageSessionId, voiceEnabled, builder);
+        } else {
+            // ReAct 模式
+            return reActChat(emitter, aiLlm, functions, prompt, fileList, historiesPrompt, chatOptions, finalWebSocket,
+                finalAnswerContentBuffer, messageSessionId, voiceEnabled, builder);
+        }
+
     }
 
+    /**
+     * ReAct 模式对话
+     */
     private SseEmitter reActChat(
         MySseEmitter emitter,
         AiLlm aiLlm,
@@ -433,6 +451,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
         Llm llm = aiLlm.toLlm();
+
         ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, historiesPrompt);
         reActAgent.setChatOptions(chatOptions);
 
@@ -793,6 +812,105 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         });
 
         reActAgent.run();
+        return emitter;
+    }
+
+    private SseEmitter normalChat(
+        MySseEmitter emitter,
+        AiLlm aiLlm,
+        List<Function> functions,
+        String prompt,
+        List<String> fileList,
+        HistoriesPrompt historiesPrompt,
+        ChatOptions chatOptions,
+        WebSocket finalWebSocket,
+        StringBuilder finalAnswerContentBuffer,
+        String messageSessionId,
+        boolean voiceEnabled,
+        OkHttpClient.Builder[] builder
+    ) {
+        Llm llm = aiLlm.toLlm();
+        HumanMessage humanMessage = new HumanMessage(prompt);
+
+        if (!"ollama".equals(aiLlm.getBrand()) && !"spark".equals(aiLlm.getBrand())) {
+
+            // 构建多模态消息
+
+            humanMessage.setMetadataMap(
+                Maps.of("type", 1)
+                    .set("fileList", fileList)
+                    .set("user_input", prompt)
+            );
+
+        }
+
+
+        humanMessage.addFunctions(functions);
+        historiesPrompt.addMessage(humanMessage);
+
+        
+
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        final Boolean[] needClose = {true};
+
+        llm.chatStream(historiesPrompt, new StreamResponseListener() {
+            @Override
+            public void onMessage(ChatContext context, AiMessageResponse response) {
+                try {
+                    RequestContextHolder.setRequestAttributes(sra, true);
+                    if (response != null) {
+                        // 检查是否需要触发 Function Calling
+                        logger.info("是否需要调用function calling:{}", response.getFunctionCallers() != null && CollectionUtil
+                            .hasItems(response.getFunctionCallers()));
+                        if (response.getFunctionCallers() != null && CollectionUtil.hasItems(response
+                            .getFunctionCallers())) {
+                            needClose[0] = false;
+                            function_call(response, emitter, needClose, historiesPrompt, llm, prompt, false,
+                                chatOptions);
+                        } else {
+                            // 强制流式返回，即使有 Function Calling 也先返回部分结果
+                            if (response.getMessage() != null) {
+                                String content = response.getMessage().getContent();
+                                if (StringUtil.hasText(content)) {
+                                    emitter.send(JSON.toJSONString(response.getMessage()));
+                                }
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    logger.error("大模型调用出错：", e);
+                    emitter.send(JSON.toJSONString(Maps.of("content", "大模型调用出错，请检查配置")));
+                    emitter.completeWithError(e);
+                }
+            }
+
+            @Override
+            public void onStop(ChatContext context) {
+                logger.info("normal chat complete");
+                if (needClose[0]) {
+                    emitter.complete();
+                }
+            }
+
+            @Override
+            public void onFailure(ChatContext context, Throwable throwable) {
+                logger.error("大模型调用出错：", throwable);
+                AiMessage aiMessage = new AiMessage();
+                aiMessage.setContent("大模型调用出错，请检查配置");
+                boolean hasUnsupportedApiError = containsUnsupportedApiError(throwable.getMessage());
+                if (hasUnsupportedApiError) {
+                    String errMessage = throwable.getMessage()
+                        + "\n**以下是 AIFlowy 提供的可查找当前错误的方向**\n**1: 在 AIFlowy 中，Bot 对话需要大模型携带 function_calling 功能**" +
+                        "\n**2: 请查看当前模型是否支持 function_calling 调用？**";
+                    aiMessage.setContent(errMessage);
+                }
+                emitter.send(JSON.toJSONString(aiMessage));
+                emitter.completeWithError(throwable);
+            }
+
+        }, chatOptions);
+
         return emitter;
     }
 

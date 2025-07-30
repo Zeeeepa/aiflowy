@@ -184,7 +184,7 @@ public class CompatibleChatController {
         response.setCharacterEncoding("UTF-8");
 
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        RequestContextHolder.setRequestAttributes(sra, true);
+        
 
         MySseEmitter mySseEmitter = new MySseEmitter(1000 * 60 * 300L);
 
@@ -193,9 +193,10 @@ public class CompatibleChatController {
 
         Llm llm = aiLlm.toLlm();
         llm.chatStream("", new StreamResponseListener() {
+            
             @Override
             public void onMessage(ChatContext chatContext, AiMessageResponse aiMessageResponse) {
-
+                RequestContextHolder.setRequestAttributes(sra, true);
                 logger.info("大模型回复：{}", aiMessageResponse.getResponse());
 
                 if (aiMessageResponse.isFunctionCall() ) {

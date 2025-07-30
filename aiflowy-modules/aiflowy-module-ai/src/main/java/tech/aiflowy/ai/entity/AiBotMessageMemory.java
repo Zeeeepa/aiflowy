@@ -89,6 +89,9 @@ public class AiBotMessageMemory implements ChatMemory {
             aiMessage.setFunctions(JSON.toJSONString(functions, SerializerFeature.WriteClassName));
             aiMessage.setRole("user");
             Map<String, Object> metadataMap = hm.getMetadataMap();
+            if (metadataMap == null){
+                metadataMap = new HashMap<>();
+            }
 
             Object type = metadataMap.get("type");
             if (type != null) {
