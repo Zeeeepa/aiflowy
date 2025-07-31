@@ -194,6 +194,10 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         defaultCache.remove(RedisKey.CHAIN_SUSPEND_KEY + chainId);
         Chain chain = Chain.fromJSON(chainJson);
 
+        if (StpUtil.isLogin()) {
+            chain.getMemory().put(Constants.LOGIN_USER_KEY, SaTokenUtil.getLoginAccount());
+        }
+
         addChainEvent(chain, json, emitter);
 
         ThreadUtil.execAsync(() -> {
