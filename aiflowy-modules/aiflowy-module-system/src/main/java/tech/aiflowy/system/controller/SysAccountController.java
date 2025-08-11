@@ -1,6 +1,7 @@
 package tech.aiflowy.system.controller;
 
 import tech.aiflowy.common.constant.enums.EnumAccountType;
+import tech.aiflowy.common.constant.enums.EnumDataStatus;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.util.StringUtil;
@@ -64,6 +65,10 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
             String password = entity.getPassword();
             if (StringUtil.hasText(password)) {
                 entity.setPassword(BCrypt.hashpw(password));
+            }
+            Integer status = entity.getStatus();
+            if (status == null) {
+                entity.setStatus(EnumDataStatus.AVAILABLE.getCode());
             }
         } else {
             SysAccount record = service.getById(entity.getId());
