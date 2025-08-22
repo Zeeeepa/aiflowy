@@ -157,7 +157,7 @@ const Login: React.FC = () => {
                                 <a href="https://aiflowy.tech" target="_blank" rel="noopener noreferrer">
                                     AIFlowy.tech
                                 </a>{" "}
-                                (v1.1.5)
+                                (v1.1.6)
                             </div>
                         </Form.Item>
                     </Form>
