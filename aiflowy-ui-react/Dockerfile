@@ -21,6 +21,9 @@ FROM nginx:alpine
 # Copy the built assets from the build stage
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Change ownership of the files to the nginx user
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
 # Copy a custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
