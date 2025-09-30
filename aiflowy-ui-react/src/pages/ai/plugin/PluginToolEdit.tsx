@@ -20,7 +20,8 @@ const PluginToolEdit: React.FC = () => {
     const { id, pluginTitle, pluginToolTitle } = location.state || {};
     const { result: pluginToolInfo, doPost: doPostSearch } = usePost('/api/v1/aiPluginTool/tool/search');
     const {  doPost: doPostUpdate } = usePostManual('/api/v1/aiPluginTool/tool/update')
-    const pluginRef = useRef(null);
+    const pluginInputRef = useRef(null);
+    const pluginOutputRef = useRef(null);
     const [showLoading, setShowLoading] = useState(true);
     const [isEditInput, setIsEditInput] = useState(false);
     const [isEditOutput, setIsEditOutput] = useState(false);
@@ -144,11 +145,18 @@ const PluginToolEdit: React.FC = () => {
                                             });
                                     });
                                     }
-                                    else if (index === '2' || index === '3') {
+                                    else if (index === '2') {
                                         //@ts-ignore
-                                        if (pluginRef.current && pluginRef.current.handleSubmitParams) {
+                                        if (pluginInputRef.current && pluginInputRef.current.handleSubmitParams) {
                                             //@ts-ignore
-                                            pluginRef.current.handleSubmitParams(); // 主动触发子组件提交
+                                            pluginInputRef.current.handleSubmitParams(); // 主动触发子组件提交
+                                        }
+                                    }
+                                    else if (index === '3') {
+                                        //@ts-ignore
+                                        if (pluginOutputRef.current && pluginOutputRef.current.handleSubmitParams) {
+                                            //@ts-ignore
+                                            pluginOutputRef.current.handleSubmitParams(); // 主动触发子组件提交
                                         }
                                     }
 
@@ -302,7 +310,7 @@ const PluginToolEdit: React.FC = () => {
                         <PluginInputAndOutputData
                         value={inputDataTree}
                         editable={isEditInput}
-                        ref={pluginRef}
+                        ref={pluginInputRef}
                         onSubmit={handleSubmit}
                         />
             ),
@@ -315,7 +323,7 @@ const PluginToolEdit: React.FC = () => {
                 <PluginInputAndOutputData
                     value={outputDataTree}
                     editable={isEditOutput}
-                    ref={pluginRef}
+                    ref={pluginOutputRef}
                     onSubmit={handleSubmit}
                     isEditOutput={true}
                 />
