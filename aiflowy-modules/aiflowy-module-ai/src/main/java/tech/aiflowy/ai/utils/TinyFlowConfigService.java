@@ -16,6 +16,8 @@ import dev.tinyflow.core.provider.LlmProvider;
 import dev.tinyflow.core.provider.SearchEngineProvider;
 import dev.tinyflow.core.searchengine.SearchEngine;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tech.aiflowy.ai.config.BochaaiProps;
 import tech.aiflowy.ai.entity.AiKnowledge;
 import tech.aiflowy.ai.entity.AiLlm;
@@ -54,9 +56,11 @@ public class TinyFlowConfigService {
     }
 
     private void setFileStorage(Tinyflow tinyflow) {
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         tinyflow.setFileStorage(new FileStorage() {
             @Override
             public String saveFile(InputStream stream, Map<String, String> headers) {
+                RequestContextHolder.setRequestAttributes(sra, true);
                 return storageService.save(new InputStreamFile(stream, headers));
             }
         });
