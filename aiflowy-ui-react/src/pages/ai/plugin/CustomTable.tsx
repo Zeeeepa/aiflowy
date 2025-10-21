@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Button, Input, message, Table, Upload, UploadProps} from 'antd';
+import {Button, Input, Table} from 'antd';
 import type { TableColumnsType } from 'antd';
 import {usePostManual} from "../../../hooks/useApis.ts";
 import JsonViewer from "./JsonViewer.tsx";

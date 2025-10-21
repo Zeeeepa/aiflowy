@@ -1,6 +1,7 @@
 package tech.aiflowy.common.filestorage.s3;
 
 
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
@@ -122,17 +123,23 @@ public class S3Client {
     }
 
     public String upload(MultipartFile file) throws Exception {
-        byte[] content = file.getBytes();
-        String name = file.getOriginalFilename();
+
         String path = "";
-        // 用户登录状态和未登录存储的路径不一致
-        // 登录状态
-        String loginIdAsString = StpUtil.getLoginIdAsString();
-        if (StringUtils.hasValue(loginIdAsString)){
-            path = loginIdAsString + PathGeneratorUtil.generatePath(name);
-        } else {
-            path = "commons" + PathGeneratorUtil.generatePath(name);
+        String loginIdAsString = "";
+
+        try {
+            loginIdAsString = StpUtil.getLoginIdAsString();
+            if (StringUtils.hasValue(loginIdAsString)){
+                path = "/" + StpUtil.getLoginIdAsString() + PathGeneratorUtil.generatePath(file.getOriginalFilename());
+            }
+        } catch (Exception e) {
+            if (e instanceof NotLoginException) {
+                path = "/" + "commons" + PathGeneratorUtil.generatePath(file.getOriginalFilename());
+            } else {
+                e.printStackTrace();
+            }
         }
+        byte[] content = file.getBytes();
         String baseUrl = properties.getEndpoint() + "/" + properties.getBucketName() + "/";
         if ("aliyun".equals(properties.getManufacturer())){
             baseUrl = "https://" + properties.getBucketName() + "." + properties.getEndpoint() + "/";

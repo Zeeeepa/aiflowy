@@ -13,6 +13,7 @@ server:
 spring:
   profiles:
     active: dev
+
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
     username: root
@@ -54,7 +55,7 @@ aiflowy:
       region: your-region
       bucket-name: your-bucket-name
       access-policy: 2
-      prefix: public
+      prefix: attachment
     local:
       # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
       root: 'C:\aiflowy\attachment'
