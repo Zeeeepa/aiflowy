@@ -13,21 +13,21 @@ interface BasicUserInfo {
    */
   avatar: string;
   /**
+   * 用户id
+   */
+  id: string;
+  /**
+   * 用户名
+   */
+  loginName: string;
+  /**
    * 用户昵称
    */
-  realName: string;
+  nickname: string;
   /**
    * 用户角色
    */
   roles?: string[];
-  /**
-   * 用户id
-   */
-  userId: string;
-  /**
-   * 用户名
-   */
-  username: string;
 }
 
 type ClassType = Array<object | string> | object | string;

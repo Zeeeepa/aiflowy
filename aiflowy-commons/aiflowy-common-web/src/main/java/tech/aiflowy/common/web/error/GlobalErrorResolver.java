@@ -25,9 +25,10 @@ public class GlobalErrorResolver implements HandlerExceptionResolver {
         if (ex instanceof MissingServletRequestParameterException) {
             error = Result.fail(1, ((MissingServletRequestParameterException) ex).getParameterName() + " 不能为空.");
         } else if (ex instanceof NotLoginException) {
-            error = Result.fail(99, "请登录");
+            response.setStatus(401);
+            error = Result.fail(401, "请登录");
         } else if (ex instanceof NotPermissionException || ex instanceof NotRoleException) {
-            error = Result.fail(1, "无权操作");
+            error = Result.fail(4010, "无权操作");
         } else {
             LOG.error(ex.toString(), ex);
             error = Result.fail(1, "错误信息：" + ex.getMessage());
