@@ -7,7 +7,7 @@ import type {
 
 import type { CSSProperties } from 'vue';
 
-import type { ClassType } from '@vben-core/typings';
+import type { ClassType } from '@aiflowy-core/typings';
 
 import { computed } from 'vue';
 

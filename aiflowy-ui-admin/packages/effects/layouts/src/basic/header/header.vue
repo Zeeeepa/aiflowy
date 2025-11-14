@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, useSlots } from 'vue';
 
-import { useRefresh } from '@vben/hooks';
-import { RotateCw } from '@vben/icons';
-import { preferences, usePreferences } from '@vben/preferences';
-import { useAccessStore } from '@vben/stores';
+import { useRefresh } from '@aiflowy/hooks';
+import { RotateCw } from '@aiflowy/icons';
+import { preferences, usePreferences } from '@aiflowy/preferences';
+import { useAccessStore } from '@aiflowy/stores';
 
-import { VbenFullScreen, VbenIconButton } from '@vben-core/shadcn-ui';
+import { AIFlowyFullScreen, AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
 
 import {
   GlobalSearch,
@@ -126,9 +126,9 @@ function clearPreferencesAndLogout() {
   >
     <slot :name="slot.name">
       <template v-if="slot.name === 'refresh'">
-        <VbenIconButton class="my-0 mr-1 rounded-md" @click="refresh">
+        <AIFlowyIconButton class="my-0 mr-1 rounded-md" @click="refresh">
           <RotateCw class="size-4" />
-        </VbenIconButton>
+        </AIFlowyIconButton>
       </template>
     </slot>
   </template>
@@ -171,7 +171,7 @@ function clearPreferencesAndLogout() {
           <LanguageToggle class="mr-1" />
         </template>
         <template v-else-if="slot.name === 'fullscreen'">
-          <VbenFullScreen class="mr-1" />
+          <AIFlowyFullScreen class="mr-1" />
         </template>
         <template v-else-if="slot.name === 'timezone'">
           <TimezoneButton class="mr-1 mt-[2px]" />

@@ -1,3 +1,3 @@
 export type * from './drawer';
-export { default as VbenDrawer } from './drawer.vue';
-export { setDefaultDrawerProps, useVbenDrawer } from './use-drawer';
+export { default as AIFlowyDrawer } from './drawer.vue';
+export { setDefaultDrawerProps, useAIFlowyDrawer } from './use-drawer';

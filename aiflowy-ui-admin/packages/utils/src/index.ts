@@ -1,4 +1,4 @@
 export * from './helpers';
-export * from '@vben-core/shared/cache';
-export * from '@vben-core/shared/color';
-export * from '@vben-core/shared/utils';
+export * from '@aiflowy-core/shared/cache';
+export * from '@aiflowy-core/shared/color';
+export * from '@aiflowy-core/shared/utils';

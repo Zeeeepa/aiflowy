@@ -2,29 +2,29 @@ import type { ZodRawShape } from 'zod';
 
 import type { ComputedRef } from 'vue';
 
-import type { ExtendedFormApi, FormActions, VbenFormProps } from './types';
+import type { ExtendedFormApi, FormActions, AIFlowyFormProps } from './types';
 
 import { computed, unref, useSlots } from 'vue';
 
-import { createContext } from '@vben-core/shadcn-ui';
-import { isString, mergeWithArrayOverride, set } from '@vben-core/shared/utils';
+import { createContext } from '@aiflowy-core/shadcn-ui';
+import { isString, mergeWithArrayOverride, set } from '@aiflowy-core/shared/utils';
 
 import { useForm } from 'vee-validate';
 import { object, ZodIntersection, ZodNumber, ZodObject, ZodString } from 'zod';
 import { getDefaultsForSchema } from 'zod-defaults';
 
-type ExtendFormProps = VbenFormProps & { formApi?: ExtendedFormApi };
+type ExtendFormProps = AIFlowyFormProps & { formApi?: ExtendedFormApi };
 
 export const [injectFormProps, provideFormProps] =
   createContext<[ComputedRef<ExtendFormProps> | ExtendFormProps, FormActions]>(
-    'VbenFormProps',
+    'AIFlowyFormProps',
   );
 
 export const [injectComponentRefMap, provideComponentRefMap] =
   createContext<Map<string, unknown>>('ComponentRefMap');
 
 export function useFormInitial(
-  props: ComputedRef<VbenFormProps> | VbenFormProps,
+  props: ComputedRef<AIFlowyFormProps> | AIFlowyFormProps,
 ) {
   const slots = useSlots();
   const initialValues = generateInitialValues();

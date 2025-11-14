@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { TreeProps } from '@vben-core/shadcn-ui';
+import type { TreeProps } from '@aiflowy-core/shadcn-ui';
 
-import { Inbox } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { Inbox } from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 
-import { treePropsDefaults, VbenTree } from '@vben-core/shadcn-ui';
+import { treePropsDefaults, AIFlowyTree } from '@aiflowy-core/shadcn-ui';
 
 const props = withDefaults(defineProps<TreeProps>(), treePropsDefaults());
 </script>
 
 <template>
-  <VbenTree v-if="props.treeData?.length > 0" v-bind="props">
+  <AIFlowyTree v-if="props.treeData?.length > 0" v-bind="props">
     <template v-for="(_, key) in $slots" :key="key" #[key]="slotProps">
       <slot :name="key" v-bind="slotProps"> </slot>
     </template>
-  </VbenTree>
+  </AIFlowyTree>
   <div
     v-else
     class="flex-col-center text-muted-foreground cursor-pointer rounded-lg border p-10 text-sm font-medium"

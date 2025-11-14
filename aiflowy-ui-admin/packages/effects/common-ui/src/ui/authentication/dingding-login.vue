@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 
-import { SvgDingDingIcon } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { SvgDingDingIcon } from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 
-import { alert, useVbenModal } from '@vben-core/popup-ui';
-import { VbenIconButton } from '@vben-core/shadcn-ui';
-import { loadScript } from '@vben-core/shared/utils';
+import { alert, useAIFlowyModal } from '@aiflowy-core/popup-ui';
+import { AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
+import { loadScript } from '@aiflowy-core/shared/utils';
 
 interface Props {
   clientId: string;
@@ -21,7 +21,7 @@ const props = defineProps<Props>();
 
 const route = useRoute();
 
-const [Modal, modalApi] = useVbenModal({
+const [Modal, modalApi] = useAIFlowyModal({
   header: false,
   footer: false,
   fullscreenButton: false,
@@ -91,13 +91,13 @@ const handleLogin = () => {
 
 <template>
   <div>
-    <VbenIconButton
+    <AIFlowyIconButton
       @click="handleLogin"
       :tooltip="$t('authentication.dingdingLogin')"
       tooltip-side="top"
     >
       <SvgDingDingIcon />
-    </VbenIconButton>
+    </AIFlowyIconButton>
     <Modal>
       <div id="dingding_qrcode_login_element"></div>
     </Modal>

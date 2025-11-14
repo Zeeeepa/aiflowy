@@ -10,25 +10,25 @@ export * from './page';
 export * from './resize';
 export * from './tippy';
 export * from './tree';
-export * from '@vben-core/form-ui';
-export * from '@vben-core/popup-ui';
+export * from '@aiflowy-core/form-ui';
+export * from '@aiflowy-core/popup-ui';
 
 // 给文档用
 export {
-  VbenAvatar,
-  VbenButton,
-  VbenButtonGroup,
-  VbenCheckbox,
-  VbenCheckButtonGroup,
-  VbenCountToAnimator,
-  VbenFullScreen,
-  VbenInputPassword,
-  VbenLoading,
-  VbenLogo,
-  VbenPinInput,
-  VbenSelect,
-  VbenSpinner,
-} from '@vben-core/shadcn-ui';
+  AIFlowyAvatar,
+  AIFlowyButton,
+  AIFlowyButtonGroup,
+  AIFlowyCheckbox,
+  AIFlowyCheckButtonGroup,
+  AIFlowyCountToAnimator,
+  AIFlowyFullScreen,
+  AIFlowyInputPassword,
+  AIFlowyLoading,
+  AIFlowyLogo,
+  AIFlowyPinInput,
+  AIFlowySelect,
+  AIFlowySpinner,
+} from '@aiflowy-core/shadcn-ui';
 
-export type { FlattenedItem } from '@vben-core/shadcn-ui';
-export { globalShareState } from '@vben-core/shared/global-state';
+export type { FlattenedItem } from '@aiflowy-core/shadcn-ui';
+export { globalShareState } from '@aiflowy-core/shared/global-state';

@@ -16,8 +16,8 @@ import {
   useIsMobile,
   usePriorityValues,
   useSimpleLocale,
-} from '@vben-core/composables';
-import { Expand, Shrink } from '@vben-core/icons';
+} from '@aiflowy-core/composables';
+import { Expand, Shrink } from '@aiflowy-core/icons';
 import {
   Dialog,
   DialogContent,
@@ -25,15 +25,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  VbenButton,
-  VbenHelpTooltip,
-  VbenIconButton,
-  VbenLoading,
+  AIFlowyButton,
+  AIFlowyHelpTooltip,
+  AIFlowyIconButton,
+  AIFlowyLoading,
   VisuallyHidden,
-} from '@vben-core/shadcn-ui';
-import { ELEMENT_ID_MAIN_CONTENT } from '@vben-core/shared/constants';
-import { globalShareState } from '@vben-core/shared/global-state';
-import { cn } from '@vben-core/shared/utils';
+} from '@aiflowy-core/shadcn-ui';
+import { ELEMENT_ID_MAIN_CONTENT } from '@aiflowy-core/shared/constants';
+import { globalShareState } from '@aiflowy-core/shared/global-state';
+import { cn } from '@aiflowy-core/shared/utils';
 
 import { useModalDraggable } from './use-modal-draggable';
 
@@ -282,9 +282,9 @@ function handleClosed() {
             {{ title }}
 
             <slot v-if="titleTooltip" name="titleTooltip">
-              <VbenHelpTooltip trigger-class="pb-1">
+              <AIFlowyHelpTooltip trigger-class="pb-1">
                 {{ titleTooltip }}
-              </VbenHelpTooltip>
+              </AIFlowyHelpTooltip>
             </slot>
           </slot>
         </DialogTitle>
@@ -308,15 +308,15 @@ function handleClosed() {
       >
         <slot></slot>
       </div>
-      <VbenLoading v-if="showLoading || submitting" spinning />
-      <VbenIconButton
+      <AIFlowyLoading v-if="showLoading || submitting" spinning />
+      <AIFlowyIconButton
         v-if="fullscreenButton"
         class="hover:bg-accent hover:text-accent-foreground text-foreground/80 flex-center absolute right-10 top-3 hidden size-6 rounded-full px-1 text-lg opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none sm:block"
         @click="handleFullscreen"
       >
         <Shrink v-if="fullscreen" class="size-3.5" />
         <Expand v-else class="size-3.5" />
-      </VbenIconButton>
+      </AIFlowyIconButton>
 
       <DialogFooter
         v-if="showFooter"
@@ -334,7 +334,7 @@ function handleClosed() {
         <slot name="prepend-footer"></slot>
         <slot name="footer">
           <component
-            :is="components.DefaultButton || VbenButton"
+            :is="components.DefaultButton || AIFlowyButton"
             v-if="showCancelButton"
             variant="ghost"
             :disabled="submitting"
@@ -346,7 +346,7 @@ function handleClosed() {
           </component>
           <slot name="center-footer"></slot>
           <component
-            :is="components.PrimaryButton || VbenButton"
+            :is="components.PrimaryButton || AIFlowyButton"
             v-if="showConfirmButton"
             :disabled="confirmDisabled"
             :loading="confirmLoading || submitting"

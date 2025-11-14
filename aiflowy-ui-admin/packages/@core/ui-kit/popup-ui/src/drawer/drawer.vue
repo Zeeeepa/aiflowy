@@ -15,8 +15,8 @@ import {
   useIsMobile,
   usePriorityValues,
   useSimpleLocale,
-} from '@vben-core/composables';
-import { X } from '@vben-core/icons';
+} from '@aiflowy-core/composables';
+import { X } from '@aiflowy-core/icons';
 import {
   Separator,
   Sheet,
@@ -26,15 +26,15 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  VbenButton,
-  VbenHelpTooltip,
-  VbenIconButton,
-  VbenLoading,
+  AIFlowyButton,
+  AIFlowyHelpTooltip,
+  AIFlowyIconButton,
+  AIFlowyLoading,
   VisuallyHidden,
-} from '@vben-core/shadcn-ui';
-import { ELEMENT_ID_MAIN_CONTENT } from '@vben-core/shared/constants';
-import { globalShareState } from '@vben-core/shared/global-state';
-import { cn } from '@vben-core/shared/utils';
+} from '@aiflowy-core/shadcn-ui';
+import { ELEMENT_ID_MAIN_CONTENT } from '@aiflowy-core/shared/constants';
+import { globalShareState } from '@aiflowy-core/shared/global-state';
+import { cn } from '@aiflowy-core/shared/utils';
 
 interface Props extends DrawerProps {
   drawerApi?: ExtendedDrawerApi;
@@ -226,9 +226,9 @@ const getForceMount = computed(() => {
             class="data-[state=open]:bg-secondary ml-[2px] cursor-pointer rounded-full opacity-80 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none"
           >
             <slot name="close-icon">
-              <VbenIconButton>
+              <AIFlowyIconButton>
                 <X class="size-4" />
-              </VbenIconButton>
+              </AIFlowyIconButton>
             </slot>
           </SheetClose>
           <Separator
@@ -241,9 +241,9 @@ const getForceMount = computed(() => {
             <slot name="title">
               {{ title }}
 
-              <VbenHelpTooltip v-if="titleTooltip" trigger-class="pb-1">
+              <AIFlowyHelpTooltip v-if="titleTooltip" trigger-class="pb-1">
                 {{ titleTooltip }}
-              </VbenHelpTooltip>
+              </AIFlowyHelpTooltip>
             </slot>
           </SheetTitle>
           <SheetDescription v-if="description" class="mt-1 text-xs">
@@ -267,9 +267,9 @@ const getForceMount = computed(() => {
             class="data-[state=open]:bg-secondary ml-[2px] cursor-pointer rounded-full opacity-80 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none"
           >
             <slot name="close-icon">
-              <VbenIconButton>
+              <AIFlowyIconButton>
                 <X class="size-4" />
-              </VbenIconButton>
+              </AIFlowyIconButton>
             </slot>
           </SheetClose>
         </div>
@@ -290,7 +290,7 @@ const getForceMount = computed(() => {
       >
         <slot></slot>
       </div>
-      <VbenLoading v-if="showLoading || submitting" spinning />
+      <AIFlowyLoading v-if="showLoading || submitting" spinning />
       <SheetFooter
         v-if="showFooter"
         :class="
@@ -303,7 +303,7 @@ const getForceMount = computed(() => {
         <slot name="prepend-footer"></slot>
         <slot name="footer">
           <component
-            :is="components.DefaultButton || VbenButton"
+            :is="components.DefaultButton || AIFlowyButton"
             v-if="showCancelButton"
             variant="ghost"
             :disabled="submitting"
@@ -315,7 +315,7 @@ const getForceMount = computed(() => {
           </component>
           <slot name="center-footer"></slot>
           <component
-            :is="components.PrimaryButton || VbenButton"
+            :is="components.PrimaryButton || AIFlowyButton"
             v-if="showConfirmButton"
             :loading="confirmLoading || submitting"
             @click="() => drawerApi?.onConfirm()"

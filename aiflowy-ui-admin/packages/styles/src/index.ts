@@ -1,1 +1,1 @@
-import '@vben-core/design';
+import '@aiflowy-core/design';

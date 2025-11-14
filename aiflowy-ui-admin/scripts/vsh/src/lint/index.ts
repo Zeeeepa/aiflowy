@@ -1,6 +1,6 @@
 import type { CAC } from 'cac';
 
-import { execaCommand } from '@vben/node-utils';
+import { execaCommand } from '@aiflowy/node-utils';
 
 interface LintCommandOptions {
   /**

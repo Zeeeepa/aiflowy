@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { CaptchaPoint, PointSelectionCaptchaProps } from '../types';
 
-import { RotateCw } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { RotateCw } from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 
-import { VbenButton, VbenIconButton } from '@vben-core/shadcn-ui';
+import { AIFlowyButton, AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
 
 import { useCaptchaPoints } from '../hooks/useCaptchaPoints';
 import CaptchaCard from './point-selection-captcha-card.vue';
@@ -126,14 +126,14 @@ function handleConfirm() {
     </template>
 
     <template #extra>
-      <VbenIconButton
+      <AIFlowyIconButton
         :aria-label="$t('ui.captcha.refreshAriaLabel')"
         class="ml-1"
         @click="handleRefresh"
       >
         <RotateCw class="size-5" />
-      </VbenIconButton>
-      <VbenButton
+      </AIFlowyIconButton>
+      <AIFlowyButton
         v-if="showConfirm"
         :aria-label="$t('ui.captcha.confirmAriaLabel')"
         class="ml-2"
@@ -141,7 +141,7 @@ function handleConfirm() {
         @click="handleConfirm"
       >
         {{ $t('ui.captcha.confirm') }}
-      </VbenButton>
+      </AIFlowyButton>
     </template>
 
     <div

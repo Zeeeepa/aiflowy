@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { BuiltinThemeType } from '@vben/types';
+import type { BuiltinThemeType } from '@aiflowy/types';
 
-import { Palette } from '@vben/icons';
+import { Palette } from '@aiflowy/icons';
 import {
   COLOR_PRESETS,
   preferences,
   updatePreferences,
-} from '@vben/preferences';
+} from '@aiflowy/preferences';
 
-import { VbenIconButton } from '@vben-core/shadcn-ui';
+import { AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
 
 defineOptions({
   name: 'AuthenticationColorToggle',
@@ -30,7 +30,7 @@ function handleUpdate(colorPrimary: string, type: BuiltinThemeType) {
       class="flex w-0 overflow-hidden transition-all duration-500 ease-out group-hover:w-60"
     >
       <template v-for="preset in COLOR_PRESETS" :key="preset.color">
-        <VbenIconButton
+        <AIFlowyIconButton
           class="flex-center flex-shrink-0"
           @click="handleUpdate(preset.color, preset.type)"
         >
@@ -53,12 +53,12 @@ function handleUpdate(colorPrimary: string, type: BuiltinThemeType) {
               />
             </svg>
           </div>
-        </VbenIconButton>
+        </AIFlowyIconButton>
       </template>
     </div>
 
-    <VbenIconButton>
+    <AIFlowyIconButton>
       <Palette class="text-primary size-4" />
-    </VbenIconButton>
+    </AIFlowyIconButton>
   </div>
 </template>

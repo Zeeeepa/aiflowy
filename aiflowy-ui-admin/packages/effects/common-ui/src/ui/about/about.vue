@@ -7,9 +7,9 @@ import {
   VBEN_DOC_URL,
   VBEN_GITHUB_URL,
   VBEN_PREVIEW_URL,
-} from '@vben/constants';
+} from '@aiflowy/constants';
 
-import { VbenRenderContent } from '@vben-core/shadcn-ui';
+import { AIFlowyRenderContent } from '@aiflowy-core/shadcn-ui';
 
 import { Page } from '../../components';
 
@@ -22,7 +22,7 @@ defineOptions({
 withDefaults(defineProps<Props>(), {
   description:
     '是一个现代化开箱即用的中后台解决方案，采用最新的技术栈，包括 Vue 3.0、Vite、TailwindCSS 和 TypeScript 等前沿技术，代码规范严谨，提供丰富的配置选项，旨在为中大型项目的开发提供现成的开箱即用解决方案及丰富的示例，同时，它也是学习和深入前端技术的一个极佳示例。',
-  name: 'Vben Admin',
+  name: 'AIFlowy Admin',
   title: '关于项目',
 });
 
@@ -45,7 +45,7 @@ declare global {
 const renderLink = (href: string, text: string) =>
   h(
     'a',
-    { href, target: '_blank', class: 'vben-link' },
+    { href, target: '_blank', class: 'aiflowy-link' },
     { default: () => text },
   );
 
@@ -62,7 +62,7 @@ const {
   // vite inject-metadata 插件注入的全局变量
 } = __VBEN_ADMIN_METADATA__ || {};
 
-const vbenDescriptionItems: DescriptionItem[] = [
+const aiflowyDescriptionItems: DescriptionItem[] = [
   {
     content: version,
     title: '版本号',
@@ -115,7 +115,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
   <Page :title="title">
     <template #description>
       <p class="text-foreground mt-3 text-sm leading-6">
-        <a :href="VBEN_GITHUB_URL" class="vben-link" target="_blank">
+        <a :href="VBEN_GITHUB_URL" class="aiflowy-link" target="_blank">
           {{ name }}
         </a>
         {{ description }}
@@ -127,13 +127,13 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
       </div>
       <div class="mt-4">
         <dl class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <template v-for="item in vbenDescriptionItems" :key="item.title">
+          <template v-for="item in aiflowyDescriptionItems" :key="item.title">
             <div class="border-border border-t px-4 py-6 sm:col-span-1 sm:px-0">
               <dt class="text-foreground text-sm font-medium leading-6">
                 {{ item.title }}
               </dt>
               <dd class="text-foreground mt-1 text-sm leading-6 sm:mt-2">
-                <VbenRenderContent :content="item.content" />
+                <AIFlowyRenderContent :content="item.content" />
               </dd>
             </div>
           </template>
@@ -153,7 +153,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
                 {{ item.title }}
               </dt>
               <dd class="text-foreground/80 mt-1 text-sm sm:mt-2">
-                <VbenRenderContent :content="item.content" />
+                <AIFlowyRenderContent :content="item.content" />
               </dd>
             </div>
           </template>
@@ -172,7 +172,7 @@ const devDependenciesItems = Object.keys(devDependencies).map((key) => ({
                 {{ item.title }}
               </dt>
               <dd class="text-foreground/80 mt-1 text-sm sm:mt-2">
-                <VbenRenderContent :content="item.content" />
+                <AIFlowyRenderContent :content="item.content" />
               </dd>
             </div>
           </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { Settings } from '@vben/icons';
+import { Settings } from '@aiflowy/icons';
 
-import { VbenIconButton } from '@vben-core/shadcn-ui';
+import { AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
 
 import Preferences from './preferences.vue';
 
@@ -13,8 +13,8 @@ function clearPreferencesAndLogout() {
 </script>
 <template>
   <Preferences @clear-preferences-and-logout="clearPreferencesAndLogout">
-    <VbenIconButton class="hover:animate-[shrink_0.3s_ease-in-out]">
+    <AIFlowyIconButton class="hover:animate-[shrink_0.3s_ease-in-out]">
       <Settings class="text-foreground size-4" />
-    </VbenIconButton>
+    </AIFlowyIconButton>
   </Preferences>
 </template>

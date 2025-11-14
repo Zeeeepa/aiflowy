@@ -1,10 +1,10 @@
-import type { LayoutType } from '@vben-core/typings';
+import type { LayoutType } from '@aiflowy-core/typings';
 
-import type { VbenLayoutProps } from '../vben-layout';
+import type { AIFlowyLayoutProps } from '../aiflowy-layout';
 
 import { computed } from 'vue';
 
-export function useLayout(props: VbenLayoutProps) {
+export function useLayout(props: AIFlowyLayoutProps) {
   const currentLayout = computed(() =>
     props.isMobile ? 'sidebar-nav' : (props.layout as LayoutType),
   );

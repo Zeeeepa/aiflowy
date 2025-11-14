@@ -1,2 +1,2 @@
 export * from './core';
-export * from '@vben-core/shared/constants';
+export * from '@aiflowy-core/shared/constants';

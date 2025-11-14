@@ -16,7 +16,7 @@ const customConfig: Linter.Config[] = [
   },
   {
     files: [
-      'apps/**/**',
+      'app/**',
       'packages/effects/**/**',
       'packages/utils/**/**',
       'packages/types/**/**',
@@ -37,7 +37,7 @@ const customConfig: Linter.Config[] = [
   },
   {
     // apps内部的一些基础规则
-    files: ['apps/**/**'],
+    files: ['app/**'],
     ignores: restrictedImportIgnores,
     rules: {
       'no-restricted-imports': [
@@ -71,7 +71,7 @@ const customConfig: Linter.Config[] = [
     },
   },
   {
-    // @core内部组件，不能引入@vben/* 里面的包
+    // @core内部组件，不能引入@aiflowy/* 里面的包
     files: ['packages/@core/**/**'],
     ignores: restrictedImportIgnores,
     rules: {
@@ -80,9 +80,9 @@ const customConfig: Linter.Config[] = [
         {
           patterns: [
             {
-              group: ['@vben/*'],
+              group: ['@aiflowy/*'],
               message:
-                'The @core package cannot import the @vben package, please use the @core package itself',
+                'The @core package cannot import the @aiflowy package, please use the @core package itself',
             },
           ],
         },
@@ -90,7 +90,7 @@ const customConfig: Linter.Config[] = [
     },
   },
   {
-    // @core/shared内部组件，不能引入@vben/* 或者 @vben-core/* 里面的包
+    // @core/shared内部组件，不能引入@aiflowy/* 或者 @aiflowy-core/* 里面的包
     files: ['packages/@core/base/**/**'],
     ignores: restrictedImportIgnores,
     rules: {
@@ -99,9 +99,9 @@ const customConfig: Linter.Config[] = [
         {
           patterns: [
             {
-              group: ['@vben/*', '@vben-core/*'],
+              group: ['@aiflowy/*', '@aiflowy-core/*'],
               message:
-                'The @vben-core/shared package cannot import the @vben package, please use the @core/shared package itself',
+                'The @aiflowy-core/shared package cannot import the @aiflowy package, please use the @core/shared package itself',
             },
           ],
         },
@@ -110,7 +110,7 @@ const customConfig: Linter.Config[] = [
   },
 
   {
-    // 不能引入@vben/*里面的包
+    // 不能引入@aiflowy/*里面的包
     files: [
       'packages/types/**/**',
       'packages/utils/**/**',
@@ -128,25 +128,13 @@ const customConfig: Linter.Config[] = [
         {
           patterns: [
             {
-              group: ['@vben/*'],
+              group: ['@aiflowy/*'],
               message:
-                'The @vben package cannot be imported, please use the @core package itself',
+                'The @aiflowy package cannot be imported, please use the @core package itself',
             },
           ],
         },
       ],
-    },
-  },
-  // 后端模拟代码，不需要太多规则
-  {
-    files: ['apps/backend-mock/**/**', 'docs/**/**'],
-    rules: {
-      '@typescript-eslint/no-extraneous-class': 'off',
-      'n/no-extraneous-import': 'off',
-      'n/prefer-global/buffer': 'off',
-      'n/prefer-global/process': 'off',
-      'no-console': 'off',
-      'unicorn/prefer-module': 'off',
     },
   },
   {

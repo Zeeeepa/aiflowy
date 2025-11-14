@@ -11,9 +11,9 @@ import {
   outputJSON,
   prettierFormat,
   toPosixPath,
-} from '@vben/node-utils';
+} from '@aiflowy/node-utils';
 
-const CODE_WORKSPACE_FILE = join('vben-admin.code-workspace');
+const CODE_WORKSPACE_FILE = join('aiflowy-admin.code-workspace');
 
 interface CodeWorkspaceCommandOptions {
   autoCommit?: boolean;

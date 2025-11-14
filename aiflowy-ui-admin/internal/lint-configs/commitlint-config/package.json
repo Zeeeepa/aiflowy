@@ -1,12 +1,12 @@
 {
-  "name": "@vben/commitlint-config",
+  "name": "@aiflowy/commitlint-config",
   "version": "5.5.9",
   "private": true,
-  "homepage": "https://github.com/vbenjs/vue-vben-admin",
-  "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
     "directory": "internal/lint-configs/commitlint-config"
   },
   "license": "MIT",
@@ -25,7 +25,7 @@
   "dependencies": {
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
-    "@vben/node-utils": "workspace:*",
+    "@aiflowy/node-utils": "workspace:*",
     "commitlint-plugin-function-rules": "catalog:",
     "cz-git": "catalog:",
     "czg": "catalog:"

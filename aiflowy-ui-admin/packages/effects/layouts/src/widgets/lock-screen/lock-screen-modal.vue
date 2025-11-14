@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { Recordable } from '@vben/types';
+import type { Recordable } from '@aiflowy/types';
 
 import { computed, reactive } from 'vue';
 
-import { $t } from '@vben/locales';
+import { $t } from '@aiflowy/locales';
 
-import { useVbenForm, z } from '@vben-core/form-ui';
-import { useVbenModal } from '@vben-core/popup-ui';
-import { VbenAvatar, VbenButton } from '@vben-core/shadcn-ui';
+import { useAIFlowyForm, z } from '@aiflowy-core/form-ui';
+import { useAIFlowyModal } from '@aiflowy-core/popup-ui';
+import { AIFlowyAvatar, AIFlowyButton } from '@aiflowy-core/shadcn-ui';
 
 interface Props {
   avatar?: string;
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 }>();
 
 const [Form, { resetForm, validate, getValues, getFieldComponentRef }] =
-  useVbenForm(
+  useAIFlowyForm(
     reactive({
       commonConfig: {
         hideLabel: true,
@@ -36,7 +36,7 @@ const [Form, { resetForm, validate, getValues, getFieldComponentRef }] =
       },
       schema: computed(() => [
         {
-          component: 'VbenInputPassword' as const,
+          component: 'AIFlowyInputPassword' as const,
           componentProps: {
             placeholder: $t('ui.widgets.lockScreen.placeholder'),
           },
@@ -52,7 +52,7 @@ const [Form, { resetForm, validate, getValues, getFieldComponentRef }] =
     }),
   );
 
-const [Modal] = useVbenModal({
+const [Modal] = useAIFlowyModal({
   onConfirm() {
     handleSubmit();
   },
@@ -91,7 +91,7 @@ async function handleSubmit() {
     >
       <div class="w-full">
         <div class="ml-2 flex w-full flex-col items-center">
-          <VbenAvatar
+          <AIFlowyAvatar
             :src="avatar"
             class="size-20"
             dot-class="bottom-0 right-1 border-2 size-4 bg-green-500"
@@ -101,9 +101,9 @@ async function handleSubmit() {
           </div>
         </div>
         <Form />
-        <VbenButton class="mt-1 w-full" @click="handleSubmit">
+        <AIFlowyButton class="mt-1 w-full" @click="handleSubmit">
           {{ $t('ui.widgets.lockScreen.screenButton') }}
-        </VbenButton>
+        </AIFlowyButton>
       </div>
     </div>
   </Modal>

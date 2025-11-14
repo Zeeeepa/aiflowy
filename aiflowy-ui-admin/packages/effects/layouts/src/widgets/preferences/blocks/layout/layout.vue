@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type { Component } from 'vue';
 
-import type { LayoutType } from '@vben/types';
+import type { LayoutType } from '@aiflowy/types';
 
 import { computed } from 'vue';
 
-import { CircleHelp } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { CircleHelp } from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 
-import { VbenTooltip } from '@vben-core/shadcn-ui';
+import { AIFlowyTooltip } from '@aiflowy-core/shadcn-ui';
 
 import {
   FullContent,
@@ -99,12 +99,12 @@ function activeClass(theme: string): string[] {
           class="text-muted-foreground flex-center hover:text-foreground mt-2 text-center text-xs"
         >
           {{ theme.name }}
-          <VbenTooltip v-if="theme.tip" side="bottom">
+          <AIFlowyTooltip v-if="theme.tip" side="bottom">
             <template #trigger>
               <CircleHelp class="ml-1 size-3 cursor-help" />
             </template>
             {{ theme.tip }}
-          </VbenTooltip>
+          </AIFlowyTooltip>
         </div>
       </div>
     </template>

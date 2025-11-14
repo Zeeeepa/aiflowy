@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SupportedLanguagesType } from '@vben/locales';
+import type { SupportedLanguagesType } from '@aiflowy/locales';
 import type {
   BreadcrumbStyleType,
   BuiltinThemeType,
@@ -10,28 +10,28 @@ import type {
   NavigationStyleType,
   PreferencesButtonPositionType,
   ThemeModeType,
-} from '@vben/types';
+} from '@aiflowy/types';
 
-import type { SegmentedItem } from '@vben-core/shadcn-ui';
+import type { SegmentedItem } from '@aiflowy-core/shadcn-ui';
 
 import { computed, ref } from 'vue';
 
-import { Copy, Pin, PinOff, RotateCw } from '@vben/icons';
-import { $t, loadLocaleMessages } from '@vben/locales';
+import { Copy, Pin, PinOff, RotateCw } from '@aiflowy/icons';
+import { $t, loadLocaleMessages } from '@aiflowy/locales';
 import {
   clearPreferencesCache,
   preferences,
   resetPreferences,
   usePreferences,
-} from '@vben/preferences';
+} from '@aiflowy/preferences';
 
-import { useVbenDrawer } from '@vben-core/popup-ui';
+import { useAIFlowyDrawer } from '@aiflowy-core/popup-ui';
 import {
-  VbenButton,
-  VbenIconButton,
-  VbenSegmented,
-} from '@vben-core/shadcn-ui';
-import { globalShareState } from '@vben-core/shared/global-state';
+  AIFlowyButton,
+  AIFlowyIconButton,
+  AIFlowySegmented,
+} from '@aiflowy-core/shadcn-ui';
+import { globalShareState } from '@aiflowy-core/shared/global-state';
 
 import { useClipboard } from '@vueuse/core';
 
@@ -181,7 +181,7 @@ const {
 } = usePreferences();
 const { copy } = useClipboard({ legacy: true });
 
-const [Drawer] = useVbenDrawer();
+const [Drawer] = useAIFlowyDrawer();
 
 const activeTab = ref('appearance');
 
@@ -248,7 +248,7 @@ async function handleReset() {
     >
       <template #extra>
         <div class="flex items-center">
-          <VbenIconButton
+          <AIFlowyIconButton
             :disabled="!diffPreference"
             :tooltip="$t('preferences.resetTip')"
             class="relative"
@@ -259,8 +259,8 @@ async function handleReset() {
               class="bg-primary absolute right-0.5 top-0.5 h-2 w-2 rounded"
             ></span>
             <RotateCw class="size-4" />
-          </VbenIconButton>
-          <VbenIconButton
+          </AIFlowyIconButton>
+          <AIFlowyIconButton
             :tooltip="
               appEnableStickyPreferencesNavigationBar
                 ? $t('preferences.disableStickyPreferencesNavigationBar')
@@ -278,12 +278,12 @@ async function handleReset() {
               class="size-4"
             />
             <Pin v-else class="size-4" />
-          </VbenIconButton>
+          </AIFlowyIconButton>
         </div>
       </template>
 
       <div>
-        <VbenSegmented
+        <AIFlowySegmented
           v-model="activeTab"
           :tabs="tabs"
           :class="{
@@ -451,11 +451,11 @@ async function handleReset() {
               />
             </Block>
           </template>
-        </VbenSegmented>
+        </AIFlowySegmented>
       </div>
 
       <template #footer>
-        <VbenButton
+        <AIFlowyButton
           :disabled="!diffPreference"
           class="mx-4 w-full"
           size="sm"
@@ -464,8 +464,8 @@ async function handleReset() {
         >
           <Copy class="mr-2 size-3" />
           {{ $t('preferences.copyPreferences') }}
-        </VbenButton>
-        <VbenButton
+        </AIFlowyButton>
+        <AIFlowyButton
           :disabled="!diffPreference"
           class="mr-4 w-full"
           size="sm"
@@ -473,7 +473,7 @@ async function handleReset() {
           @click="handleClearCache"
         >
           {{ $t('preferences.clearAndLogout') }}
-        </VbenButton>
+        </AIFlowyButton>
       </template>
     </Drawer>
   </div>

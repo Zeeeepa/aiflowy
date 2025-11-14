@@ -3,10 +3,10 @@ import type { CustomRenderType } from '../types';
 
 import {
   FormLabel,
-  VbenHelpTooltip,
-  VbenRenderContent,
-} from '@vben-core/shadcn-ui';
-import { cn } from '@vben-core/shared/utils';
+  AIFlowyHelpTooltip,
+  AIFlowyRenderContent,
+} from '@aiflowy-core/shadcn-ui';
+import { cn } from '@aiflowy-core/shared/utils';
 
 interface Props {
   class?: string;
@@ -23,9 +23,9 @@ const props = defineProps<Props>();
   <FormLabel :class="cn('flex items-center', props.class)">
     <span v-if="required" class="text-destructive mr-[2px]">*</span>
     <slot></slot>
-    <VbenHelpTooltip v-if="help" trigger-class="size-3.5 ml-1">
-      <VbenRenderContent :content="help" />
-    </VbenHelpTooltip>
+    <AIFlowyHelpTooltip v-if="help" trigger-class="size-3.5 ml-1">
+      <AIFlowyRenderContent :content="help" />
+    </AIFlowyHelpTooltip>
     <span v-if="colon && label" class="ml-[2px]">:</span>
   </FormLabel>
 </template>

@@ -4,9 +4,9 @@ import type {
   ComponentRecordType,
   GenerateMenuAndRoutesOptions,
   RouteRecordStringComponent,
-} from '@vben-core/typings';
+} from '@aiflowy-core/typings';
 
-import { mapTree } from '@vben-core/shared/utils';
+import { mapTree } from '@aiflowy-core/shared/utils';
 
 /**
  * 动态生成路由 - 后端方式
@@ -80,7 +80,7 @@ function normalizeViewPath(path: string): string {
     ? normalizedPath
     : `/${normalizedPath}`;
 
-  // 这里耦合了vben-admin的目录结构
+  // 这里耦合了aiflowy-admin的目录结构
   return viewPath.replace(/^\/views/, '');
 }
 export { generateRoutesByBackend };

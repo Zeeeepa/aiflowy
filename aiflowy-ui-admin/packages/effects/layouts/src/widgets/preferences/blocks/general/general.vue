@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SUPPORT_LANGUAGES } from '@vben/constants';
-import { $t } from '@vben/locales';
+import { SUPPORT_LANGUAGES } from '@aiflowy/constants';
+import { $t } from '@aiflowy/locales';
 
 import InputItem from '../input-item.vue';
 import SelectItem from '../select-item.vue';

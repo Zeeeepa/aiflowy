@@ -2,13 +2,13 @@ import type { VxeGridSlots, VxeGridSlotTypes } from 'vxe-table';
 
 import type { SlotsType } from 'vue';
 
-import type { BaseFormComponentType } from '@vben-core/form-ui';
+import type { BaseFormComponentType } from '@aiflowy-core/form-ui';
 
 import type { ExtendedVxeGridApi, VxeGridProps } from './types';
 
 import { defineComponent, h, onBeforeUnmount } from 'vue';
 
-import { useStore } from '@vben-core/shared/store';
+import { useStore } from '@aiflowy-core/shared/store';
 
 import { VxeGridApi } from './api';
 import VxeGrid from './use-vxe-grid.vue';
@@ -19,7 +19,7 @@ type FilteredSlots<T> = {
     : K]: VxeGridSlots<T>[K];
 };
 
-export function useVbenVxeGrid<
+export function useAIFlowyVxeGrid<
   T extends Record<string, any> = any,
   D extends BaseFormComponentType = BaseFormComponentType,
 >(options: VxeGridProps<T, D>) {
@@ -39,7 +39,7 @@ export function useVbenVxeGrid<
       return () => h(VxeGrid, { ...props, ...attrs, api: extendedApi }, slots);
     },
     {
-      name: 'VbenVxeGrid',
+      name: 'AIFlowyVxeGrid',
       inheritAttrs: false,
       slots: Object as SlotsType<
         {
@@ -67,4 +67,4 @@ export function useVbenVxeGrid<
   return [Grid, extendedApi] as const;
 }
 
-export type UseVbenVxeGrid = typeof useVbenVxeGrid;
+export type UseAIFlowyVxeGrid = typeof useAIFlowyVxeGrid;

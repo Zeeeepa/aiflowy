@@ -7,13 +7,13 @@ import type {
 
 import type { Ref } from 'vue';
 
-import type { ClassType, DeepPartial } from '@vben/types';
+import type { ClassType, DeepPartial } from '@aiflowy/types';
 
-import type { BaseFormComponentType, VbenFormProps } from '@vben-core/form-ui';
+import type { BaseFormComponentType, AIFlowyFormProps } from '@aiflowy-core/form-ui';
 
 import type { VxeGridApi } from './api';
 
-import { useVbenForm } from '@vben-core/form-ui';
+import { useAIFlowyForm } from '@aiflowy-core/form-ui';
 
 export interface VxePaginationInfo {
   currentPage: number;
@@ -67,7 +67,7 @@ export interface VxeGridProps<
   /**
    * 表单配置
    */
-  formOptions?: VbenFormProps<D>;
+  formOptions?: AIFlowyFormProps<D>;
   /**
    * 显示搜索表单
    */
@@ -89,5 +89,5 @@ export type ExtendedVxeGridApi<
 
 export interface SetupVxeTable {
   configVxeTable: (ui: VxeUIExport) => void;
-  useVbenForm: typeof useVbenForm;
+  useAIFlowyForm: typeof useAIFlowyForm;
 }

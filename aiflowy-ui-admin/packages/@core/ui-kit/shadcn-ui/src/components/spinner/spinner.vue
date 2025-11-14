@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-import { cn } from '@vben-core/shared/utils';
+import { cn } from '@aiflowy-core/shared/utils';
 
 interface Props {
   class?: string;
@@ -17,7 +17,7 @@ interface Props {
 }
 
 defineOptions({
-  name: 'VbenSpinner',
+  name: 'AIFlowySpinner',
 });
 
 const props = withDefaults(defineProps<Props>(), {

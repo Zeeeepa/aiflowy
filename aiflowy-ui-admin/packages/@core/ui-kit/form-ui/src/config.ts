@@ -3,20 +3,20 @@ import type { Component } from 'vue';
 import type {
   BaseFormComponentType,
   FormCommonConfig,
-  VbenFormAdapterOptions,
+  AIFlowyFormAdapterOptions,
 } from './types';
 
 import { h } from 'vue';
 
 import {
-  VbenButton,
-  VbenCheckbox,
-  Input as VbenInput,
-  VbenInputPassword,
-  VbenPinInput,
-  VbenSelect,
-} from '@vben-core/shadcn-ui';
-import { globalShareState } from '@vben-core/shared/global-state';
+  AIFlowyButton,
+  AIFlowyCheckbox,
+  Input as AIFlowyInput,
+  AIFlowyInputPassword,
+  AIFlowyPinInput,
+  AIFlowySelect,
+} from '@aiflowy-core/shadcn-ui';
+import { globalShareState } from '@aiflowy-core/shared/global-state';
 
 import { defineRule } from 'vee-validate';
 
@@ -25,24 +25,24 @@ const DEFAULT_MODEL_PROP_NAME = 'modelValue';
 export const DEFAULT_FORM_COMMON_CONFIG: FormCommonConfig = {};
 
 export const COMPONENT_MAP: Record<BaseFormComponentType, Component> = {
-  DefaultButton: h(VbenButton, { size: 'sm', variant: 'outline' }),
-  PrimaryButton: h(VbenButton, { size: 'sm', variant: 'default' }),
-  VbenCheckbox,
-  VbenInput,
-  VbenInputPassword,
-  VbenPinInput,
-  VbenSelect,
+  DefaultButton: h(AIFlowyButton, { size: 'sm', variant: 'outline' }),
+  PrimaryButton: h(AIFlowyButton, { size: 'sm', variant: 'default' }),
+  AIFlowyCheckbox,
+  AIFlowyInput,
+  AIFlowyInputPassword,
+  AIFlowyPinInput,
+  AIFlowySelect,
 };
 
 export const COMPONENT_BIND_EVENT_MAP: Partial<
   Record<BaseFormComponentType, string>
 > = {
-  VbenCheckbox: 'checked',
+  AIFlowyCheckbox: 'checked',
 };
 
-export function setupVbenForm<
+export function setupAIFlowyForm<
   T extends BaseFormComponentType = BaseFormComponentType,
->(options: VbenFormAdapterOptions<T>) {
+>(options: AIFlowyFormAdapterOptions<T>) {
   const { config, defineRules } = options;
 
   const {

@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { ThemeModeType } from '@vben/types';
+import type { ThemeModeType } from '@aiflowy/types';
 
-import { MoonStar, Sun, SunMoon } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { MoonStar, Sun, SunMoon } from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 import {
   preferences,
   updatePreferences,
   usePreferences,
-} from '@vben/preferences';
+} from '@aiflowy/preferences';
 
 import {
   ToggleGroup,
   ToggleGroupItem,
-  VbenTooltip,
-} from '@vben-core/shadcn-ui';
+  AIFlowyTooltip,
+} from '@aiflowy-core/shadcn-ui';
 
 import ThemeButton from './theme-button.vue';
 
@@ -53,7 +53,7 @@ const PRESETS = [
 </script>
 <template>
   <div>
-    <VbenTooltip :disabled="!shouldOnHover" side="bottom">
+    <AIFlowyTooltip :disabled="!shouldOnHover" side="bottom">
       <template #trigger>
         <ThemeButton
           :model-value="isDark"
@@ -78,6 +78,6 @@ const PRESETS = [
           <component :is="item.icon" class="size-5" />
         </ToggleGroupItem>
       </ToggleGroup>
-    </VbenTooltip>
+    </AIFlowyTooltip>
   </div>
 </template>

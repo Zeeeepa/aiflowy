@@ -3,9 +3,9 @@ import type { BacktopProps } from './backtop';
 
 import { computed } from 'vue';
 
-import { ArrowUpToLine } from '@vben-core/icons';
+import { ArrowUpToLine } from '@aiflowy-core/icons';
 
-import { VbenButton } from '../button';
+import { AIFlowyButton } from '../button';
 import { useBackTop } from './use-backtop';
 
 interface Props extends BacktopProps {}
@@ -29,7 +29,7 @@ const { handleClick, visible } = useBackTop(props);
 </script>
 <template>
   <transition name="fade-down">
-    <VbenButton
+    <AIFlowyButton
       v-if="visible"
       :style="backTopStyle"
       class="dark:bg-accent dark:hover:bg-heavy bg-background hover:bg-heavy data shadow-float z-popup fixed bottom-10 size-10 rounded-full duration-500"
@@ -38,6 +38,6 @@ const { handleClick, visible } = useBackTop(props);
       @click="handleClick"
     >
       <ArrowUpToLine class="size-4" />
-    </VbenButton>
+    </AIFlowyButton>
   </transition>
 </template>

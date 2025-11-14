@@ -13,7 +13,7 @@ import {
   outputJSON,
   readJSON,
   UNICODE,
-} from '@vben/node-utils';
+} from '@aiflowy/node-utils';
 
 import { publint } from 'publint';
 import { formatMessage } from 'publint/utils';

@@ -1,13 +1,13 @@
 import type { ComputedRef } from 'vue';
 
-import type { MenuRecordRaw } from '@vben/types';
+import type { MenuRecordRaw } from '@aiflowy/types';
 
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { preferences } from '@vben/preferences';
-import { useAccessStore } from '@vben/stores';
-import { findRootMenuByPath } from '@vben/utils';
+import { preferences } from '@aiflowy/preferences';
+import { useAccessStore } from '@aiflowy/stores';
+import { findRootMenuByPath } from '@aiflowy/utils';
 
 import { useNavigation } from './use-navigation';
 

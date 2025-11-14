@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useAppConfig } from '@vben/hooks';
+import { useAppConfig } from '@aiflowy/hooks';
 import {
   SvgGithubIcon,
   SvgGoogleIcon,
   SvgQQChatIcon,
   SvgWeChatIcon,
-} from '@vben/icons';
-import { $t } from '@vben/locales';
+} from '@aiflowy/icons';
+import { $t } from '@aiflowy/locales';
 
-import { VbenIconButton } from '@vben-core/shadcn-ui';
+import { AIFlowyIconButton } from '@aiflowy-core/shadcn-ui';
 
 import DingdingLogin from './dingding-login.vue';
 
@@ -32,34 +32,34 @@ const {
     </div>
 
     <div class="mt-4 flex flex-wrap justify-center">
-      <VbenIconButton
+      <AIFlowyIconButton
         :tooltip="$t('authentication.wechatLogin')"
         tooltip-side="top"
         class="mb-3"
       >
         <SvgWeChatIcon />
-      </VbenIconButton>
-      <VbenIconButton
+      </AIFlowyIconButton>
+      <AIFlowyIconButton
         :tooltip="$t('authentication.qqLogin')"
         tooltip-side="top"
         class="mb-3"
       >
         <SvgQQChatIcon />
-      </VbenIconButton>
-      <VbenIconButton
+      </AIFlowyIconButton>
+      <AIFlowyIconButton
         :tooltip="$t('authentication.githubLogin')"
         tooltip-side="top"
         class="mb-3"
       >
         <SvgGithubIcon />
-      </VbenIconButton>
-      <VbenIconButton
+      </AIFlowyIconButton>
+      <AIFlowyIconButton
         :tooltip="$t('authentication.googleLogin')"
         tooltip-side="top"
         class="mb-3"
       >
         <SvgGoogleIcon />
-      </VbenIconButton>
+      </AIFlowyIconButton>
       <DingdingLogin
         v-if="dingdingAuthConfig"
         :corp-id="dingdingAuthConfig.corpId"

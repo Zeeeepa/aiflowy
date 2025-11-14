@@ -1,12 +1,12 @@
-export { setupVbenForm } from './config';
+export { setupAIFlowyForm } from './config';
 
 export type {
   BaseFormComponentType,
   ExtendedFormApi,
-  VbenFormProps,
-  FormSchema as VbenFormSchema,
+  AIFlowyFormProps,
+  FormSchema as AIFlowyFormSchema,
 } from './types';
 
-export * from './use-vben-form';
-// export { default as VbenForm } from './vben-form.vue';
+export * from './use-aiflowy-form';
+// export { default as AIFlowyForm } from './aiflowy-form.vue';
 export * as z from 'zod';

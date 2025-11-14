@@ -1,11 +1,11 @@
-import type { DeepPartial } from '@vben-core/typings';
+import type { DeepPartial } from '@aiflowy-core/typings';
 
 import type { InitialOptions, Preferences } from './types';
 
 import { markRaw, reactive, readonly, watch } from 'vue';
 
-import { StorageManager } from '@vben-core/shared/cache';
-import { isMacOs, merge } from '@vben-core/shared/utils';
+import { StorageManager } from '@aiflowy-core/shared/cache';
+import { isMacOs, merge } from '@aiflowy-core/shared/utils';
 
 import {
   breakpointsTailwind,

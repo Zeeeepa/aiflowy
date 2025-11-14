@@ -1,3 +1,3 @@
 export type * from './modal';
-export { default as VbenModal } from './modal.vue';
-export { setDefaultModalProps, useVbenModal } from './use-modal';
+export { default as AIFlowyModal } from './modal.vue';
+export { setDefaultModalProps, useAIFlowyModal } from './use-modal';

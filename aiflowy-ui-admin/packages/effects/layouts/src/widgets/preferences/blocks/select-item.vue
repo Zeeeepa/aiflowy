@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { SelectOption } from '@vben/types';
+import type { SelectOption } from '@aiflowy/types';
 
 import { useSlots } from 'vue';
 
-import { CircleHelp } from '@vben/icons';
+import { CircleHelp } from '@aiflowy/icons';
 
 import {
   Select,
@@ -11,8 +11,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  VbenTooltip,
-} from '@vben-core/shadcn-ui';
+  AIFlowyTooltip,
+} from '@aiflowy-core/shadcn-ui';
 
 defineOptions({
   name: 'PreferenceSelectItem',
@@ -47,12 +47,12 @@ const slots = useSlots();
     <span class="flex items-center text-sm">
       <slot></slot>
 
-      <VbenTooltip v-if="slots.tip" side="bottom">
+      <AIFlowyTooltip v-if="slots.tip" side="bottom">
         <template #trigger>
           <CircleHelp class="ml-1 size-3 cursor-help" />
         </template>
         <slot name="tip"></slot>
-      </VbenTooltip>
+      </AIFlowyTooltip>
     </span>
     <Select v-model="selectValue">
       <SelectTrigger class="h-8 w-[165px]">

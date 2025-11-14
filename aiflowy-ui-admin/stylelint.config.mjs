@@ -1,4 +1,4 @@
 export default {
-  extends: ['@vben/stylelint-config'],
+  extends: ['@aiflowy/stylelint-config'],
   root: true,
 };

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, nextTick } from 'vue';
 
-import { VbenButton } from '@vben-core/shadcn-ui';
+import { AIFlowyButton } from '@aiflowy-core/shadcn-ui';
 
 interface Props {
   /**
@@ -84,7 +84,7 @@ function toggleTheme(event: MouseEvent) {
 </script>
 
 <template>
-  <VbenButton
+  <AIFlowyButton
     :aria-label="theme"
     :class="[`is-${theme}`]"
     aria-live="polite"
@@ -121,7 +121,7 @@ function toggleTheme(event: MouseEvent) {
         <line x1="18.36" x2="19.78" y1="5.64" y2="4.22" />
       </g>
     </svg>
-  </VbenButton>
+  </AIFlowyButton>
 </template>
 
 <style scoped>

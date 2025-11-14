@@ -7,13 +7,13 @@ import type {
 
 import type { ComponentPublicInstance } from 'vue';
 
-import type { Recordable } from '@vben-core/typings';
+import type { Recordable } from '@aiflowy-core/typings';
 
-import type { FormActions, FormSchema, VbenFormProps } from './types';
+import type { FormActions, FormSchema, AIFlowyFormProps } from './types';
 
 import { isRef, toRaw } from 'vue';
 
-import { Store } from '@vben-core/shared/store';
+import { Store } from '@aiflowy-core/shared/store';
 import {
   bindMethods,
   createMerge,
@@ -24,9 +24,9 @@ import {
   isObject,
   mergeWithArrayOverride,
   StateHandler,
-} from '@vben-core/shared/utils';
+} from '@aiflowy-core/shared/utils';
 
-function getDefaultState(): VbenFormProps {
+function getDefaultState(): AIFlowyFormProps {
   return {
     actionWrapperClass: '',
     collapsed: false,
@@ -51,14 +51,14 @@ function getDefaultState(): VbenFormProps {
 }
 
 export class FormApi {
-  // private api: Pick<VbenFormProps, 'handleReset' | 'handleSubmit'>;
+  // private api: Pick<AIFlowyFormProps, 'handleReset' | 'handleSubmit'>;
   public form = {} as FormActions;
   isMounted = false;
 
-  public state: null | VbenFormProps = null;
+  public state: null | AIFlowyFormProps = null;
   stateHandler: StateHandler;
 
-  public store: Store<VbenFormProps>;
+  public store: Store<AIFlowyFormProps>;
 
   /**
    * 组件实例映射
@@ -68,14 +68,14 @@ export class FormApi {
   // 最后一次点击提交时的表单值
   private latestSubmissionValues: null | Recordable<any> = null;
 
-  private prevState: null | VbenFormProps = null;
+  private prevState: null | AIFlowyFormProps = null;
 
-  constructor(options: VbenFormProps = {}) {
+  constructor(options: AIFlowyFormProps = {}) {
     const { ...storeState } = options;
 
     const defaultState = getDefaultState();
 
-    this.store = new Store<VbenFormProps>(
+    this.store = new Store<AIFlowyFormProps>(
       {
         ...defaultState,
         ...storeState,
@@ -301,8 +301,8 @@ export class FormApi {
 
   setState(
     stateOrFn:
-      | ((prev: VbenFormProps) => Partial<VbenFormProps>)
-      | Partial<VbenFormProps>,
+      | ((prev: AIFlowyFormProps) => Partial<AIFlowyFormProps>)
+      | Partial<AIFlowyFormProps>,
   ) {
     if (isFunction(stateOrFn)) {
       this.store.setState((prev) => {
@@ -452,7 +452,7 @@ export class FormApi {
       await this.stateHandler.waitForCondition();
     }
     if (!this.form?.meta) {
-      throw new Error('<VbenForm /> is not mounted');
+      throw new Error('<AIFlowyForm /> is not mounted');
     }
     return this.form;
   }
