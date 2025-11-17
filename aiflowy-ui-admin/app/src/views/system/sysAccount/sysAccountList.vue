@@ -8,7 +8,7 @@ import { $t } from '#/locales';
 
 const pageDataRef = ref();
 const search = () => {
-  pageDataRef.value.setQuery({ loginName: 'test' });
+  pageDataRef.value.setQuery({ loginName: 'tes2t' });
 };
 const reset = () => {
   pageDataRef.value.setQuery({});

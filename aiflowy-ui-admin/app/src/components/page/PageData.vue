@@ -109,7 +109,7 @@ onMounted(() => {
 <template>
   <div class="page-data-container" v-loading="loading">
     <div v-if="pageList.length > 0">
-      <slot :page-list="pageList" :refresh="getPageList"></slot>
+      <slot :page-list="pageList"></slot>
     </div>
     <ElEmpty v-else />
     <div class="pagination-container">
