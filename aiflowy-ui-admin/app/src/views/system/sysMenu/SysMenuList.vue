@@ -32,9 +32,9 @@ function showDialog(row: any) {
   saveDialog.value.openDialog({ ...row });
 }
 function remove(row: any) {
-  ElMessageBox.confirm('确定删除吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+  ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
     type: 'warning',
     beforeClose: (action, instance, done) => {
       if (action === 'confirm') {
@@ -86,52 +86,52 @@ function getTree() {
     </div>
     <ElTable :data="treeData" border row-key="id" v-loading="loading">
       <ElTableColumn width="50" />
-      <ElTableColumn prop="menuType" label="菜单类型">
+      <ElTableColumn prop="menuType" :label="$t('sysMenu.menuType')">
         <template #default="{ row }">
           {{ row.menuType }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="menuTitle" label="菜单标题">
+      <ElTableColumn prop="menuTitle" :label="$t('sysMenu.menuTitle')">
         <template #default="{ row }">
           {{ $t(row.menuTitle) }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="menuUrl" label="菜单url">
+      <ElTableColumn prop="menuUrl" :label="$t('sysMenu.menuUrl')">
         <template #default="{ row }">
           {{ row.menuUrl }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="component" label="组件路径">
+      <ElTableColumn prop="component" :label="$t('sysMenu.component')">
         <template #default="{ row }">
           {{ row.component }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="menuIcon" label="图标">
+      <ElTableColumn prop="menuIcon" :label="$t('sysMenu.menuIcon')">
         <template #default="{ row }">
           <component class="size-5" :is="createIconifyIcon(row.menuIcon)" />
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="isShow" label="是否显示">
+      <ElTableColumn prop="isShow" :label="$t('sysMenu.isShow')">
         <template #default="{ row }">
           {{ row.isShow }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="permissionTag" label="权限标识">
+      <ElTableColumn prop="permissionTag" :label="$t('sysMenu.permissionTag')">
         <template #default="{ row }">
           {{ row.permissionTag }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="sortNo" label="排序">
+      <ElTableColumn prop="sortNo" :label="$t('sysMenu.sortNo')">
         <template #default="{ row }">
           {{ row.sortNo }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="created" label="创建时间">
+      <ElTableColumn prop="created" :label="$t('sysMenu.created')">
         <template #default="{ row }">
           {{ row.created }}
         </template>
       </ElTableColumn>
-      <ElTableColumn label="操作" width="150">
+      <ElTableColumn :label="$t('common.handle')" width="150">
         <template #default="{ row }">
           <ElButton @click="showDialog(row)" link type="primary">
             <ElIcon class="mr-1">

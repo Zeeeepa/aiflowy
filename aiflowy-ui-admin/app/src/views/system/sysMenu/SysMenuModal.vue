@@ -47,11 +47,21 @@ const entity = ref<any>({
 });
 const btnLoading = ref(false);
 const rules = ref({
-  parentId: [{ required: true, message: '请输入父菜单id', trigger: 'blur' }],
-  menuType: [{ required: true, message: '请输入菜单类型', trigger: 'blur' }],
-  menuTitle: [{ required: true, message: '请输入菜单标题', trigger: 'blur' }],
-  isShow: [{ required: true, message: '请输入是否显示', trigger: 'blur' }],
-  status: [{ required: true, message: '请输入数据状态', trigger: 'blur' }],
+  parentId: [
+    { required: true, message: $t('message.required'), trigger: 'blur' },
+  ],
+  menuType: [
+    { required: true, message: $t('message.required'), trigger: 'blur' },
+  ],
+  menuTitle: [
+    { required: true, message: $t('message.required'), trigger: 'blur' },
+  ],
+  isShow: [
+    { required: true, message: $t('message.required'), trigger: 'blur' },
+  ],
+  status: [
+    { required: true, message: $t('message.required'), trigger: 'blur' },
+  ],
 });
 // functions
 function openDialog(row: any) {
@@ -108,23 +118,23 @@ function closeDialog() {
       status-icon
       :rules="rules"
     >
-      <ElFormItem prop="parentId" label="父级">
+      <ElFormItem prop="parentId" :label="$t('sysMenu.parentId')">
         <DictSelect
-          :extra-options="[{ label: '顶级', value: 0 }]"
+          :extra-options="[{ label: $t('sysMenu.root'), value: 0 }]"
           v-model="entity.parentId"
           dict-code="sysMenu"
         />
       </ElFormItem>
-      <ElFormItem prop="menuType" label="菜单类型">
+      <ElFormItem prop="menuType" :label="$t('sysMenu.menuType')">
         <DictSelect v-model="entity.menuType" dict-code="menuType" />
       </ElFormItem>
-      <ElFormItem prop="menuTitle" label="菜单标题">
+      <ElFormItem prop="menuTitle" :label="$t('sysMenu.menuTitle')">
         <ElInput v-model.trim="entity.menuTitle" />
       </ElFormItem>
-      <ElFormItem prop="menuUrl" label="菜单url">
+      <ElFormItem prop="menuUrl" :label="$t('sysMenu.menuUrl')">
         <ElInput v-model.trim="entity.menuUrl" />
       </ElFormItem>
-      <ElFormItem prop="component" label="组件路径">
+      <ElFormItem prop="component" :label="$t('sysMenu.component')">
         <ElInput v-model.trim="entity.component">
           <template #append>
             <ElSelect
@@ -142,19 +152,19 @@ function closeDialog() {
           </template>
         </ElInput>
       </ElFormItem>
-      <ElFormItem prop="menuIcon" label="图标">
+      <ElFormItem prop="menuIcon" :label="$t('sysMenu.menuIcon')">
         <IconPicker v-model="entity.menuIcon" />
       </ElFormItem>
-      <ElFormItem prop="isShow" label="是否显示">
+      <ElFormItem prop="isShow" :label="$t('sysMenu.isShow')">
         <DictSelect v-model="entity.isShow" dict-code="yesOrNo" />
       </ElFormItem>
-      <ElFormItem prop="permissionTag" label="权限标识">
+      <ElFormItem prop="permissionTag" :label="$t('sysMenu.permissionTag')">
         <ElInput v-model.trim="entity.permissionTag" />
       </ElFormItem>
-      <ElFormItem prop="sortNo" label="排序">
+      <ElFormItem prop="sortNo" :label="$t('sysMenu.sortNo')">
         <ElInput v-model.trim="entity.sortNo" />
       </ElFormItem>
-      <ElFormItem prop="remark" label="备注">
+      <ElFormItem prop="remark" :label="$t('sysMenu.remark')">
         <ElInput v-model.trim="entity.remark" />
       </ElFormItem>
     </ElForm>
