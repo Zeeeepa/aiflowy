@@ -143,11 +143,6 @@ function getTree() {
           {{ row.sortNo }}
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="status" :label="$t('sysDept.status')">
-        <template #default="{ row }">
-          {{ dictStore.getDictLabel('dataStatus', row.status) }}
-        </template>
-      </ElTableColumn>
       <ElTableColumn prop="created" :label="$t('sysDept.created')">
         <template #default="{ row }">
           {{ row.created }}

@@ -121,9 +121,6 @@ function closeDialog() {
       <ElFormItem prop="sortNo" :label="$t('sysDept.sortNo')">
         <ElInput v-model.trim="entity.sortNo" />
       </ElFormItem>
-      <ElFormItem prop="status" :label="$t('sysDept.status')">
-        <DictSelect v-model="entity.status" dict-code="dataStatus" />
-      </ElFormItem>
       <ElFormItem prop="remark" :label="$t('sysDept.remark')">
         <ElInput v-model.trim="entity.remark" />
       </ElFormItem>
