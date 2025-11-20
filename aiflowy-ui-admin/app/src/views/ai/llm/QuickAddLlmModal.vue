@@ -81,7 +81,7 @@ onMounted(() => {
 <template>
   <ElDialog
     v-model="quickAddLlmDialog"
-    :title="$t('llm.llmModal.QuickAddLlmModal')"
+    :title="$t('llm.llmModal.QuickAddLlm')"
     width="700"
     align-center
   >

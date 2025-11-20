@@ -1,10 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import {
-  APP_DOC_URL,
-  APP_GITHUB_URL,
-  APP_LOGO_URL,
-} from '@aiflowy/constants';
+import { APP_DOC_URL, APP_GITHUB_URL, APP_LOGO_URL } from '@aiflowy/constants';
 
 import { IFrameView } from '#/layouts';
 import { $t } from '#/locales';
@@ -61,6 +57,19 @@ const routes: RouteRecordRaw[] = [
       hideInMenu: true,
       title: $t('page.auth.profile'),
     },
+  },
+  {
+    meta: {
+      title: '知识库文档管理',
+      hideInMenu: true,
+      hideInTab: true,
+      hideInBreadcrumb: true,
+      fullPathKey: true,
+      activePath: '/ai/knowledge',
+    },
+    name: 'AiKnowledgeDocumentManagement',
+    path: '/ai/knowledge/document',
+    component: () => import('#/views/ai/knowledge/Document.vue'),
   },
 ];
 

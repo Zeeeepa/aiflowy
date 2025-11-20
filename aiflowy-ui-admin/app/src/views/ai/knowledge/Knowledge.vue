@@ -1,5 +1,6 @@
 <script setup>
 import { markRaw, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
@@ -11,6 +12,8 @@ import CardPage from '#/components/cardPage/CardPage.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
+
+const router = useRouter();
 
 // 操作按钮配置
 const actions = ref([
@@ -67,6 +70,16 @@ const handleAction = ({ action, item }) => {
     }
     case 'edit': {
       aiKnowledgeModalRef.value.openDialog(item);
+      break;
+    }
+    case 'view': {
+      router.replace({
+        path: '/ai/knowledge/document',
+        query: {
+          // 关键：传递 pageKey 与原页面一致（复用 Tab Key）
+          pageKey: '/ai/knowledge',
+        },
+      });
       break;
     }
     // 其他操作...
