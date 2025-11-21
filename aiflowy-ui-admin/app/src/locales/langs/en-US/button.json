@@ -11,5 +11,8 @@
   "confirm": "Confirm",
   "addLlm": "New large model added",
   "oneClickAdd": "One-click add",
-  "newConversation": "New Conversation"
+  "newConversation": "New Conversation",
+  "start": "Start",
+  "stop": "Stop",
+  "log": "Log"
 }

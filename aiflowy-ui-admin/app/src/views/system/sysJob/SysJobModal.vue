@@ -4,6 +4,7 @@ import type { FormInstance } from 'element-plus';
 import { onMounted, ref } from 'vue';
 
 import {
+  ElAlert,
   ElButton,
   ElDialog,
   ElForm,
@@ -13,6 +14,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -25,23 +27,24 @@ const saveForm = ref<FormInstance>();
 // variables
 const dialogVisible = ref(false);
 const isAdd = ref(true);
-const entity = ref<any>({
+const initEntity = {
   deptId: '',
   jobName: '',
   jobType: '',
-  jobParams: '',
+  jobParams: {
+    workflowParams: {},
+  },
   cronExpression: '',
-  allowConcurrent: '',
-  misfirePolicy: '',
+  allowConcurrent: 0,
+  misfirePolicy: 3,
   options: '',
   status: '',
   remark: '',
-});
+};
+const entity = ref<any>(initEntity);
 const btnLoading = ref(false);
-const rules = ref({
-  deptId: [
-    { required: true, message: $t('message.required'), trigger: 'blur' },
-  ],
+// 基础验证规则
+const baseRules = ref({
   jobName: [
     { required: true, message: $t('message.required'), trigger: 'blur' },
   ],
@@ -57,16 +60,27 @@ const rules = ref({
   misfirePolicy: [
     { required: true, message: $t('message.required'), trigger: 'blur' },
   ],
-  status: [
-    { required: true, message: $t('message.required'), trigger: 'blur' },
-  ],
 });
+
+const paramsLoading = ref(false);
+const workflowParams = ref<any[]>([]);
+const rules = ref({ ...baseRules.value });
+
 // functions
 function openDialog(row: any) {
   if (row.id) {
+    entity.value = { ...row };
+    // 确保 jobParams 存在
+    if (!entity.value.jobParams) {
+      entity.value.jobParams = {};
+    }
+    if (entity.value.jobParams.workflowId) {
+      workflowChange(entity.value.jobParams.workflowId);
+    }
     isAdd.value = false;
+  } else {
+    entity.value = { ...initEntity };
   }
-  entity.value = row;
   dialogVisible.value = true;
 }
 function save() {
@@ -95,9 +109,24 @@ function save() {
 function closeDialog() {
   saveForm.value?.resetFields();
   isAdd.value = true;
-  entity.value = {};
+  entity.value = { ...initEntity };
+  workflowParams.value = [];
   dialogVisible.value = false;
 }
+function jobTypeChange(v: any) {
+  entity.value.jobParams = {};
+  if (v === 1) {
+    entity.value.jobParams.workflowParams = {};
+  }
+}
+function workflowChange(v: any) {
+  paramsLoading.value = true;
+  api.get(`/api/v1/aiWorkflow/getRunningParameters?id=${v}`).then((res) => {
+    paramsLoading.value = false;
+    workflowParams.value = res.data.parameters;
+  });
+}
+const str = '"param"';
 </script>
 
 <template>
@@ -109,38 +138,92 @@ function closeDialog() {
     :close-on-click-modal="false"
   >
     <ElForm
+      v-loading="paramsLoading"
       label-width="120px"
       ref="saveForm"
       :model="entity"
       status-icon
       :rules="rules"
     >
-      <ElFormItem prop="deptId" :label="$t('sysJob.deptId')">
-        <ElInput v-model.trim="entity.deptId" />
-      </ElFormItem>
       <ElFormItem prop="jobName" :label="$t('sysJob.jobName')">
         <ElInput v-model.trim="entity.jobName" />
-      </ElFormItem>
-      <ElFormItem prop="jobType" :label="$t('sysJob.jobType')">
-        <ElInput v-model.trim="entity.jobType" />
-      </ElFormItem>
-      <ElFormItem prop="jobParams" :label="$t('sysJob.jobParams')">
-        <ElInput v-model.trim="entity.jobParams" />
       </ElFormItem>
       <ElFormItem prop="cronExpression" :label="$t('sysJob.cronExpression')">
         <ElInput v-model.trim="entity.cronExpression" />
       </ElFormItem>
+      <ElFormItem prop="jobType" :label="$t('sysJob.jobType')">
+        <DictSelect
+          v-model="entity.jobType"
+          dict-code="jobType"
+          @change="jobTypeChange"
+        />
+      </ElFormItem>
+      <ElFormItem
+        v-if="entity.jobType === 1"
+        label="工作流"
+        prop="jobParams.workflowId"
+        :rules="[
+          { required: true, message: $t('message.required'), trigger: 'blur' },
+        ]"
+      >
+        <DictSelect
+          v-model="entity.jobParams.workflowId"
+          dict-code="aiWorkFlow"
+          @change="workflowChange"
+        />
+      </ElFormItem>
+      <ElFormItem
+        v-for="item in workflowParams"
+        :key="item.id"
+        :label="item.description || item.name"
+        :prop="`jobParams.workflowParams.${item.name}`"
+        :rules="
+          item.required
+            ? [
+                {
+                  required: true,
+                  message: $t('message.required'),
+                  trigger: 'blur',
+                },
+              ]
+            : []
+        "
+      >
+        <ElInput v-model="entity.jobParams.workflowParams[item.name]" />
+      </ElFormItem>
+      <ElFormItem
+        v-if="entity.jobType === 2"
+        label="bean方法"
+        prop="jobParams.beanMethod"
+        :rules="[
+          { required: true, message: $t('message.required'), trigger: 'blur' },
+        ]"
+      >
+        <ElInput v-model="entity.jobParams.beanMethod" />
+        <ElAlert
+          style="margin-top: 5px"
+          :title="`示例：sysJobServiceImpl.testParam(${str},false,299)`"
+        />
+      </ElFormItem>
+      <ElFormItem
+        v-if="entity.jobType === 3"
+        label="java方法"
+        prop="jobParams.javaMethod"
+        :rules="[
+          { required: true, message: $t('message.required'), trigger: 'blur' },
+        ]"
+      >
+        <ElInput v-model="entity.jobParams.javaMethod" />
+        <ElAlert
+          style="margin-top: 5px"
+          :title="`示例：tech.aiflowy.job.util.JobUtil.execTest(${str},1,0.52D,100L)`"
+        />
+      </ElFormItem>
       <ElFormItem prop="allowConcurrent" :label="$t('sysJob.allowConcurrent')">
-        <ElInput v-model.trim="entity.allowConcurrent" />
+        <DictSelect v-model="entity.allowConcurrent" dict-code="yesOrNo" />
       </ElFormItem>
       <ElFormItem prop="misfirePolicy" :label="$t('sysJob.misfirePolicy')">
-        <ElInput v-model.trim="entity.misfirePolicy" />
-      </ElFormItem>
-      <ElFormItem prop="options" :label="$t('sysJob.options')">
-        <ElInput v-model.trim="entity.options" />
-      </ElFormItem>
-      <ElFormItem prop="status" :label="$t('sysJob.status')">
-        <ElInput v-model.trim="entity.status" />
+        <DictSelect v-model="entity.misfirePolicy" dict-code="misfirePolicy" />
       </ElFormItem>
       <ElFormItem prop="remark" :label="$t('sysJob.remark')">
         <ElInput v-model.trim="entity.remark" />

@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import {
+  CaretRight,
+  CircleCloseFilled,
+  Delete,
+  Edit,
+  Plus,
+  Tickets,
+} from '@element-plus/icons-vue';
 import {
   ElButton,
   ElForm,
@@ -19,15 +26,26 @@ import {
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
+import { useDictStore } from '#/store';
 
 import SysJobModal from './SysJobModal.vue';
 
+onMounted(() => {
+  initDict();
+});
 const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
   id: '',
 });
+const dictStore = useDictStore();
+function initDict() {
+  dictStore.fetchDictionary('jobType');
+  dictStore.fetchDictionary('jobStatus');
+  dictStore.fetchDictionary('yesOrNo');
+  dictStore.fetchDictionary('misfirePolicy');
+}
 function search(formEl: FormInstance | undefined) {
   formEl?.validate((valid) => {
     if (valid) {
@@ -69,6 +87,50 @@ function remove(row: any) {
     },
   }).catch(() => {});
 }
+function start(row: any) {
+  ElMessageBox.confirm($t('message.startAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
+    type: 'warning',
+    beforeClose: (action, instance, done) => {
+      if (action === 'confirm') {
+        instance.confirmButtonLoading = true;
+        api.get(`/api/v1/sysJob/start?id=${row.id}`).then((res) => {
+          instance.confirmButtonLoading = false;
+          if (res.errorCode === 0) {
+            ElMessage.success(res.message);
+            reset(formRef.value);
+            done();
+          }
+        });
+      } else {
+        done();
+      }
+    },
+  });
+}
+function stop(row: any) {
+  ElMessageBox.confirm($t('message.stopAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
+    type: 'warning',
+    beforeClose: (action, instance, done) => {
+      if (action === 'confirm') {
+        instance.confirmButtonLoading = true;
+        api.get(`/api/v1/sysJob/stop?id=${row.id}`).then((res) => {
+          instance.confirmButtonLoading = false;
+          if (res.errorCode === 0) {
+            ElMessage.success(res.message);
+            reset(formRef.value);
+            done();
+          }
+        });
+      } else {
+        done();
+      }
+    },
+  });
+}
 </script>
 
 <template>
@@ -102,11 +164,6 @@ function remove(row: any) {
     <PageData ref="pageDataRef" page-url="/api/v1/sysJob/page" :page-size="10">
       <template #default="{ pageList }">
         <ElTable :data="pageList" border>
-          <ElTableColumn prop="deptId" :label="$t('sysJob.deptId')">
-            <template #default="{ row }">
-              {{ row.deptId }}
-            </template>
-          </ElTableColumn>
           <ElTableColumn prop="jobName" :label="$t('sysJob.jobName')">
             <template #default="{ row }">
               {{ row.jobName }}
@@ -114,12 +171,7 @@ function remove(row: any) {
           </ElTableColumn>
           <ElTableColumn prop="jobType" :label="$t('sysJob.jobType')">
             <template #default="{ row }">
-              {{ row.jobType }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="jobParams" :label="$t('sysJob.jobParams')">
-            <template #default="{ row }">
-              {{ row.jobParams }}
+              {{ dictStore.getDictLabel('jobType', row.jobType) }}
             </template>
           </ElTableColumn>
           <ElTableColumn
@@ -135,7 +187,7 @@ function remove(row: any) {
             :label="$t('sysJob.allowConcurrent')"
           >
             <template #default="{ row }">
-              {{ row.allowConcurrent }}
+              {{ dictStore.getDictLabel('yesOrNo', row.allowConcurrent) }}
             </template>
           </ElTableColumn>
           <ElTableColumn
@@ -143,7 +195,7 @@ function remove(row: any) {
             :label="$t('sysJob.misfirePolicy')"
           >
             <template #default="{ row }">
-              {{ row.misfirePolicy }}
+              {{ dictStore.getDictLabel('misfirePolicy', row.misfirePolicy) }}
             </template>
           </ElTableColumn>
           <ElTableColumn prop="options" :label="$t('sysJob.options')">
@@ -153,7 +205,7 @@ function remove(row: any) {
           </ElTableColumn>
           <ElTableColumn prop="status" :label="$t('sysJob.status')">
             <template #default="{ row }">
-              {{ row.status }}
+              {{ dictStore.getDictLabel('jobStatus', row.status) }}
             </template>
           </ElTableColumn>
           <ElTableColumn prop="created" :label="$t('sysJob.created')">
@@ -169,6 +221,41 @@ function remove(row: any) {
           <ElTableColumn :label="$t('common.handle')" width="150">
             <template #default="{ row }">
               <div>
+                <ElButton
+                  v-if="row.status === 0"
+                  v-access:code="'/api/v1/sysJob/save'"
+                  @click="start(row)"
+                  link
+                  type="primary"
+                >
+                  <ElIcon class="mr-1">
+                    <CaretRight />
+                  </ElIcon>
+                  {{ $t('button.start') }}
+                </ElButton>
+                <ElButton
+                  v-if="row.status === 1"
+                  v-access:code="'/api/v1/sysJob/save'"
+                  @click="stop(row)"
+                  link
+                  type="primary"
+                >
+                  <ElIcon class="mr-1">
+                    <CircleCloseFilled />
+                  </ElIcon>
+                  {{ $t('button.stop') }}
+                </ElButton>
+                <ElButton
+                  v-if="row.status === 0"
+                  v-access:code="'/api/v1/sysJob/query'"
+                  link
+                  type="primary"
+                >
+                  <ElIcon class="mr-1">
+                    <Tickets />
+                  </ElIcon>
+                  {{ $t('button.log') }}
+                </ElButton>
                 <ElButton
                   v-access:code="'/api/v1/sysJob/save'"
                   @click="showDialog(row)"

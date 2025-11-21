@@ -9,7 +9,7 @@
     "allowConcurrent": "是否并发执行",
     "misfirePolicy": "错过策略",
     "options": "其他配置",
-    "status": "数据状态",
+    "status": "任务状态",
     "created": "创建时间",
     "createdBy": "创建者",
     "modified": "修改时间",

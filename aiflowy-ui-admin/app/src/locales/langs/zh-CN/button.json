@@ -11,5 +11,8 @@
   "confirm": "确认",
   "addLlm": "新增大模型",
   "oneClickAdd": "一键添加",
-  "newConversation": "新建会话"
+  "newConversation": "新建会话",
+  "start": "启动",
+  "stop": "停止",
+  "log": "日志"
 }
