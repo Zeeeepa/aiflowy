@@ -116,12 +116,12 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
 
     @GetMapping("documentList")
     @SaCheckPermission("/api/v1/aiKnowledge/query")
-    public Result<Page<AiDocument>> documentList(@RequestParam(name="title", required = false) String fileName, @RequestParam(name="pageSize") int pageSize, @RequestParam(name = "current") int current) {
+    public Result<Page<AiDocument>> documentList(@RequestParam(name="title", required = false) String fileName, @RequestParam(name="pageSize") int pageSize, @RequestParam(name = "pageNumber") int pageNumber) {
         String kbSlug = RequestUtil.getParamAsString("id");
         if (StringUtil.noText(kbSlug)) {
             throw new BusinessException("知识库id不能为空");
         }
-        Page<AiDocument> documentList = aiDocumentService.getDocumentList(kbSlug, pageSize, current,fileName);
+        Page<AiDocument> documentList = aiDocumentService.getDocumentList(kbSlug, pageSize, pageNumber,fileName);
         return Result.ok(documentList);
     }
 

@@ -14,5 +14,9 @@
   "newConversation": "New Conversation",
   "start": "Start",
   "stop": "Stop",
-  "log": "Log"
+  "log": "Log",
+  "back": "back",
+  "importFile": "import file",
+  "view": "view",
+  "download": "download"
 }

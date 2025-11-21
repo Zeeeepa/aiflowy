@@ -1,5 +1,12 @@
 <script setup>
-import { computed, defineEmits, defineProps, isVNode, ref } from 'vue';
+import {
+  computed,
+  defineEmits,
+  defineProps,
+  isVNode,
+  onMounted,
+  ref,
+} from 'vue';
 
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 import { ElIcon } from 'element-plus';
@@ -16,6 +23,10 @@ const props = defineProps({
     type: String,
     default: 'name',
   },
+  needHideCollapse: {
+    type: Boolean,
+    default: false,
+  },
   iconKey: {
     type: String,
     default: 'icon',
@@ -29,6 +40,11 @@ const props = defineProps({
   collapseWidth: {
     type: Number,
     default: 48,
+  },
+  // 默认选中的分类（用于初始化） 指定key
+  defaultSelectedCategory: {
+    type: String,
+    default: null,
   },
   iconSize: { type: [Number, String], default: 18 },
   iconColor: { type: String, default: 'var(--el-text-color-primary)' },
@@ -118,21 +134,29 @@ const togglePanel = () => {
 const selectedCategory = ref(null);
 // 处理分类项点击
 const handleCategoryClick = (category) => {
-  selectedCategory.value = category;
+  selectedCategory.value = category[props.titleKey];
   emit('click', category);
 };
+
+onMounted(() => {
+  console.log('selectedCategory', selectedCategory.value);
+  // 初始化时，检查是否有默认选中的分类
+  if (props.defaultSelectedCategory) {
+    selectedCategory.value = props.defaultSelectedCategory;
+  }
+});
 </script>
 
 <template>
   <div class="category-panel" :style="{ width: `${panelWidth}px` }">
     <!-- 右上角收缩/展开按钮 -->
-    <div class="toggle-panel-btn" @click="togglePanel">
+    <div class="toggle-panel-btn" @click="togglePanel" v-if="!needHideCollapse">
       <ElIcon>
         <ArrowLeft v-if="!isCollapsed" />
         <ArrowRight v-else />
       </ElIcon>
     </div>
-
+    <div style="margin-bottom: 48px" v-if="!needHideCollapse"></div>
     <!-- 分类列表容器 -->
     <div class="category-list" :class="{ collapsed: isCollapsed }">
       <!-- 遍历一级分类数据 -->
@@ -143,7 +167,7 @@ const handleCategoryClick = (category) => {
       >
         <div
           class="category-item-content"
-          :class="{ selected: selectedCategory === category }"
+          :class="{ selected: selectedCategory === category[titleKey] }"
           @click="handleCategoryClick(category)"
         >
           <!-- 图标 -->
@@ -234,7 +258,6 @@ const handleCategoryClick = (category) => {
 /* 分类列表容器 */
 .category-list {
   overflow: hidden;
-  padding-top: 48px;
   height: 100%;
   box-sizing: border-box;
 }

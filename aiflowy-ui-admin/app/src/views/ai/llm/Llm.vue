@@ -148,7 +148,6 @@ const handleSuccess = () => {
           ref="pageDataRef"
           page-url="/api/v1/aiLlm/page"
           :page-size="10"
-          :init-query-params="{ status: 1 }"
         >
           <template #default="{ pageList }">
             <ElTable :data="pageList" style="width: 100%" border size="large">

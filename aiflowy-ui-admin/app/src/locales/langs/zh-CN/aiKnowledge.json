@@ -20,6 +20,12 @@
   "rerankLlmId": "重排模型",
   "searchEngineEnable": "是否启用搜索引擎",
   "englishName": "英文名称",
+  "documentType": "文件类型",
+  "fileName": "文件名",
+  "knowledgeCount":  "知识条数",
+  "createdModifyTime":  "创建/更新时间",
+  "documentList":  "文档列表",
+  "knowledgeRetrieval":  "知识检索",
   "placeholder": {
     "title": "请输入名称",
     "description": "请输入描述，以便大模型更好的理解该知识库并且调用",

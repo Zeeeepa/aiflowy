@@ -97,6 +97,7 @@ watch(
 
 // 生命周期
 onMounted(() => {
+  console.log('pageData', props.extraQueryParams);
   getPageList();
 });
 </script>

@@ -67,7 +67,7 @@ const routes: RouteRecordRaw[] = [
       fullPathKey: true,
       activePath: '/ai/knowledge',
     },
-    name: 'AiKnowledgeDocumentManagement',
+    name: 'Document',
     path: '/ai/knowledge/document',
     component: () => import('#/views/ai/knowledge/Document.vue'),
   },
