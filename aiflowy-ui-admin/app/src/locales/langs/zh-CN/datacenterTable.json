@@ -19,5 +19,7 @@
     "required": "是否必填",
     "noFieldError": "至少包含一个字段",
     "fieldInfoError": "字段信息不完善",
-    "nameRegx": "只能包含小写字母、数字和下划线，且必须以小写字母开头"
+    "nameRegx": "只能包含小写字母、数字和下划线，且必须以小写字母开头",
+    "structure": "表结构",
+    "data": "数据"
 }

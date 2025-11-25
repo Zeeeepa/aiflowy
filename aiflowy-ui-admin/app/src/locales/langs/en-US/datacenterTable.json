@@ -19,5 +19,7 @@
     "required": "Required",
     "noFieldError": "At least one field is required",
     "fieldInfoError": "Field info is not completed",
-    "nameRegx": "It can only contain lowercase letters, numbers, and underscores, and must start with a lowercase letter"
+    "nameRegx": "It can only contain lowercase letters, numbers, and underscores, and must start with a lowercase letter",
+    "structure": "TableStructure",
+    "data": "Data"
 }

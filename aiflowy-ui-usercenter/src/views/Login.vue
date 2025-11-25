@@ -23,20 +23,30 @@ import { Button, Form, FormItem, Input } from 'ant-design-vue'
           <span class="mt-1.25 mb-5 text-sm text-[#969799]">如未验证，验证后自动登录</span>
           <Form>
             <FormItem name="phone">
-              <Input placeholder="请输入手机号" />
+              <Input placeholder="请输入手机号" class="h-14.5 rounded-lg! px-5! text-base!" />
             </FormItem>
             <FormItem name="password">
-              <Input placeholder="请输入密码" type="password" />
+              <Input
+                placeholder="请输入密码"
+                type="password"
+                class="h-14.5 rounded-lg! px-5! text-base!"
+              />
             </FormItem>
             <FormItem>
-              <Button type="primary" html-type="submit" size="large" class="w-full"
+              <Button
+                type="primary"
+                html-type="submit"
+                class="h-14.5! w-full rounded-lg! text-base!"
                 >注册/登录</Button
               >
             </FormItem>
           </Form>
         </div>
-        <div class="flex items-center justify-center text-sm text-[#969799]">
-          忘记密码 | 使用帮助
+        <div class="flex items-center justify-center gap-[.5em] text-sm text-[#969799]">
+          <span class="cursor-pointer hover:underline">忘记密码</span>|<span
+            class="cursor-pointer hover:underline"
+            >使用帮助</span
+          >
         </div>
       </div>
     </div>
