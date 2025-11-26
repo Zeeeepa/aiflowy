@@ -25,7 +25,7 @@ const props = defineProps({
     default: '数据管理',
   },
   categoryData: {
-    type: Array,
+    type: Array<Record<string, any>>,
     default: () => [],
   },
   disabled: {
@@ -122,7 +122,7 @@ const handleAdd = () => {
  * 编辑按钮点击事件
  * @param {object} row - 表格当前行数据
  */
-const handleEdit = (row) => {
+const handleEdit = (row: any) => {
   isEdit.value = true;
   // 使用提取原始数据的方法
   formData.value = extractFromProxy(row);
@@ -133,7 +133,7 @@ const handleEdit = (row) => {
  * 删除按钮点击事件
  * @param {object} row - 表格当前行数据
  */
-const handleDelete = (row) => {
+const handleDelete = (row: any) => {
   // 先提取原始数据
   const rawData = extractFromProxy(row);
 
@@ -165,7 +165,7 @@ const handleSubmit = () => {
   dialogVisible.value = false;
 };
 
-const selectedCategory = ref(null);
+const selectedCategory = ref();
 
 onMounted(() => {
   // 初始化时，检查是否有默认选中的分类
@@ -174,7 +174,7 @@ onMounted(() => {
   }
 });
 
-const handleCategoryClick = (category) => {
+const handleCategoryClick = (category: any) => {
   // 选中值：用 finalValueKey（父组件指定的字段）
   selectedCategory.value = category[finalValueKey.value];
   emit('click', {
@@ -184,12 +184,12 @@ const handleCategoryClick = (category) => {
   });
 };
 
-const handleEditClick = (event, item) => {
+const handleEditClick = (event: any, item: any) => {
   event.stopPropagation();
   handleEdit(item);
 };
 
-const handleDeleteClick = (event, item) => {
+const handleDeleteClick = (event: any, item: any) => {
   event.stopPropagation();
   handleDelete(item);
 };
@@ -249,7 +249,7 @@ const handleDeleteClick = (event, item) => {
     <!-- 新增/编辑弹窗 -->
     <ElDialog
       :title="
-        isEdit ? `${$t('button.edit')}${title}` : `${$t('button.eidt')}${title}`
+        isEdit ? `${$t('button.edit')}${title}` : `${$t('button.add')}${title}`
       "
       v-model="dialogVisible"
       width="500px"
@@ -277,7 +277,7 @@ const handleDeleteClick = (event, item) => {
 
 <style scoped>
 .crud-category-container {
-  background-color: var(--el-color-white);
+  background-color: var(--el-bg-color);
   height: 100%;
 }
 

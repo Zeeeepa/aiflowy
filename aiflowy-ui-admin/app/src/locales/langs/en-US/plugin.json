@@ -1,3 +1,23 @@
 {
-  "pluginCategory": "Plugin category"
+  "pluginCategory": "Plugin category",
+  "id": "Id",
+  "alias": "Alias",
+  "name": "Name",
+  "description": "Description",
+  "type": "Type",
+  "baseUrl": "BaseUrl",
+  "authType": "AuthType",
+  "created": "Created",
+  "icon": "Icon",
+  "position": "Position",
+  "headers": "Headers",
+  "tokenKey": "TokenKey",
+  "tokenValue": "TokenValue",
+  "deptId": "DeptId",
+  "tenantId": "TenantId",
+  "createdBy": "CreatedBy",
+  "placeholder": {
+    "name": "Please enter plugin name",
+    "description": "Please enter plugin description"
+  }
 }

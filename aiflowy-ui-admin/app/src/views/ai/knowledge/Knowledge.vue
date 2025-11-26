@@ -22,12 +22,14 @@ const actions = ref([
     label: '编辑',
     type: 'primary',
     icon: markRaw(Edit),
+    permission: '/api/v1/aiKnowledge/save',
   },
   {
     name: 'view',
     label: '列表',
     type: 'success',
     icon: markRaw(View),
+    permission: '/api/v1/aiKnowledge/save',
   },
   {
     name: 'delete',
@@ -40,6 +42,7 @@ const actions = ref([
     label: '删除',
     type: 'info',
     icon: markRaw(Delete),
+    permission: '/api/v1/aiKnowledge/remove',
   },
 ]);
 

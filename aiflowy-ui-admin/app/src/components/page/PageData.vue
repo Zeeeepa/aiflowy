@@ -51,8 +51,8 @@ const getPageList = async () => {
     const res = await doGet({
       pageNumber: pageInfo.pageNumber,
       pageSize: pageInfo.pageSize,
-      ...queryParams.value,
       ...props.extraQueryParams,
+      ...queryParams.value,
     });
     pageList.value = res.data?.records || [];
     pageInfo.total = res.data?.totalRow || 0;
