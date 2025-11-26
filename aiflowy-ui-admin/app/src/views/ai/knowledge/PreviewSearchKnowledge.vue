@@ -169,11 +169,11 @@ const props = defineProps({
       }
 
       .content-desc {
-        color: #475569;
+        background-color: var(--el-bg-color);
         font-size: 14px;
         line-height: 1.6;
         white-space: pre-wrap;
-        background: #f8fafc;
+        background-color: var(--el-bg-color);
         padding: 12px;
         border-radius: 6px;
         border-left: 3px solid #e2e8f0;

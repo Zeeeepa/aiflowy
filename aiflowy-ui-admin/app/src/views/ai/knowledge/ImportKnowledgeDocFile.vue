@@ -148,7 +148,7 @@ const finishImport = () => {
 .imp-doc-kno-container {
   position: relative;
   height: calc(100vh - 161px);
-  background-color: var(--el-color-white);
+  background-color: var(--el-bg-color);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -166,7 +166,7 @@ const finishImport = () => {
   right: 20px;
   display: flex;
   height: 40px;
-  background-color: var(--el-color-white);
+  background-color: var(--el-bg-color);
   align-items: center;
   justify-content: flex-end;
 }
