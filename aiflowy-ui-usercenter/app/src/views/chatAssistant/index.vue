@@ -1,40 +1,92 @@
 <script setup lang="ts">
-import { ElAvatar } from 'element-plus';
+import { reactive } from 'vue';
 
-const recentUsedAssistant = [
-  { id: 0, title: '客服助手', description: '智能客服，回答用户问题' },
-  { id: 1, title: '知识助手', description: '基于知识库的问答助手dhish…' },
+import { cn } from '@aiflowy/utils';
+
+import { ElAside, ElContainer, ElMain, ElSpace } from 'element-plus';
+
+import {
+  AssistantCard,
+  AssistantCardAvatar,
+  AssistantCardContent,
+  AssistantCardDescription,
+  AssistantCardTitle,
+} from './components/assistantCard';
+import { ChatBubbleList, ChatContainer, ChatSender } from './components/chat';
+
+const recentUsedAssistant = reactive([
+  {
+    id: 0,
+    title: '客服助手',
+    description: '智能客服，回答用户问题',
+    checked: false,
+  },
+  {
+    id: 1,
+    title: '知识助手',
+    description: '基于知识库的问答助手dhish…',
+    checked: false,
+  },
   {
     id: 2,
     title: '业务助手',
     description: '业务咨询和指导',
+    checked: false,
   },
-];
+]);
+
+const handleSelectAssistant = (id: number) => {
+  recentUsedAssistant.forEach((assistant) => {
+    assistant.checked = assistant.id === id ? !assistant.checked : false;
+  });
+};
 </script>
 
 <template>
-  <div class="flex h-full w-full items-center bg-white">
-    <div class="flex h-full flex-col gap-5 p-5 pr-6">
-      <span>最近使用</span>
-      <div class="flex h-full flex-col gap-5 overflow-auto">
-        <div
-          class="flex w-full max-w-60 items-start gap-2.5 pb-2.5 pl-2.5 pr-5 pt-3.5"
-          v-for="assistant in recentUsedAssistant"
-          :key="assistant.id"
-        >
-          <ElAvatar :size="36" class="shrink-0" />
-          <div class="flex flex-col gap-1 overflow-hidden text-nowrap">
-            <div
-              class="overflow-hidden text-ellipsis text-base font-semibold text-[#323233]"
-            >
-              {{ assistant.title }}
-            </div>
-            <span class="overflow-hidden text-ellipsis text-xs text-[#ABB0B9]">
-              {{ assistant.description }}
-            </span>
-          </div>
+  <ElContainer class="h-full bg-white">
+    <ElAside width="283px">
+      <ElSpace
+        class="p-5"
+        direction="vertical"
+        alignment="flex-start"
+        :size="20"
+      >
+        <span class="pl-5 text-sm text-[#969799]">最近使用</span>
+        <div class="flex h-full flex-col gap-5 overflow-auto">
+          <AssistantCard
+            v-for="assistant in recentUsedAssistant"
+            :key="assistant.id"
+            :class="cn(assistant.checked && 'bg-[#F0F4FF]')"
+            @click="handleSelectAssistant(assistant.id)"
+          >
+            <AssistantCardAvatar />
+            <AssistantCardContent>
+              <AssistantCardTitle
+                :class="cn(assistant.checked && 'text-[#0066FF]')"
+              >
+                {{ assistant.title }}
+              </AssistantCardTitle>
+              <AssistantCardDescription>
+                {{ assistant.description }}
+              </AssistantCardDescription>
+            </AssistantCardContent>
+          </AssistantCard>
         </div>
-      </div>
-    </div>
-  </div>
+      </ElSpace>
+    </ElAside>
+    <ElMain class="p-6 pl-0">
+      <ChatContainer>
+        <div class="flex h-full flex-col justify-between">
+          <ChatBubbleList />
+          <ChatSender />
+        </div>
+      </ChatContainer>
+    </ElMain>
+  </ElContainer>
 </template>
+
+<style lang="css" scoped>
+.el-aside::-webkit-scrollbar {
+  display: none;
+}
+</style>
