@@ -12,7 +12,7 @@ import CardPage from '#/components/cardPage/CardPage.vue';
 import CategoryCrudPanel from '#/components/categoryPanel/CategoryCrudPanel.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
-import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
+import AddPluginModal from '#/views/ai/plugin/AddPluginModal.vue';
 
 const router = useRouter();
 
@@ -23,6 +23,7 @@ const actions = ref([
     label: '编辑',
     type: 'primary',
     icon: markRaw(Edit),
+    permission: '/api/v1/aiPlugin/save',
   },
   {
     name: 'view',
@@ -41,13 +42,17 @@ const actions = ref([
     label: '删除',
     type: 'info',
     icon: markRaw(Delete),
+    permission: '/api/v1/aiPlugin/remove',
   },
 ]);
 const categoryList = ref([]);
 const getPluginCategoryList = async () => {
   return api.get('/api/v1/aiPluginCategories/list').then((res) => {
     if (res.errorCode === 0) {
-      categoryList.value = res.data;
+      categoryList.value = [
+        { id: '0', name: $t('common.allCategories') },
+        ...res.data,
+      ];
     }
   });
 };
@@ -61,12 +66,14 @@ const handleDelete = (item) => {
     type: 'warning',
   })
     .then(() => {
-      api.post('/api/v1/aiKnowledge/remove', { id: item.id }).then((res) => {
-        if (res.errorCode === 0) {
-          ElMessage.success($t('message.deleteOkMessage'));
-          pageDataRef.value.setQuery({});
-        }
-      });
+      api
+        .post('/api/v1/aiPlugin/plugin/remove', { id: item.id })
+        .then((res) => {
+          if (res.errorCode === 0) {
+            ElMessage.success($t('message.deleteOkMessage'));
+            pageDataRef.value.setQuery({});
+          }
+        });
     })
     .catch(() => {});
 };
@@ -79,7 +86,7 @@ const handleAction = ({ action, item }) => {
       break;
     }
     case 'edit': {
-      aiKnowledgeModalRef.value.openDialog(item);
+      aiPluginModalRef.value.openDialog(item);
       break;
     }
     case 'view': {
@@ -101,7 +108,7 @@ const handleAction = ({ action, item }) => {
 };
 
 const pageDataRef = ref();
-const aiKnowledgeModalRef = ref();
+const aiPluginModalRef = ref();
 const headerButtons = [
   {
     key: 'add',
@@ -114,11 +121,12 @@ const headerButtons = [
 const handleButtonClick = (event, _item) => {
   switch (event.key) {
     case 'add': {
-      aiKnowledgeModalRef.value.openDialog({});
+      aiPluginModalRef.value.openDialog({});
       break;
     }
   }
 };
+const pluginCategoryId = ref('0');
 const handleSearch = (params) => {
   pageDataRef.value.setQuery({ title: params, isQueryOr: true });
 };
@@ -155,6 +163,9 @@ const handleDeleteCategory = (params) => {
       }
     });
 };
+const handleClickCategory = (item) => {
+  pageDataRef.value.setQuery({ category: item.item.id });
+};
 </script>
 
 <template>
@@ -173,10 +184,12 @@ const handleDeleteCategory = (params) => {
           :title="$t('plugin.pluginCategory')"
           title-key="name"
           :panel-width="220"
+          default-selected-category="0"
           :category-data="categoryList"
           @edit="handleEditCategory"
           @add="handleAddCategory"
           @delete="handleDeleteCategory"
+          @click="handleClickCategory"
           value-key="id"
           :default-form-data="{ name: '' }"
         />
@@ -185,10 +198,10 @@ const handleDeleteCategory = (params) => {
       <div class="plugin-content-data-container">
         <PageData
           ref="pageDataRef"
-          page-url="/api/v1/aiKnowledge/page"
+          page-url="/api/v1/aiPlugin/pageByCategory"
           :page-size="12"
           :page-sizes="[12, 24, 36, 48]"
-          :init-query-params="{ status: 1 }"
+          :extra-query-params="{ category: pluginCategoryId }"
         >
           <template #default="{ pageList }">
             <CardPage
@@ -203,9 +216,7 @@ const handleDeleteCategory = (params) => {
         </PageData>
       </div>
     </div>
-    <!--    新增知识库模态框-->
-    <!--    <AddKnowledgeModal ref="addKnowledgeRef" @success="handleAddSuccess" />-->
-    <AiKnowledgeModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
+    <AddPluginModal ref="aiPluginModalRef" @reload="handleSearch" />
   </div>
 </template>
 
@@ -230,6 +241,7 @@ h1 {
 }
 .plugin-content-data-container {
   padding: 20px;
-  background-color: var(--el-color-white);
+  background-color: var(--el-bg-color);
+  width: 100%;
 }
 </style>

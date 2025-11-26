@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 
-import { ArrowDown } from '@element-plus/icons-vue';
+import { MoreFilled } from '@element-plus/icons-vue';
 import {
   ElAvatar,
   ElButton,
@@ -12,6 +12,8 @@ import {
   ElEmpty,
   ElIcon,
 } from 'element-plus';
+
+import { hasPermission } from '#/api/common/hasPermission.ts';
 
 const props = defineProps({
   titleKey: {
@@ -36,7 +38,6 @@ const props = defineProps({
     default: () => [],
   },
 });
-
 // 定义组件事件
 const emit = defineEmits(['actionClick']);
 
@@ -54,6 +55,12 @@ const dropdownActions = computed(() => {
 const handleActionClick = (action, item) => {
   emit('actionClick', { action, item });
 };
+
+const filteredActions = computed(() => {
+  return dropdownActions.value.filter((action) => {
+    return hasPermission([action.permission]);
+  });
+});
 </script>
 
 <template>
@@ -75,29 +82,36 @@ const handleActionClick = (action, item) => {
             <ElButton
               v-for="(action, index) in visibleActions"
               :key="index"
-              :type="action.type || 'primary'"
+              link
+              class="action-btn"
               :icon="action.icon"
-              size="small"
+              v-access:code="action.permission"
               @click="handleActionClick(action, item)"
             >
               {{ action.label }}
+              <span
+                v-if="
+                  index < visibleActions.length - 1 ||
+                  (index === visibleActions.length - 1 &&
+                    filteredActions.length > 0)
+                "
+                class="divider"
+              ></span>
             </ElButton>
 
             <!-- 更多操作下拉菜单 -->
             <ElDropdown
-              v-if="dropdownActions.length > 0"
+              v-if="filteredActions.length > 0"
+              class="action-btn"
               @command="(command) => handleActionClick(command, item)"
             >
-              <ElButton size="small" style="margin-left: 8px">
-                更多
-                <ElIcon class="el-icon--right">
-                  <ArrowDown />
-                </ElIcon>
-              </ElButton>
+              <ElIcon class="el-icon--right">
+                <MoreFilled />
+              </ElIcon>
               <template #dropdown>
                 <ElDropdownMenu>
                   <ElDropdownItem
-                    v-for="action in dropdownActions"
+                    v-for="action in filteredActions"
                     :key="action.name"
                     :command="action"
                     :icon="action.icon"
@@ -132,12 +146,15 @@ const handleActionClick = (action, item) => {
   gap: 20px;
   margin-bottom: 20px;
 }
-
+:deep(.el-card__body) {
+  padding: 20px 0 0 0;
+}
 .card-item {
   transition: all 0.3s ease;
   border-radius: 8px;
   width: 330px;
   flex-shrink: 0;
+  height: 165px;
 }
 
 .card-item:hover {
@@ -159,6 +176,7 @@ const handleActionClick = (action, item) => {
   gap: 15px;
   margin-bottom: 15px;
   flex: 1;
+  padding: 0 20px 0 20px;
 }
 
 .card-info {
@@ -192,10 +210,47 @@ const handleActionClick = (action, item) => {
 
 .card-actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  height: 48px;
+  background: linear-gradient(180deg, #f3f8ff 0%, #ffffff 100%) !important;
 }
 
+.action-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  color: #acb7c6;
+  position: relative;
+  &:hover {
+    color: var(--el-color-primary);
+  }
+}
+
+.more-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.divider {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 20px;
+  background-color: #e0e0e0;
+}
+
+/* 确保按钮内容不换行 */
+.action-btn .el-button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  justify-content: center;
+}
 .empty-state {
   padding: 40px 0;
   text-align: center;
