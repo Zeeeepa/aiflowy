@@ -2,9 +2,9 @@ import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
   {
-    name: 'Agents',
-    path: '/agents',
-    component: () => import('#/views/agents/index.vue'),
+    name: 'Bots',
+    path: '/bots',
+    component: () => import('#/views/bots/index.vue'),
     meta: {
       icon: 'mdi:robot-outline',
       order: 1,

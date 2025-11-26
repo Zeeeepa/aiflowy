@@ -19,7 +19,7 @@ const recentUsedAssistant = reactive([
     id: 0,
     title: '客服助手',
     description: '智能客服，回答用户问题',
-    checked: false,
+    checked: true,
   },
   {
     id: 1,
