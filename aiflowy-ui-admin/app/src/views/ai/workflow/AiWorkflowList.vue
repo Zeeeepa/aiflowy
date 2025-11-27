@@ -162,8 +162,8 @@ function toDesignPage(row: any) {
     <PageData
       ref="pageDataRef"
       page-url="/api/v1/aiWorkflow/page"
-      :page-sizes="[9, 12, 18, 24]"
-      :page-size="9"
+      :page-sizes="[12, 18, 24]"
+      :page-size="12"
     >
       <template #default="{ pageList }">
         <CardList

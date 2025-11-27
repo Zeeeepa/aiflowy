@@ -171,6 +171,7 @@ const hiddenActions = computed(() => {
   font-size: clamp(12px, 1.2vw, 16px);
   font-weight: 600;
   margin-bottom: 15px;
+  height: 20px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -179,6 +180,7 @@ const hiddenActions = computed(() => {
 .item-desc {
   font-size: clamp(8px, 1vw, 12px);
   margin-bottom: 15px;
+  height: 20px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
