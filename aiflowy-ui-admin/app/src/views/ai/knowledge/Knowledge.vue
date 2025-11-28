@@ -40,7 +40,7 @@ const actions = ref([
   {
     name: 'delete',
     label: $t('button.delete'),
-    type: 'info',
+    type: 'danger',
     icon: markRaw(Delete),
     permission: '/api/v1/aiKnowledge/remove',
   },
