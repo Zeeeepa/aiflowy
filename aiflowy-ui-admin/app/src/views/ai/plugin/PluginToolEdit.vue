@@ -125,45 +125,52 @@ const rules = reactive({
 });
 const saveForm = ref();
 const updatePluginTool = (index: number) => {
-  if (!saveForm.value) return;
-  saveForm.value.validate((valid: boolean) => {
-    if (valid) {
-      api
-        .post('/api/v1/aiPluginTool/tool/update', {
-          id: toolId.value,
-          name: pluginToolInfo.value.name,
-          englishName: pluginToolInfo.value.englishName,
-          description: pluginToolInfo.value.description,
-          basePath: pluginToolInfo.value.basePath,
-          requestMethod: pluginToolInfo.value.requestMethod,
-          inputData: JSON.stringify(pluginInputData.value),
-          outputData: JSON.stringify(pluginOutputData.value),
-        })
-        .then((res) => {
-          if (res.errorCode === 0) {
-            ElMessage.success($t('message.updateOkMessage'));
-            switch (index) {
-              case 1: {
-                pluginBasicCollapse.value.isEdit = false;
+  if (index === 1) {
+    if (!saveForm.value) return;
+    saveForm.value.validate((valid: boolean) => {
+      if (valid) {
+        updatePluginToolInfo(index);
+      }
+    });
+  } else {
+    updatePluginToolInfo(index);
+  }
+};
+const updatePluginToolInfo = (index: number) => {
+  api
+    .post('/api/v1/aiPluginTool/tool/update', {
+      id: toolId.value,
+      name: pluginToolInfo.value.name,
+      englishName: pluginToolInfo.value.englishName,
+      description: pluginToolInfo.value.description,
+      basePath: pluginToolInfo.value.basePath,
+      requestMethod: pluginToolInfo.value.requestMethod,
+      inputData: JSON.stringify(pluginInputData.value),
+      outputData: JSON.stringify(pluginOutputData.value),
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        switch (index) {
+          case 1: {
+            pluginBasicCollapse.value.isEdit = false;
 
-                break;
-              }
-              case 2: {
-                pluginBasicCollapseInputParams.value.isEdit = false;
-
-                break;
-              }
-              case 3: {
-                pluginBasicCollapseOutputParams.value.isEdit = false;
-
-                break;
-              }
-              // No default
-            }
+            break;
           }
-        });
-    }
-  });
+          case 2: {
+            pluginBasicCollapseInputParams.value.isEdit = false;
+
+            break;
+          }
+          case 3: {
+            pluginBasicCollapseOutputParams.value.isEdit = false;
+
+            break;
+          }
+          // No default
+        }
+      }
+    });
 };
 const handleEdit = (index: number) => {
   switch (index) {

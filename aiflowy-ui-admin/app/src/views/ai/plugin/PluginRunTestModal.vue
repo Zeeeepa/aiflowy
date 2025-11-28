@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 import { preferences } from '@aiflowy/preferences';
@@ -26,6 +26,7 @@ watch(
 );
 const dialogVisible = ref(false);
 const openDialog = () => {
+  getPluginToolInfo();
   runResultResponse.value = null;
   dialogVisible.value = true;
 };
@@ -51,9 +52,6 @@ function getPluginToolInfo() {
 const activeIndex = ref('1');
 defineExpose({
   openDialog,
-});
-onMounted(() => {
-  getPluginToolInfo();
 });
 function handleSelect(index: string) {
   activeIndex.value = index;

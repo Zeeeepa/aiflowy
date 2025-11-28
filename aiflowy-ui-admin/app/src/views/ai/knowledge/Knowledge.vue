@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
-import { Delete, Edit, Plus, View } from '@element-plus/icons-vue';
+import { Delete, Edit, Notebook, Plus, Search } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
@@ -19,27 +19,27 @@ const router = useRouter();
 const actions = ref([
   {
     name: 'edit',
-    label: '编辑',
+    label: $t('button.edit'),
     type: 'primary',
     icon: markRaw(Edit),
     permission: '/api/v1/aiKnowledge/save',
   },
   {
-    name: 'view',
-    label: '列表',
+    name: 'knowledge',
+    label: $t('aiKnowledge.actions.knowledge'),
     type: 'success',
-    icon: markRaw(View),
+    icon: markRaw(Notebook),
     permission: '/api/v1/aiKnowledge/save',
   },
   {
-    name: 'delete',
-    label: '检索',
+    name: 'retrieve',
+    label: $t('aiKnowledge.actions.retrieve'),
     type: 'danger',
-    icon: markRaw(View),
+    icon: markRaw(Search),
   },
   {
     name: 'delete',
-    label: '删除',
+    label: $t('button.delete'),
     type: 'info',
     icon: markRaw(Delete),
     permission: '/api/v1/aiKnowledge/remove',
@@ -75,21 +75,16 @@ const handleAction = ({ action, item }) => {
       aiKnowledgeModalRef.value.openDialog(item);
       break;
     }
-    case 'view': {
+    case 'knowledge': {
       router.replace({
         path: '/ai/knowledge/document',
         query: {
-          // 关键：传递 pageKey 与原页面一致（复用 Tab Key）
           id: item.id,
           pageKey: '/ai/knowledge',
         },
-        // meta: {
-        //   pageKey: '/ai/knowledge', // 隐藏在路由元信息中
-        // },
       });
       break;
     }
-    // 其他操作...
   }
 };
 
@@ -98,10 +93,11 @@ const aiKnowledgeModalRef = ref();
 const headerButtons = [
   {
     key: 'add',
-    text: '新增知识库',
+    text: $t('aiKnowledge.actions.addKnowledge'),
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'add' },
+    permission: '/api/v1/aiKnowledge/save',
   },
 ];
 const handleButtonClick = (event, _item) => {
@@ -122,7 +118,6 @@ const handleSearch = (params) => {
     <div class="knowledge-header">
       <HeaderSearch
         :buttons="headerButtons"
-        search-placeholder="搜索用户"
         @search="handleSearch"
         @button-click="handleButtonClick"
       />
@@ -148,7 +143,6 @@ const handleSearch = (params) => {
       </PageData>
     </div>
     <!--    新增知识库模态框-->
-    <!--    <AddKnowledgeModal ref="addKnowledgeRef" @success="handleAddSuccess" />-->
     <AiKnowledgeModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
   </div>
 </template>

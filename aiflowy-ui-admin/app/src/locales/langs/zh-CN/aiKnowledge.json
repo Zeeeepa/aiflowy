@@ -63,5 +63,10 @@
     "uploading": "解析中",
     "importSuccess": "导入成功"
   },
-  "documentManagement": "文档管理"
+  "documentManagement": "文档管理",
+  "actions": {
+    "knowledge": "知识",
+    "retrieve": "检索",
+    "addKnowledge": "新增知识库"
+  }
 }

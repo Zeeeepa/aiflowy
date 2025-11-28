@@ -63,5 +63,10 @@
     "uploading": "Parsing in progress",
     "importSuccess": "ImportSuccess"
   },
-  "documentManagement": "Document management"
+  "documentManagement": "Document management",
+  "actions": {
+    "knowledge": "Knowledge",
+    "retrieve": "Retrieve",
+    "addKnowledge": "AddKnowledge"
+  }
 }
