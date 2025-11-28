@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { getOptions, sortNodes } from '@aiflowy/utils';
@@ -65,7 +65,8 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 };
 const drawerVisible = ref(false);
-
+const executeMessage = ref<any>(null);
+const initState = ref(false);
 // functions
 async function loadCustomNode() {
   customNode.value = await getCustomNode({
@@ -124,34 +125,41 @@ function getRunningParams() {
       drawerVisible.value = true;
     });
 }
-const executeMessage = ref<any>(null);
-const initState = ref(false);
 function onExecuting(msg: any) {
   executeMessage.value = msg;
 }
 function onSubmit() {
   initState.value = !initState.value;
 }
+async function runIndependently(node: any) {
+  if (node.type === 'loopNode') {
+    ElMessage.warning($t('message.notSupported'));
+    return;
+  }
+  console.warn('node:', node);
+}
 </script>
 
 <template>
   <div class="head-div h-full w-full">
     <ElDrawer v-model="drawerVisible" :title="$t('button.run')" size="600px">
-      <div class="mb-2.5 font-semibold">参数：</div>
+      <div class="mb-2.5 font-semibold">{{ $t('aiWorkflow.params') }}：</div>
       <WorkflowForm
         :workflow-id="workflowId"
         :workflow-params="runParams"
         :on-executing="onExecuting"
         :on-submit="onSubmit"
       />
-      <div class="mb-2.5 font-semibold">执行步骤：</div>
+      <div class="mb-2.5 font-semibold">{{ $t('aiWorkflow.steps') }}：</div>
       <WorkflowSteps
         :workflow-id="workflowId"
         :execute-message="executeMessage"
         :node-json="sortNodes(tinyFlowData)"
         :init-signal="initState"
       />
-      <div class="mb-2.5 mt-2.5 font-semibold">执行结果：</div>
+      <div class="mb-2.5 mt-2.5 font-semibold">
+        {{ $t('aiWorkflow.result') }}：
+      </div>
       <ExecResult
         :workflow-id="workflowId"
         :execute-message="executeMessage"
@@ -185,6 +193,7 @@ function onSubmit() {
       :data="JSON.parse(JSON.stringify(tinyFlowData))"
       :provider="provider"
       :custom-nodes="customNode"
+      :on-node-execute="runIndependently"
     />
     <ElSkeleton class="load-div" v-else :rows="5" animated />
   </div>

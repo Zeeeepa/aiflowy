@@ -17,5 +17,6 @@
   "notEmpty": "Can not be empty",
   "success": "Success",
   "fail": "Fail",
-  "pleaseInputContent": "Please input content"
+  "pleaseInputContent": "Please input content",
+  "notSupported": "Not supported yet"
 }
