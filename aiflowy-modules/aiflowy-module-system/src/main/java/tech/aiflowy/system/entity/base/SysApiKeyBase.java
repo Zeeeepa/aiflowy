@@ -41,7 +41,7 @@ public class SysApiKeyBase implements Serializable {
      * 创建人
      */
     @Column(comment = "userId")
-    private BigInteger userId;
+    private BigInteger createdBy;
 
     /**
      * 创建时间
@@ -109,13 +109,9 @@ public class SysApiKeyBase implements Serializable {
         this.tenantId = tenantId;
     }
 
-    public BigInteger getCreatedBy() {
-        return userId;
-    }
+    public BigInteger getCreatedBy() {return createdBy;}
 
-    public void setCreatedBy(BigInteger userId) {
-        this.userId = userId;
-    }
+    public void setCreatedBy(BigInteger createdBy) {this.createdBy = createdBy;}
 
     public Date getExpiredAt() {
         return expiredAt;

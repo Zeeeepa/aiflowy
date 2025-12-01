@@ -1,0 +1,16 @@
+{
+    "id": "Id",
+    "apiKey": "ApiKey",
+    "created": "Created",
+    "status": "Status",
+    "deptId": "DeptId",
+    "tenantId": "TenantId",
+    "expiredAt": "ExpiredAt",
+    "createdBy": "CreatedBy",
+    "addApiKey": "addApiKey",
+    "actions": {
+      "enable": "Enable",
+      "disable": "NotDisable",
+      "failure": "Failure"
+    }
+}

@@ -169,7 +169,6 @@ const handleDropdownClick = (button) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #e4e7ed;
 }
 
 .header-left {
