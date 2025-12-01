@@ -18,6 +18,7 @@ import {
 
 import { sse } from '#/api/request';
 import { $t } from '#/locales';
+import ChooseResource from '#/views/ai/resource/ChooseResource.vue';
 
 export type WorkflowFormProps = {
   onExecuting?: (values: any) => void;
@@ -86,76 +87,89 @@ function submit() {
     }
   });
 }
+function choose(data: any, propName: string) {
+  runParams.value[propName] = data.resourceUrl;
+}
 </script>
 
 <template>
-  <ElForm label-position="top" ref="runForm" :model="runParams">
-    <ElFormItem
-      v-for="(item, idx) in parameters"
-      :prop="item.name"
-      :key="idx"
-      :label="item.formLabel || item.name"
-      :rules="
-        item.required
-          ? [{ required: true, message: $t('message.required') }]
-          : []
-      "
-    >
-      <template v-if="getContentType(item) === 'text'">
-        <ElInput
-          v-if="item.formType === 'input' || !item.formType"
-          v-model="runParams[item.name]"
-          :placeholder="item.formPlaceholder"
-        />
-        <ElSelect
-          v-if="item.formType === 'select'"
-          v-model="runParams[item.name]"
-          :placeholder="item.formPlaceholder"
-          :options="getCheckboxOptions(item)"
-          clearable
-        />
-        <ElInput
-          v-if="item.formType === 'textarea'"
-          v-model="runParams[item.name]"
-          :placeholder="item.formPlaceholder"
-          :rows="3"
-          type="textarea"
-        />
-        <ElRadioGroup
-          v-if="item.formType === 'radio'"
-          v-model="runParams[item.name]"
-          :options="getCheckboxOptions(item)"
-        />
-        <ElCheckboxGroup
-          v-if="item.formType === 'checkbox'"
-          v-model="runParams[item.name]"
-          :options="getCheckboxOptions(item)"
-        />
-      </template>
-      <template v-if="getContentType(item) === 'other'">
-        <ElInput
-          v-model="runParams[item.name]"
-          :placeholder="item.formPlaceholder"
-        />
-      </template>
-      <template v-if="isResource(getContentType(item))">
-        选择资源组件
-      </template>
-      <ElAlert v-if="item.formDescription" type="info" style="margin-top: 5px">
-        {{ item.formDescription }}
-      </ElAlert>
-    </ElFormItem>
-    <ElFormItem>
-      <ElButton
-        type="primary"
-        @click="submit"
-        :loading="submitLoading"
-        :icon="Position"
+  <div>
+    <ElForm label-position="top" ref="runForm" :model="runParams">
+      <ElFormItem
+        v-for="(item, idx) in parameters"
+        :prop="item.name"
+        :key="idx"
+        :label="item.formLabel || item.name"
+        :rules="
+          item.required
+            ? [{ required: true, message: $t('message.required') }]
+            : []
+        "
       >
-        {{ $t('button.run') }}
-      </ElButton>
-    </ElFormItem>
-  </ElForm>
+        <template v-if="getContentType(item) === 'text'">
+          <ElInput
+            v-if="item.formType === 'input' || !item.formType"
+            v-model="runParams[item.name]"
+            :placeholder="item.formPlaceholder"
+          />
+          <ElSelect
+            v-if="item.formType === 'select'"
+            v-model="runParams[item.name]"
+            :placeholder="item.formPlaceholder"
+            :options="getCheckboxOptions(item)"
+            clearable
+          />
+          <ElInput
+            v-if="item.formType === 'textarea'"
+            v-model="runParams[item.name]"
+            :placeholder="item.formPlaceholder"
+            :rows="3"
+            type="textarea"
+          />
+          <ElRadioGroup
+            v-if="item.formType === 'radio'"
+            v-model="runParams[item.name]"
+            :options="getCheckboxOptions(item)"
+          />
+          <ElCheckboxGroup
+            v-if="item.formType === 'checkbox'"
+            v-model="runParams[item.name]"
+            :options="getCheckboxOptions(item)"
+          />
+        </template>
+        <template v-if="getContentType(item) === 'other'">
+          <ElInput
+            v-model="runParams[item.name]"
+            :placeholder="item.formPlaceholder"
+          />
+        </template>
+        <template v-if="isResource(getContentType(item))">
+          <ElInput
+            v-model="runParams[item.name]"
+            :placeholder="item.formPlaceholder"
+          />
+          <ChooseResource :attr-name="item.name" @choose="choose" />
+        </template>
+        <ElAlert
+          v-if="item.formDescription"
+          type="info"
+          style="margin-top: 5px"
+        >
+          {{ item.formDescription }}
+        </ElAlert>
+      </ElFormItem>
+      <ElFormItem>
+        <ElButton
+          type="primary"
+          @click="submit"
+          :loading="submitLoading"
+          :icon="Position"
+        >
+          {{ $t('button.run') }}
+        </ElButton>
+      </ElFormItem>
+    </ElForm>
+  </div>
 </template>
 
 <style scoped></style>

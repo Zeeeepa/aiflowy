@@ -5,7 +5,7 @@ import { onMounted, ref } from 'vue';
 
 import { formatBytes } from '@aiflowy/utils';
 
-import { Delete, Edit, Plus, View, Download } from '@element-plus/icons-vue';
+import { Delete, Download, Edit, Plus, View } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElForm,
@@ -22,9 +22,9 @@ import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
 import { useDictStore } from '#/store';
+import PreviewModal from '#/views/ai/resource/PreviewModal.vue';
 
 import AiResourceModal from './AiResourceModal.vue';
-import PreviewModal from "#/views/ai/resource/PreviewModal.vue";
 
 onMounted(() => {
   initDict();
