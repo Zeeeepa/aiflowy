@@ -12,8 +12,7 @@ import {
   CardDescription,
   CardTitle,
 } from '#/components/card';
-
-import { ChatBubbleList, ChatContainer, ChatSender } from './components/chat';
+import { ChatBubbleList, ChatContainer, ChatSender } from '#/components/chat';
 
 const recentUsedAssistant = reactive([
   {

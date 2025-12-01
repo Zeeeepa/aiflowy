@@ -17,7 +17,14 @@ import {
   CardTitle,
 } from '#/components/card';
 
-const tags = ['推荐', '最新', '营销场景', '办公提效', '行业专属', '安全合规'];
+const categories = [
+  '推荐',
+  '最新',
+  '营销场景',
+  '办公提效',
+  '行业专属',
+  '安全合规',
+];
 const botList = ref<BotInfo[]>([]);
 
 onMounted(async () => {
@@ -35,19 +42,15 @@ onMounted(async () => {
       <ElSpace direction="vertical" :size="24" alignment="flex-start">
         <h1 class="text-2xl font-medium text-[#333333]">智能体</h1>
         <ElSpace :size="20">
-          <ElInput
-            class="search-input"
-            placeholder="搜索"
-            :prefix-icon="Search"
-          />
+          <ElInput placeholder="搜索" :prefix-icon="Search" />
           <ElSpace :size="12">
             <button
               type="button"
               class="h-[35px] w-[94px] rounded-3xl border border-[#E6E9EE] text-sm text-[#566882] hover:border-[#0066FF] hover:bg-[rgba(0,102,255,0.08)] hover:text-[#0066FF]"
-              v-for="item in tags"
-              :key="item"
+              v-for="category in categories"
+              :key="category"
             >
-              {{ item }}
+              {{ category }}
             </button>
           </ElSpace>
         </ElSpace>
@@ -82,7 +85,7 @@ onMounted(async () => {
 </template>
 
 <style lang="css" scoped>
-.search-input :deep(.el-input__wrapper) {
+.el-input :deep(.el-input__wrapper) {
   --el-input-border-radius: 18px;
   --el-input-border-color: #e6e9ee;
 }
