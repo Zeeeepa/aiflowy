@@ -79,7 +79,10 @@ watch(
             }
           }
           if (msg.status === 'confirm') {
-            ElMessage.warning($t('aiWorkflow.confirm'));
+            ElMessage.warning({
+              message: $t('aiWorkflow.confirm'),
+              plain: true,
+            });
             activeName.value = msg.nodeId;
           }
           nodeStatusMap.value[msg.nodeId] = mapData;
