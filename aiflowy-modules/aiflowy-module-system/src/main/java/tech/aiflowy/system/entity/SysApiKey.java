@@ -1,7 +1,6 @@
 package tech.aiflowy.system.entity;
 
 import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.RelationManyToMany;
 import com.mybatisflex.annotation.RelationOneToMany;
 import com.mybatisflex.annotation.Table;
 import tech.aiflowy.system.entity.base.SysApiKeyBase;
@@ -21,6 +20,17 @@ public class SysApiKey extends SysApiKeyBase {
 
     @Column(ignore = true)
     List<BigInteger> permissionIds;
+
+    @RelationOneToMany(selfField = "id", targetField = "apiKeyId", targetTable = "tb_sys_api_key_resource_permission_relationship")
+    private List<SysApiKeyResourcePermissionRelationship> resourcePermissions;
+
+    public List<SysApiKeyResourcePermissionRelationship> getResourcePermissions() {
+        return resourcePermissions;
+    }
+
+    public void setResourcePermissions(List<SysApiKeyResourcePermissionRelationship> resourcePermissions) {
+        this.resourcePermissions = resourcePermissions;
+    }
 
     public List<BigInteger> getPermissionIds() {
         return permissionIds;

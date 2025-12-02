@@ -25,7 +25,6 @@ const dialogVisible = ref(false);
 <style scoped>
 .sys-apikey-container {
   height: 100%;
-  padding: 20px;
   width: 100%;
 }
 </style>
