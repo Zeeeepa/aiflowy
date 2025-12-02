@@ -77,7 +77,7 @@ function submit() {
           if (message.data) {
             const msg = JSON.parse(message.data).content;
             if (msg.status === 'execOnce') {
-              ElMessage.warning('流程已执行完毕，请重新发起。');
+              ElMessage.warning($t('aiWorkflow.completed'));
             } else {
               props.onExecuting?.(message);
             }
@@ -100,7 +100,7 @@ function resume(data: any) {
       if (message.data) {
         const msg = JSON.parse(message.data).content;
         if (msg.status === 'execOnce') {
-          ElMessage.warning('流程已执行完毕，请重新发起。');
+          ElMessage.warning($t('aiWorkflow.completed'));
         } else {
           props.onExecuting?.(message);
         }

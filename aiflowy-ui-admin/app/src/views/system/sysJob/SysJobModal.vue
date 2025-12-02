@@ -14,6 +14,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import CronPicker from '#/components/cron/CronPicker.vue';
 import DictSelect from '#/components/dict/DictSelect.vue';
 import { $t } from '#/locales';
 
@@ -157,6 +158,7 @@ const str = '"param"';
       </ElFormItem>
       <ElFormItem prop="cronExpression" :label="$t('sysJob.cronExpression')">
         <ElInput v-model.trim="entity.cronExpression" />
+        <CronPicker v-model="entity.cronExpression" />
       </ElFormItem>
       <ElFormItem prop="jobType" :label="$t('sysJob.jobType')">
         <DictSelect

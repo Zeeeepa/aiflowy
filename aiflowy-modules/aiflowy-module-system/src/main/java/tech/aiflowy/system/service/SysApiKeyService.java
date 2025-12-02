@@ -12,4 +12,6 @@ import tech.aiflowy.system.entity.SysApiKey;
 public interface SysApiKeyService extends IService<SysApiKey> {
 
     void checkApiKey(String apiKey);
+
+    void checkApikeyPermission(String apiKey, String requestURI);
 }

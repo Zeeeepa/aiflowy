@@ -80,7 +80,7 @@ function openDialog(row: Partial<Entity> = {}) {
     status: '',
     deptId: '',
     expiredAt: null,
-    permissions: [],
+    permissionIds: [],
     ...row,
   };
   isAdd.value = !row.id;
@@ -162,7 +162,7 @@ defineExpose({
     :title="isAdd ? $t('button.add') : $t('button.edit')"
     :before-close="closeDialog"
     :close-on-click-modal="false"
-    width="600px"
+    width="50%"
   >
     <ElForm
       label-width="120px"
@@ -244,7 +244,8 @@ defineExpose({
 
 .permission-checkbox {
   margin: 4px 0;
-  min-width: 200px;
+  display: flex;
+  align-items: flex-start;
 }
 
 .form-container::-webkit-scrollbar {

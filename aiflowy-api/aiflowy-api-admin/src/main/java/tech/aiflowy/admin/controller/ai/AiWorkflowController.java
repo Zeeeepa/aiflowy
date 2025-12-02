@@ -32,6 +32,7 @@ import tech.aiflowy.ai.service.AiBotWorkflowService;
 import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.common.ai.MySseEmitter;
+import tech.aiflowy.common.annotation.NeedApiKeyAccess;
 import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.constant.RedisKey;
 import tech.aiflowy.common.domain.Result;
@@ -318,22 +319,19 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
 
     @SaIgnore
     @GetMapping(value = "/external/getRunningParams", produces = MediaType.APPLICATION_JSON_VALUE)
+    @NeedApiKeyAccess(value = "/api/v1/aiWorkflow/external/getRunningParams")
     @ResponseBody
-    public Result<?> externalGetRunningParameters(HttpServletRequest request,
-                                               @RequestParam BigInteger id) {
-        String apiKey = request.getHeader("Authorization");
-        apiKeyService.checkApiKey(apiKey);
+    public Result<?> externalGetRunningParameters(@RequestParam BigInteger id) {
         return getRunningParameters(id);
     }
 
     @SaIgnore
     @PostMapping(value = "/external/run", produces = MediaType.APPLICATION_JSON_VALUE)
+    @NeedApiKeyAccess(value = "/api/v1/aiWorkflow/external/run")
     @ResponseBody
     public Result<?> externalRun(HttpServletRequest request,
                               @JsonBody(value = "id", required = true) BigInteger id,
                               @JsonBody("variables") Map<String, Object> variables) {
-        String apiKey = request.getHeader("Authorization");
-        apiKeyService.checkApiKey(apiKey);
         return tryRunning(id, variables);
     }
 
