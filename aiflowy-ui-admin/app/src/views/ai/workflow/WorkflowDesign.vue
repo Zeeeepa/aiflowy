@@ -9,6 +9,7 @@ import { Tinyflow } from '@tinyflow-ai/vue';
 import { ElButton, ElDrawer, ElMessage, ElSkeleton } from 'element-plus';
 
 import { api } from '#/api/request';
+import CommonSelectDataModal from '#/components/commonSelectModal/CommonSelectDataModal.vue';
 import { $t } from '#/locales';
 import { router } from '#/router';
 import ExecResult from '#/views/ai/workflow/components/ExecResult.vue';
@@ -17,6 +18,7 @@ import WorkflowForm from '#/views/ai/workflow/components/WorkflowForm.vue';
 import WorkflowSteps from '#/views/ai/workflow/components/WorkflowSteps.vue';
 
 import { getCustomNode } from './customNode/index';
+import nodeNames from './customNode/nodeNames';
 
 import '@tinyflow-ai/vue/dist/index.css';
 
@@ -71,13 +73,27 @@ const initState = ref(false);
 const singleNode = ref<any>();
 const singleRunVisible = ref(false);
 const workflowForm = ref();
+const workflowSelectRef = ref();
+const updateWorkflowNode = ref<any>(null);
+const pluginSelectRef = ref();
+const updatePluginNode = ref<any>(null);
+const pageLoading = ref(false);
 // functions
 async function loadCustomNode() {
   customNode.value = await getCustomNode({
-    handleChosen: (nodeType: string, updateNodeData: any, value: string) => {
-      console.log('nodeType:', nodeType);
-      console.log('updateNodeData:', updateNodeData);
-      console.log('value:', value);
+    handleChosen: (nodeName: string, updateNodeData: any, value: string) => {
+      const v = [];
+      if (value) {
+        v.push(value);
+      }
+      if (nodeName === nodeNames.workflowNode) {
+        workflowSelectRef.value.openDialog(v);
+        updateWorkflowNode.value = updateNodeData;
+      }
+      if (nodeName === nodeNames.pluginNode) {
+        pluginSelectRef.value.openDialog(v);
+        updatePluginNode.value = updateNodeData;
+      }
     },
   });
 }
@@ -147,10 +163,56 @@ async function runIndependently(node: any) {
 function resumeChain(data: any) {
   workflowForm.value?.resume(data);
 }
+function handleChoose(nodeName: string, value: any) {
+  if (nodeName === nodeNames.workflowNode) {
+    handleWorkflowNodeUpdate(value[0]);
+  }
+  if (nodeName === nodeNames.pluginNode) {
+    handlePluginNodeUpdate(value[0]);
+  }
+}
+function handleWorkflowNodeUpdate(chooseId: any) {
+  pageLoading.value = true;
+  api
+    .get('/api/v1/workflowNode/getChainParams', {
+      params: {
+        currentId: workflowId.value,
+        workflowId: chooseId,
+      },
+    })
+    .then((res) => {
+      pageLoading.value = false;
+      updateWorkflowNode.value(res.data);
+    });
+}
+function handlePluginNodeUpdate(chooseId: any) {
+  pageLoading.value = true;
+  api
+    .get('/api/v1/aiPluginTool/getTinyFlowData', {
+      params: {
+        id: chooseId,
+      },
+    })
+    .then((res) => {
+      pageLoading.value = false;
+      updatePluginNode.value(res.data);
+    });
+}
 </script>
 
 <template>
-  <div class="head-div h-full w-full">
+  <div class="head-div h-full w-full" v-loading="pageLoading">
+    <CommonSelectDataModal
+      ref="workflowSelectRef"
+      page-url="/api/v1/aiWorkflow/page"
+      @get-data="(v) => handleChoose(nodeNames.workflowNode, v)"
+    />
+    <CommonSelectDataModal
+      ref="pluginSelectRef"
+      page-url="/api/v1/aiPlugin/page"
+      is-select-plugin
+      @get-data="(v) => handleChoose(nodeNames.pluginNode, v)"
+    />
     <ElDrawer
       v-model="singleRunVisible"
       :title="singleNode?.data?.title"

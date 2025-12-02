@@ -6,7 +6,6 @@ export const SearchDatacenterNode = async () => {
   const res = await api.get('/api/v1/datacenterTable/list');
 
   return {
-    nodeType: 'search-datacenter-node',
     title: '查询数据',
     group: 'base',
     description: '查询数据中枢的数据',

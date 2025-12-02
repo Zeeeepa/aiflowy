@@ -1,5 +1,7 @@
+import nodeNames from './nodeNames';
+
 export default {
-  'download-node': {
+  [nodeNames.downloadNode]: {
     title: '素材同步',
     group: 'base',
     description: '下载素材文件并保存到系统素材库',

@@ -1,9 +1,10 @@
+import nodeNames from './nodeNames';
+
 export interface PluginNodeOptions {
   onChosen?: (nodeType: string, updateNodeData: any, value: string) => void;
 }
-const NODE_TYPE = 'plugin-node';
+
 export const PluginNode = (options: PluginNodeOptions = {}) => ({
-  nodeType: NODE_TYPE,
   title: '插件',
   group: 'base',
   description: '选择定义好的插件',
@@ -19,7 +20,7 @@ export const PluginNode = (options: PluginNodeOptions = {}) => ({
         labelDataKey: 'pluginName',
         valueDataKey: 'pluginId',
         onChosen: (updateNodeData: any, value: any) => {
-          options.onChosen?.(NODE_TYPE, updateNodeData, value);
+          options.onChosen?.(nodeNames.pluginNode, updateNodeData, value);
         },
       },
     },

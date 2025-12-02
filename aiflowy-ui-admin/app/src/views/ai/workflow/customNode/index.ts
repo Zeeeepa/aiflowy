@@ -1,6 +1,7 @@
 import docNode from './documentNode';
 import downloadNode from './downloadNode';
 import makeFileNode from './makeFileNode';
+import nodeNames from './nodeNames';
 import { PluginNode } from './pluginNode';
 import { SaveToDatacenterNode } from './saveToDatacenter';
 import { SearchDatacenterNode } from './searchDatacenter';
@@ -20,9 +21,9 @@ export const getCustomNode = async (options: CustomNodeOptions) => {
     ...makeFileNode,
     ...downloadNode,
     ...sqlNode,
-    [pluginNode.nodeType]: pluginNode,
-    [workflowNode.nodeType]: workflowNode,
-    [searchDatacenterNode.nodeType]: searchDatacenterNode,
-    [saveToDatacenterNode.nodeType]: saveToDatacenterNode,
+    [nodeNames.pluginNode]: pluginNode,
+    [nodeNames.workflowNode]: workflowNode,
+    [nodeNames.searchDatacenterNode]: searchDatacenterNode,
+    [nodeNames.saveToDatacenterNode]: saveToDatacenterNode,
   };
 };

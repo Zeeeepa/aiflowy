@@ -6,7 +6,6 @@ export const SaveToDatacenterNode = async () => {
   const res = await api.get('/api/v1/datacenterTable/list');
 
   return {
-    nodeType: 'save-to-datacenter-node',
     title: '保存数据',
     group: 'base',
     description: '保存数据到数据中枢',

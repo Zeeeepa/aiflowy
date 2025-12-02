@@ -1,5 +1,7 @@
+import nodeNames from './nodeNames';
+
 export default {
-  'sql-node': {
+  [nodeNames.sqlNode]: {
     title: 'SQL 查询',
     group: 'base',
     description: '通过 SQL，查询数据库',

@@ -1,9 +1,10 @@
-export interface PluginNodeOptions {
+import nodeNames from './nodeNames';
+
+export interface WorkflowNodeOptions {
   onChosen?: (nodeType: string, updateNodeData: any, value: string) => void;
 }
-const NODE_TYPE = 'workflow-node';
-export const WorkflowNode = (options: PluginNodeOptions = {}) => ({
-  nodeType: NODE_TYPE,
+
+export const WorkflowNode = (options: WorkflowNodeOptions = {}) => ({
   title: '子流程',
   group: 'base',
   description: '选择定义好的流程',
@@ -19,7 +20,7 @@ export const WorkflowNode = (options: PluginNodeOptions = {}) => ({
         labelDataKey: 'workflowName',
         valueDataKey: 'workflowId',
         onChosen: (updateNodeData: any, value: any) => {
-          options.onChosen?.(NODE_TYPE, updateNodeData, value);
+          options.onChosen?.(nodeNames.workflowNode, updateNodeData, value);
         },
       },
     },

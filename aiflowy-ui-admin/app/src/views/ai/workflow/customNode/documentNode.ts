@@ -1,5 +1,7 @@
+import nodeNames from './nodeNames';
+
 export default {
-  'document-node': {
+  [nodeNames.documentNode]: {
     title: '文件内容提取',
     group: 'base',
     description: '提取 PDF 或者 Word 等文件中的文字内容',

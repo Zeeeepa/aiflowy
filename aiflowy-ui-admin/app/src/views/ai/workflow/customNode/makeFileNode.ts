@@ -1,5 +1,7 @@
+import nodeNames from './nodeNames';
+
 export default {
-  'make-file': {
+  [nodeNames.makeFileNode]: {
     title: '文件生成',
     group: 'base',
     description: '生成 Word、PDF、HTML 等文件供用户下载',
