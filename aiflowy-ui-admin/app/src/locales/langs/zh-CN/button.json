@@ -31,5 +31,6 @@
   "runTest": "试运行",
   "copy": "复制",
   "selectAll": "全选",
-  "choose": "选择"
+  "choose": "选择",
+  "setting": "设置"
 }

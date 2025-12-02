@@ -31,5 +31,6 @@
   "runTest": "RunTest",
   "copy": "Copy",
   "selectAll": "Select All",
-  "choose": "Select"
+  "choose": "Select",
+  "setting": "Setting"
 }
