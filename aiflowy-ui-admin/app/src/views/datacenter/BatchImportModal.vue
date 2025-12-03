@@ -93,8 +93,6 @@ function handleUpload() {
           },
         },
       );
-    } else {
-      ElMessage.error($t('message.fail'));
     }
   });
 }
