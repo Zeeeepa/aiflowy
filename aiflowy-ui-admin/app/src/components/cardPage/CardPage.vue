@@ -24,6 +24,11 @@ const props = defineProps({
     type: String,
     default: 'avatar',
   },
+  /** 默认头像 */
+  defaultAvatar: {
+    type: String,
+    default: undefined,
+  },
   descriptionKey: {
     type: String,
     default: 'description',
@@ -70,7 +75,7 @@ const filteredActions = computed(() => {
         <div class="card-content">
           <!-- 卡片头部：头像和基本信息 -->
           <div class="card-header">
-            <ElAvatar :src="item[avatarKey]" />
+            <ElAvatar :src="item[avatarKey] ?? defaultAvatar" />
             <div class="card-info">
               <h3 class="card-title">{{ item[titleKey] }}</h3>
               <p class="card-desc">{{ item[descriptionKey] }}</p>
