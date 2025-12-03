@@ -1,13 +1,20 @@
 package tech.aiflowy.ai.utils;
 
 import dev.tinyflow.core.Tinyflow;
+import dev.tinyflow.core.filestoreage.FileStorageManager;
+import dev.tinyflow.core.filestoreage.FileStorageProvider;
+import dev.tinyflow.core.knowledge.KnowledgeManager;
+import dev.tinyflow.core.knowledge.KnowledgeProvider;
+import dev.tinyflow.core.llm.LlmManager;
+import dev.tinyflow.core.llm.LlmProvider;
 import dev.tinyflow.core.parser.ChainParser;
+import dev.tinyflow.core.searchengine.SearchEngine;
+import dev.tinyflow.core.searchengine.SearchEngineManager;
+import dev.tinyflow.core.searchengine.SearchEngineProvider;
+import dev.tinyflow.core.searchengine.impl.BochaaiSearchEngineImpl;
 import org.springframework.stereotype.Component;
 import tech.aiflowy.ai.config.BochaaiProps;
 import tech.aiflowy.ai.node.*;
-import tech.aiflowy.ai.service.AiKnowledgeService;
-import tech.aiflowy.ai.service.AiLlmService;
-import tech.aiflowy.common.filestorage.FileStorageService;
 
 import javax.annotation.Resource;
 
@@ -15,34 +22,25 @@ import javax.annotation.Resource;
 public class TinyFlowConfigService {
 
     @Resource
-    private ReaderManager readerManager;
-    @Resource(name = "default")
-    private FileStorageService storageService;
+    private LlmProvider llmProvider;
     @Resource
-    private AiLlmService aiLlmService;
+    private FileStorageProvider fileStorageProvider;
     @Resource
     private BochaaiProps bochaaiProps;
     @Resource
-    private AiKnowledgeService aiKnowledgeService;
+    private KnowledgeProvider knowledgeProvider;
 
     public void initProvidersAndNodeParsers(Tinyflow tinyflow) {
         setExtraNodeParser(tinyflow);
-//        setSearchEngineProvider(tinyflow);
-//        setLlmProvider(tinyflow);
-//        setKnowledgeProvider(tinyflow);
-//        setFileStorage(tinyflow);
+        setLlmProvider();
+        setFileStorage();
+        setKnowledgeProvider();
+        setSearchEngineProvider();
     }
 
-//    private void setFileStorage(Tinyflow tinyflow) {
-//        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        tinyflow.setFileStorage(new FileStorage() {
-//            @Override
-//            public String saveFile(InputStream stream, Map<String, String> headers) {
-//                RequestContextHolder.setRequestAttributes(sra, true);
-//                return storageService.save(new InputStreamFile(stream, headers));
-//            }
-//        });
-//    }
+    private void setFileStorage() {
+        FileStorageManager.getInstance().registerProvider(fileStorageProvider);
+    }
 
     public void setExtraNodeParser(Tinyflow tinyflow) {
 
@@ -74,54 +72,22 @@ public class TinyFlowConfigService {
         chainParser.addNodeParser(workflowNodeParser.getNodeName(), workflowNodeParser);
     }
 
-//    public void setSearchEngineProvider(Tinyflow tinyflow) {
-//        tinyflow.setSearchEngineProvider(new SearchEngineProvider() {
-//            @Override
-//            public SearchEngine getSearchEngine(Object id) {
-//                BochaaiSearchEngine searchEngine = new BochaaiSearchEngine();
-//                searchEngine.setApiKey(bochaaiProps.getApiKey());
-//                return searchEngine;
-//            }
-//        });
-//    }
-//
-//    public void setLlmProvider(Tinyflow tinyflow) {
-//        tinyflow.setLlmProvider(new LlmProvider() {
-//            @Override
-//            public Llm getLlm(Object id) {
-//                AiLlm aiLlm = aiLlmService.getById(new BigInteger(id.toString()));
-//                return aiLlm.toLlm();
-//            }
-//        });
-//    }
-//
-//    public void setKnowledgeProvider(Tinyflow tinyflow) {
-//        tinyflow.setKnowledgeProvider(new KnowledgeProvider() {
-//            @Override
-//            public Knowledge getKnowledge(Object id) {
-//                AiKnowledge aiKnowledge = aiKnowledgeService.getById(new BigInteger(id.toString()));
-//                return new Knowledge() {
-//                    @Override
-//                    public List<Document> search(String keyword, int limit, KnowledgeNode knowledgeNode, Chain chain) {
-//                        DocumentStore documentStore = aiKnowledge.toDocumentStore();
-//                        if (documentStore == null) {
-//                            return null;
-//                        }
-//                        AiLlm aiLlm = aiLlmService.getById(aiKnowledge.getVectorEmbedLlmId());
-//                        if (aiLlm == null) {
-//                            return null;
-//                        }
-//                        documentStore.setEmbeddingModel(aiLlm.toLlm());
-//                        SearchWrapper wrapper = new SearchWrapper();
-//                        wrapper.setMaxResults(Integer.valueOf(limit));
-//                        wrapper.setText(keyword);
-//                        StoreOptions options = StoreOptions.ofCollectionName(aiKnowledge.getVectorStoreCollection());
-//
-//                        List<Document> results = documentStore.search(wrapper, options);
-//                        return results;
-//                    }
-//                };
-//            }
-//        });
-//    }
+    public void setSearchEngineProvider() {
+        BochaaiSearchEngineImpl engine = new BochaaiSearchEngineImpl();
+        engine.setApiKey(bochaaiProps.getApiKey());
+        SearchEngineManager.getInstance().registerProvider(new SearchEngineProvider() {
+            @Override
+            public SearchEngine getSearchEngine(Object id) {
+                return id.equals("bocha-search") ? engine : null;
+            }
+        });
+    }
+
+    public void setLlmProvider() {
+        LlmManager.getInstance().registerProvider(llmProvider);
+    }
+
+    public void setKnowledgeProvider() {
+        KnowledgeManager.getInstance().registerProvider(knowledgeProvider);
+    }
 }

@@ -43,6 +43,10 @@
             <groupId>dev.tinyflow</groupId>
             <artifactId>tinyflow-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.tinyflow</groupId>
+            <artifactId>tinyflow-support-agentsflex</artifactId>
+        </dependency>
         <!--使用
         enjoy 模板引擎-->
         <dependency>

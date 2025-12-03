@@ -177,6 +177,12 @@
             </dependency>
 
             <dependency>
+                <groupId>dev.tinyflow</groupId>
+                <artifactId>tinyflow-support-agentsflex</artifactId>
+                <version>${tinyflow-java.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
