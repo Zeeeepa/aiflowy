@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     name: 'BotRun',
-    path: '/ai/bots/run/:id',
+    path: '/ai/bots/run/:botId/:sessionId?',
     component: () => import('#/views/ai/bots/pages/Run.vue'),
     meta: {
       title: 'Bots',
