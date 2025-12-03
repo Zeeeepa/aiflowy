@@ -14,6 +14,7 @@ import {
   VideoPlay,
 } from '@element-plus/icons-vue';
 
+import defaultAvatar from '#/assets/ai/bot/defaultBotAvatar.png';
 import CardPage from '#/components/cardPage/CardPage.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
@@ -106,6 +107,7 @@ const handleAction = ({
           title-key="title"
           avatar-key="icon"
           description-key="description"
+          :default-avatar="defaultAvatar"
           :data="pageList"
           :actions="actions"
           @action-click="handleAction"
