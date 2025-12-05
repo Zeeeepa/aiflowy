@@ -39,21 +39,11 @@ const loading = ref(false);
 
 const handleSubmit = async () => {
   loading.value = true;
-  await (dialogType.value === 'create' ? createBot() : updateBot());
-  loading.value = false;
-};
-const createBot = async () => {
-  const [err, res] = await tryit(saveBot(formData.value));
 
-  if (!err && res.errorCode === 0) {
-    emit('success');
-    ElMessage.success(res.message);
-    dialogVisible.value = false;
-  }
-};
-const updateBot = async () => {
   const [err, res] = await tryit(
-    updateBotApi(formData.value as UpdateBotParams),
+    dialogType.value === 'create'
+      ? saveBot(formData.value)
+      : updateBotApi(formData.value as UpdateBotParams),
   );
 
   if (!err && res.errorCode === 0) {
@@ -61,6 +51,7 @@ const updateBot = async () => {
     ElMessage.success(res.message);
     dialogVisible.value = false;
   }
+  loading.value = false;
 };
 
 defineExpose({
