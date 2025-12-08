@@ -89,29 +89,24 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
 
         GlobalToolInterceptors.addInterceptor(new ToolLoggingInterceptor());
 
+        // 完成时移除emitter
+        String currentUserId = StpUtil.getLoginIdAsString();
         SseEmitter emitter = ChatSseEmitter.create();
         emitter.onCompletion(() -> {
-            // 完成时移除emitter
-            String userId = StpUtil.getLoginIdAsString();
-            emitters.remove(userId);
-            log.debug("SSE连接完成，移除用户[{}]的Emitter", userId);
+            emitters.remove(currentUserId);
+            log.debug("SSE连接完成，移除用户[{}]的Emitter", currentUserId);
         });
         emitter.onTimeout(() -> {
-            // 超时移除emitter
-            String userId = StpUtil.getLoginIdAsString();
-            emitters.remove(userId);
+            emitters.remove(currentUserId);
             emitter.complete();
-            log.warn("SSE连接超时，移除用户[{}]的Emitter", userId);
+            log.warn("SSE连接超时，移除用户[{}]的Emitter", currentUserId);
         });
         emitter.onError((e) -> {
-            // 异常移除emitter
-            String userId = StpUtil.getLoginIdAsString();
-            emitters.remove(userId);
+            emitters.remove(currentUserId);
             emitter.completeWithError(e);
-            log.error("SSE连接异常，移除用户[{}]的Emitter", userId, e);
+            log.error("SSE连接异常，移除用户[{}]的Emitter", currentUserId, e);
         });
         System.out.println("emitters大小" + emitters.size()) ;
-        String currentUserId = StpUtil.getLoginIdAsString();
         emitters.put(currentUserId, emitter);
         log.debug("新增SSE连接，用户[{}]，当前活跃连接数：{}", currentUserId, emitters.size());
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -119,9 +114,23 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
             final boolean[] hasFinished = {false};
             ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
             RequestContextHolder.setRequestAttributes(requestAttributes, true);
-            chatModel.chatStream(memoryPrompt, new StreamResponseListener() {
+            final StreamResponseListener streamResponseListener = new StreamResponseListener() {
                 @Override
                 public void onMessage(StreamContext streamContext, AiMessageResponse aiMessageResponse) {
+                    AiMessage aiMessage = aiMessageResponse.getMessage();
+                    if (aiMessage == null) {
+                        return;
+                    }
+
+                    if (aiMessage.isFinalDelta() && aiMessageResponse.hasToolCalls()) {
+                        List<ToolMessage> toolMessages = aiMessageResponse.executeToolCallsAndGetToolMessages();
+                        for (ToolMessage toolMessage : toolMessages) {
+                            memoryPrompt.addMessage(toolMessage);
+                        }
+                        chatModel.chatStream(memoryPrompt, this);
+                    }
+
+
                     try {
                         if (currentUserId != null) {
                             SseEmitter emitter = emitters.get(currentUserId);
@@ -148,12 +157,12 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
                 @Override
                 public void onStop(StreamContext context) {
                     RequestContextHolder.setRequestAttributes(sra, true);
-                    if (hasFinished[0]){
+                    if (hasFinished[0]) {
                         return;
                     }
                     AiMessage aiMessage = context.getAiMessage();
                     String finishReason = aiMessage.getFinishReason();
-                    if (!StringUtil.hasText(finishReason)){
+                    if (!StringUtil.hasText(finishReason)) {
                         return;
                     }
                     // 检查是否有工具调用请求
@@ -165,7 +174,7 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
 
                         chatFunctionCallStream(newPrompt, chatModel, emitter, chatOptions);
                     }
-                    if ("stop".equals(finishReason) && !CollectionUtil.hasItems(aiMessage.getToolCalls())){
+                    if ("stop".equals(finishReason) && !CollectionUtil.hasItems(aiMessage.getToolCalls())) {
                         hasFinished[0] = true;
                         emitter.complete();
                         emitters.remove(currentUserId);
@@ -177,7 +186,10 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
                 public void onFailure(StreamContext context, Throwable throwable) {
                     StreamResponseListener.super.onFailure(context, throwable);
                 }
-            });
+            };
+
+
+            chatModel.chatStream(memoryPrompt, streamResponseListener);
         });
 
         return emitter;

@@ -201,7 +201,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             memoryPrompt.setMemory(memory);
 
         }
-        UserMessage userMessage = new UserMessage("下面的是用户的提问，提问内容是：" + prompt);
+        UserMessage userMessage = new UserMessage(prompt);
         userMessage.setToolChoice("auto");
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
         memoryPrompt.addMessage(userMessage);

@@ -14,6 +14,7 @@ import com.agentsflex.core.model.embedding.EmbeddingModel;
 import com.agentsflex.core.model.embedding.EmbeddingOptions;
 import com.agentsflex.core.store.DocumentStore;
 import com.agentsflex.core.store.StoreOptions;
+import com.agentsflex.core.store.StoreResult;
 import com.agentsflex.search.engine.service.DocumentSearcher;
 import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.paginate.Page;
@@ -254,62 +255,62 @@ public class AiDocumentServiceImpl extends ServiceImpl<AiDocumentMapper, AiDocum
     }
 
     protected Boolean storeDocument(AiDocument entity, List<AiDocumentChunk> aiDocumentChunks) {
-//        AiKnowledge knowledge = knowledgeService.getById(entity.getKnowledgeId());
-//        if (knowledge == null) {
-//            throw new BusinessException("知识库不存在");
-//        }
-//        DocumentStore documentStore = knowledge.toDocumentStore();
-//        if (documentStore == null) {
-//            throw new BusinessException("向量数据库类型未设置");
-//        }
-//        // 设置向量模型
-//        AiLlm aiLlm = aiLlmService.getById(knowledge.getVectorEmbedLlmId());
-//        if (aiLlm == null) {
-//            throw new BusinessException("该知识库未配置大模型");
-//        }
-//        // 设置向量模型
-//        Llm embeddingModel = aiLlm.toLlm();
-//        documentStore.setEmbeddingModel(embeddingModel);
-//
-//        StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
-//        EmbeddingOptions embeddingOptions = new EmbeddingOptions();
-//        embeddingOptions.setModel(aiLlm.getLlmModel());
-//        options.setEmbeddingOptions(embeddingOptions);
-//        options.setIndexName(options.getCollectionName());
-//        List<Document> documents = new ArrayList<>();
-//        aiDocumentChunks.forEach(item -> {
-//                    Document document = new Document();
-//                    document.setId(item.getId());
-//                    document.setContent(item.getContent());
-//                    documents.add(document);
-//                }
-//        );
-//        StoreResult result = documentStore.store(documents, options);
-//        if (!result.isSuccess()) {
-//            Log.error("DocumentStore.store failed: " + result);
-//            throw new BusinessException("DocumentStore.store failed");
-//        }
-//
-//        if (knowledge.isSearchEngineEnabled()) {
-//            // 获取搜索引擎
-//            DocumentSearcher searcher = searcherFactory.getSearcher();
-//            // 添加到搜索引擎
-//            documents.forEach(searcher::addDocument);
-//        }
-//
-//        AiKnowledge aiKnowledge = new AiKnowledge();
-//        aiKnowledge.setId(entity.getKnowledgeId());
-//        // CanUpdateEmbedLlm false: 不能修改知识库的大模型 true: 可以修改
-//        AiKnowledge knowledge1 = knowledgeService.getById(entity.getKnowledgeId());
-//        Map<String, Object> knowledgeoptions = new HashMap<>();
-//        if (knowledge1.getOptions() == null) {
-//            knowledgeoptions.put("canUpdateEmbedding", false);
-//        } else {
-//            knowledgeoptions = knowledge.getOptions();
-//            knowledgeoptions.put("canUpdateEmbedding", false);
-//        }
-//        aiKnowledge.setOptions(knowledgeoptions);
-//        knowledgeService.updateById(aiKnowledge);
+        AiKnowledge knowledge = knowledgeService.getById(entity.getKnowledgeId());
+        if (knowledge == null) {
+            throw new BusinessException("知识库不存在");
+        }
+        DocumentStore documentStore = knowledge.toDocumentStore();
+        if (documentStore == null) {
+            throw new BusinessException("向量数据库类型未设置");
+        }
+        // 设置向量模型
+        AiLlm aiLlm = aiLlmService.getById(knowledge.getVectorEmbedLlmId());
+        if (aiLlm == null) {
+            throw new BusinessException("该知识库未配置大模型");
+        }
+        // 设置向量模型
+        EmbeddingModel embeddingModel = aiLlm.toEmbeddingModel();
+        documentStore.setEmbeddingModel(embeddingModel);
+
+        StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
+        EmbeddingOptions embeddingOptions = new EmbeddingOptions();
+        embeddingOptions.setModel(aiLlm.getLlmModel());
+        options.setEmbeddingOptions(embeddingOptions);
+        options.setIndexName(options.getCollectionName());
+        List<Document> documents = new ArrayList<>();
+        aiDocumentChunks.forEach(item -> {
+                    Document document = new Document();
+                    document.setId(item.getId());
+                    document.setContent(item.getContent());
+                    documents.add(document);
+                }
+        );
+        StoreResult result = documentStore.store(documents, options);
+        if (!result.isSuccess()) {
+            Log.error("DocumentStore.store failed: " + result);
+            throw new BusinessException("DocumentStore.store failed");
+        }
+
+        if (knowledge.isSearchEngineEnabled()) {
+            // 获取搜索引擎
+            DocumentSearcher searcher = searcherFactory.getSearcher();
+            // 添加到搜索引擎
+            documents.forEach(searcher::addDocument);
+        }
+
+        AiKnowledge aiKnowledge = new AiKnowledge();
+        aiKnowledge.setId(entity.getKnowledgeId());
+        // CanUpdateEmbedLlm false: 不能修改知识库的大模型 true: 可以修改
+        AiKnowledge knowledge1 = knowledgeService.getById(entity.getKnowledgeId());
+        Map<String, Object> knowledgeoptions = new HashMap<>();
+        if (knowledge1.getOptions() == null) {
+            knowledgeoptions.put("canUpdateEmbedding", false);
+        } else {
+            knowledgeoptions = knowledge.getOptions();
+            knowledgeoptions.put("canUpdateEmbedding", false);
+        }
+        aiKnowledge.setOptions(knowledgeoptions);
+        knowledgeService.updateById(aiKnowledge);
         return true;
     }
 

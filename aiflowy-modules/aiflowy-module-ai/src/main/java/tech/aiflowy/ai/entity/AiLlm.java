@@ -125,4 +125,18 @@ public class AiLlm extends AiLlmBase {
         }
         return new OpenAIChatModel(openAIChatConfig);
     }
+
+    public EmbeddingModel toEmbeddingModel() {
+        String brand = getBrand();
+        if (StringUtil.noText(brand)) {
+            return null;
+        }
+        switch (brand.toLowerCase()) {
+//            case "ollama":
+//                return ollamaLlm();
+            default:
+//                EmbeddingModel model = new OpenAIEmbeddingModel(config);
+                return null;
+        }
+    }
 }
