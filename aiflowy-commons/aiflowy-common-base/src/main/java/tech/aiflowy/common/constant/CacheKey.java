@@ -6,4 +6,7 @@ public interface CacheKey {
     String CHAIN_SUSPEND_KEY = "chain:suspend:";
 
     String CHAIN_STATUS_CACHE_KEY = "chain:status:";
+
+    String CHAIN_CACHE_KEY = "chainState:";
+    String NODE_CACHE_KEY = "nodeState:";
 }

@@ -79,16 +79,13 @@ const nodes = ref(
 // 轮询执行结果
 function startPolling(executeId: any) {
   if (timer.value) return;
-  timer.value = setInterval(() => executePolling(executeId), 500);
+  timer.value = setInterval(() => executePolling(executeId), 1000);
 }
 function executePolling(executeId: any) {
   api
     .post('/api/v1/aiWorkflow/getChainStatus', {
       executeId,
-      nodes: props.tinyFlowData.nodes.map((node: any) => ({
-        nodeId: node.id,
-        nodeName: node.data.title,
-      })),
+      nodes: nodes.value,
     })
     .then((res) => {
       // 5 是挂起状态

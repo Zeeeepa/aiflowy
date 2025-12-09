@@ -104,15 +104,27 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         ChainInfo res = new ChainInfo();
         res.setExecuteId(executeId);
         res.setStatus(chainState.getStatus().getValue());
-        res.setMessage(chainState.getError() == null ? "" : chainState.getError().getMessage());
-        res.setResult(chainState.getExecuteResult());
+        ExceptionSummary chainError = chainState.getError();
+        if (chainError != null) {
+            res.setMessage(chainError.getRootCauseClass() + " --> " + chainError.getRootCauseMessage());
+        }
+        Map<String, Object> executeResult = chainState.getExecuteResult();
+        if (!executeResult.isEmpty()) {
+            res.setResult(executeResult);
+        }
 
         for (NodeInfo node : nodes) {
             String nodeId = node.getNodeId();
             NodeState nodeState = nodeStateRepository.load(executeId, nodeId);
             node.setStatus(nodeState.getStatus().getValue());
-            node.setMessage(nodeState.getError() == null ? "" : nodeState.getError().getMessage());
-            node.setResult(chainState.getNodeExecuteResult(nodeId));
+            ExceptionSummary error = nodeState.getError();
+            if (error != null) {
+                node.setMessage(error.getRootCauseClass() + " --> " + error.getRootCauseMessage());
+            }
+            Map<String, Object> nodeExecuteResult = chainState.getNodeExecuteResult(nodeId);
+            if (!nodeExecuteResult.isEmpty()) {
+                node.setResult(nodeExecuteResult);
+            }
             node.setSuspendForParameters(chainState.getSuspendForParameters());
             res.getNodes().put(nodeId, node);
         }
