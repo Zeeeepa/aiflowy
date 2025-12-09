@@ -19,5 +19,7 @@
   "fail": "Fail",
   "pleaseInputContent": "Please input content",
   "notSupported": "Not supported yet",
-  "englishNameRule": "Rural subsistence allowance please enter characters consisting of letters, numbers, underscores, and hyphens, with a length not exceeding 64 characters"
+  "englishNameRule": "Rural subsistence allowance please enter characters consisting of letters, numbers, underscores, and hyphens, with a length not exceeding 64 characters",
+  "downloadSuccess": "Download success",
+  "downloadFail": "Download fail"
 }

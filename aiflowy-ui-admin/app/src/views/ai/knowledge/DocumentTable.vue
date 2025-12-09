@@ -15,6 +15,7 @@ import {
 
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
+import { downloadFile } from '#/utils/downfile';
 
 const props = defineProps({
   knowledgeId: {
@@ -29,7 +30,7 @@ const handleView = (row: any) => {
   emits('viewDoc', row.id);
 };
 const handleDownload = (row: any) => {
-  console.log('下载文档', row);
+  downloadFile(row.documentPath, `${row.title}.${row.documentType}`);
 };
 const handleDelete = (row: any) => {
   ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
