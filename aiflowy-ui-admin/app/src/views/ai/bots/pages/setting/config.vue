@@ -261,7 +261,6 @@ const deleteKnowledge = (item: any) => {
 };
 
 const deleteWorkflow = (item: any) => {
-  console.log('deleteWorkflow', item);
   api
     .post('/api/v1/aiBotWorkflow/remove', {
       id: item.recordId,
