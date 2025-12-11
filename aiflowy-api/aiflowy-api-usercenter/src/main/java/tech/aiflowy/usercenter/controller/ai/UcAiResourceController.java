@@ -1,4 +1,4 @@
-package tech.aiflowy.admin.controller.ai;
+package tech.aiflowy.usercenter.controller.ai;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.http.HttpUtil;
@@ -22,9 +22,9 @@ import java.util.Date;
  * @since 2025-06-27
  */
 @RestController
-@RequestMapping("/api/v1/aiResource")
-public class AiResourceController extends BaseCurdController<AiResourceService, AiResource> {
-    public AiResourceController(AiResourceService service) {
+@RequestMapping("/userCenter/aiResource")
+public class UcAiResourceController extends BaseCurdController<AiResourceService, AiResource> {
+    public UcAiResourceController(AiResourceService service) {
         super(service);
     }
 
