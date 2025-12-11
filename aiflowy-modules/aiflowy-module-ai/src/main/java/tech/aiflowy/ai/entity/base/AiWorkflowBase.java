@@ -98,6 +98,12 @@ public class AiWorkflowBase extends DateEntity implements Serializable {
     @Column(comment = "数据状态")
     private Integer status;
 
+    /**
+     * 分类ID
+     */
+    @Column(comment = "分类ID")
+    private BigInteger categoryId;
+
     public BigInteger getId() {
         return id;
     }
@@ -208,5 +214,13 @@ public class AiWorkflowBase extends DateEntity implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public BigInteger getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(BigInteger categoryId) {
+        this.categoryId = categoryId;
     }
 }

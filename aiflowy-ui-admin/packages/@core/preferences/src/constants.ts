@@ -9,7 +9,7 @@ interface BuiltinThemePreset {
 
 const BUILT_IN_THEME_PRESETS: BuiltinThemePreset[] = [
   {
-    color: 'hsl(212 100% 45%)',
+    color: 'hsl(216 100% 50%)',
     type: 'default',
   },
   {
