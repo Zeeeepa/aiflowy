@@ -346,9 +346,11 @@ const handleProblemPresuppositionSuccess = (data: any) => {
           @change="handleLlmChange"
         />
         <!-- 温度 -->
-        <ElRow :gutter="12" align="middle">
-          <ElCol :span="6" class="">温度</ElCol>
-          <ElCol :span="10">
+        <ElRow :gutter="12" align="middle" type="flex">
+          <ElCol class="options-config-item-left">
+            <span class="config-font-style">温度</span>
+          </ElCol>
+          <ElCol class="options-config-item-middle">
             <ElSlider
               :min="0.1"
               :max="1"
@@ -361,7 +363,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
               "
             />
           </ElCol>
-          <ElCol :span="8">
+          <ElCol class="options-config-item-right">
             <ElInputNumber
               :min="0.1"
               :max="1"
@@ -375,9 +377,11 @@ const handleProblemPresuppositionSuccess = (data: any) => {
             />
           </ElCol>
         </ElRow>
-        <ElRow :gutter="12" align="middle">
-          <ElCol :span="6" class="">TopK</ElCol>
-          <ElCol :span="10">
+        <ElRow :gutter="12" align="middle" type="flex">
+          <ElCol class="options-config-item-left">
+            <span class="config-font-style">TopK</span>
+          </ElCol>
+          <ElCol class="options-config-item-middle">
             <ElSlider
               :min="1"
               :max="10"
@@ -389,7 +393,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
               "
             />
           </ElCol>
-          <ElCol :span="8">
+          <ElCol class="options-config-item-right">
             <ElInputNumber
               :min="1"
               :max="10"
@@ -402,9 +406,11 @@ const handleProblemPresuppositionSuccess = (data: any) => {
             />
           </ElCol>
         </ElRow>
-        <ElRow :gutter="12" align="middle">
-          <ElCol :span="6" class="">TopP</ElCol>
-          <ElCol :span="10">
+        <ElRow :gutter="12" align="middle" type="flex">
+          <ElCol class="options-config-item-left">
+            <span class="config-font-style">TopP</span>
+          </ElCol>
+          <ElCol class="options-config-item-middle">
             <ElSlider
               :min="0.1"
               :max="1"
@@ -416,7 +422,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
               "
             />
           </ElCol>
-          <ElCol :span="8">
+          <ElCol class="options-config-item-right">
             <ElInputNumber
               :min="0.1"
               :max="1"
@@ -429,9 +435,11 @@ const handleProblemPresuppositionSuccess = (data: any) => {
             />
           </ElCol>
         </ElRow>
-        <ElRow :gutter="12" align="middle">
-          <ElCol :span="6" class="">最大回复长度</ElCol>
-          <ElCol :span="10">
+        <ElRow :gutter="12" align="middle" type="flex">
+          <ElCol class="options-config-item-left">
+            <span class="config-font-style">最大回复长度</span>
+          </ElCol>
+          <ElCol class="options-config-item-middle">
             <ElSlider
               :min="1024"
               :max="20000"
@@ -444,7 +452,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
               "
             />
           </ElCol>
-          <ElCol :span="8">
+          <ElCol class="options-config-item-right">
             <ElInputNumber
               :min="1024"
               :max="20000"
@@ -458,9 +466,11 @@ const handleProblemPresuppositionSuccess = (data: any) => {
             />
           </ElCol>
         </ElRow>
-        <ElRow :gutter="12" align="middle">
-          <ElCol :span="6" class="">携带历史条数</ElCol>
-          <ElCol :span="10">
+        <ElRow :gutter="12" align="middle" type="flex">
+          <ElCol class="options-config-item-left">
+            <span class="config-font-style">携带历史条数</span>
+          </ElCol>
+          <ElCol class="options-config-item-middle">
             <ElSlider
               :min="1"
               :max="100"
@@ -473,7 +483,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
               "
             />
           </ElCol>
-          <ElCol :span="8">
+          <ElCol class="options-config-item-right">
             <ElInputNumber
               :min="1"
               :max="100"
@@ -618,7 +628,7 @@ const handleProblemPresuppositionSuccess = (data: any) => {
 
     <!-- 发布 -->
     <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
-      <h1 class="text-base font-medium text-[#1A1A1A]">对话设置</h1>
+      <h1 class="text-base font-medium text-[#1A1A1A]">发布</h1>
       <div
         class="flex w-full flex-col justify-between rounded-lg bg-[#F7F7F7] p-3"
       >
@@ -696,5 +706,25 @@ const handleProblemPresuppositionSuccess = (data: any) => {
 }
 .preset-delete {
   cursor: pointer;
+}
+
+.config-font-style {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--el-text-color-primary);
+}
+.options-config-item-left {
+  flex: 0 0 auto;
+}
+.options-config-item-middle {
+  flex: 1;
+  margin: 0 12px;
+}
+.options-config-item-right {
+  flex: 0 0 auto;
+  width: auto;
+}
+.el-collapse-icon-position-left .el-collapse-item__header {
+  padding: 12px;
 }
 </style>
