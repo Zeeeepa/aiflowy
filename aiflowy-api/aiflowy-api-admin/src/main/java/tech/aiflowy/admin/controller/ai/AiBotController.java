@@ -4,7 +4,6 @@ package tech.aiflowy.admin.controller.ai;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.map.MapUtil;
 import com.agentsflex.core.message.SystemMessage;
 import com.agentsflex.core.message.UserMessage;
 import com.agentsflex.core.model.chat.ChatModel;
@@ -29,6 +28,7 @@ import tech.aiflowy.common.ai.ChatManager;
 import tech.aiflowy.common.audio.core.AudioServiceManager;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
+import tech.aiflowy.common.util.MapUtil;
 import tech.aiflowy.common.util.Maps;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.exceptions.BusinessException;
@@ -167,7 +167,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
-        String systemPrompt = MapUtil.getStr(llmOptions, "systemPrompt");
+        String systemPrompt = MapUtil.getString(llmOptions, "systemPrompt");
 
         AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
         if (aiLlm == null) {
@@ -179,7 +179,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM获取为空")));
         }
         final MemoryPrompt memoryPrompt = new MemoryPrompt();
-        Integer maxMessageCount = MapUtil.getInt(llmOptions, "maxMessageCount");
+        Integer maxMessageCount = MapUtil.getInteger(llmOptions, "maxMessageCount");
         if (maxMessageCount != null) {
             memoryPrompt.setMaxAttachedMessageCount(maxMessageCount);
         }

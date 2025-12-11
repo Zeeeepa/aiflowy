@@ -312,6 +312,11 @@
             <!--版本管理-->
             <dependency>
                 <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-common-util</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
                 <artifactId>aiflowy-common-ai</artifactId>
                 <version>${revision}</version>
             </dependency>
