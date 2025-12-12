@@ -1,36 +1,44 @@
 package tech.aiflowy.admin.controller.common;
 
-import tech.aiflowy.common.Consts;
-import tech.aiflowy.common.domain.Result;
-import tech.aiflowy.common.tcaptcha.TCaptchaConfig;
-import org.springframework.web.bind.annotation.GetMapping;
+import cloud.tianai.captcha.application.ImageCaptchaApplication;
+import cloud.tianai.captcha.application.vo.ImageCaptchaVO;
+import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
+import cloud.tianai.captcha.common.response.ApiResponse;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tech.aiflowy.common.tcaptcha.tainai.CaptchaData;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * 公共接口
+ */
 @RestController
-@RequestMapping("/api/v1/public/")
+@RequestMapping("/api/v1/public")
 public class PublicController {
 
     @Resource
-    private TCaptchaConfig tCaptchaConfig;
+    private ImageCaptchaApplication application;
 
-    @GetMapping("tcaptcha")
-    public Result<?> tcaptcha() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("enable", tCaptchaConfig.getEnable());
-        map.put("appId", tCaptchaConfig.getCaptchaAppId());
-        return Result.ok(map);
-
+    /**
+     * 获取验证码
+     */
+    @RequestMapping(value = "/getCaptcha", produces = "application/json")
+    public ApiResponse<ImageCaptchaVO> getCaptcha() {
+        return application.generateCaptcha(CaptchaTypeConstant.SLIDER);
     }
 
-    @GetMapping("getDataScopeState")
-    public Result<?> getDataScopeState() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("enable", Consts.ENABLE_DATA_SCOPE);
-        return Result.ok(map);
+    /**
+     * 验证码校验
+     */
+    @PostMapping(value = "/check", produces = "application/json")
+    public ApiResponse<String> checkCaptcha(@RequestBody CaptchaData data) {
+        ApiResponse<?> response = application.matching(data.getId(), data.getData());
+        if (!response.isSuccess()) {
+            return ApiResponse.ofError("验证码错误");
+        }
+        return ApiResponse.ofSuccess(data.getId());
     }
 }

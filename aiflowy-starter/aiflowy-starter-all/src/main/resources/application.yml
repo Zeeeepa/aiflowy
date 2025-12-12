@@ -127,3 +127,7 @@ logging:
   level:
     root: info
     tech.aiflowy.ai: debug
+captcha:
+  init-default-resource: true
+  secondary:
+    enabled: true

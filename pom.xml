@@ -47,7 +47,11 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-
+            <dependency>
+                <groupId>cloud.tianai.captcha</groupId>
+                <artifactId>tianai-captcha-springboot-starter</artifactId>
+                <version>1.5.3</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.nls</groupId>
                 <artifactId>nls-sdk-tts</artifactId>
