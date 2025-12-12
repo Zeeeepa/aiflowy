@@ -3,9 +3,12 @@ import { markRaw, nextTick, onMounted, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import { Delete, Edit, More, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
   ElIcon,
   ElImage,
   ElMessage,
@@ -186,26 +189,35 @@ const handleSuccess = () => {
               <ElTableColumn
                 prop="description"
                 :label="$t('llm.filed.description')"
-                width="auto"
               />
               <ElTableColumn
                 fixed="right"
                 :label="$t('common.handle')"
-                min-width="120"
+                width="80"
               >
                 <template #default="scope">
-                  <ElButton link type="primary" @click="handleEdit(scope.row)">
-                    <ElIcon class="mr-1">
-                      <Edit />
-                    </ElIcon>
-                    {{ $t('button.edit') }}
-                  </ElButton>
-                  <ElButton link type="danger" @click="handleDelete(scope.row)">
-                    <ElIcon class="mr-1">
-                      <Delete />
-                    </ElIcon>
-                    {{ $t('button.delete') }}
-                  </ElButton>
+                  <ElDropdown>
+                    <ElButton link>
+                      <ElIcon>
+                        <More />
+                      </ElIcon>
+                    </ElButton>
+
+                    <template #dropdown>
+                      <ElDropdownMenu>
+                        <ElDropdownItem @click="handleEdit(scope.row)">
+                          <ElButton :icon="Edit" link>
+                            {{ $t('button.edit') }}
+                          </ElButton>
+                        </ElDropdownItem>
+                        <ElDropdownItem @click="handleDelete(scope.row)">
+                          <ElButton type="danger" :icon="Delete" link>
+                            {{ $t('button.delete') }}
+                          </ElButton>
+                        </ElDropdownItem>
+                      </ElDropdownMenu>
+                    </template>
+                  </ElDropdown>
                 </template>
               </ElTableColumn>
             </ElTable>
@@ -239,6 +251,7 @@ const handleSuccess = () => {
 
 .llm-content {
   display: flex;
+  gap: 20px;
 }
 
 .llm-table {
