@@ -73,7 +73,7 @@ aiflowy:
   ollama:
     host: http://127.0.0.1:11434
   login:
-    excludes: /api/v1/auth/**, /static/**
+    excludes: /api/v1/auth/**, /static/**, /userCenter/auth/**
   aiBot:
     apiKeyMasterKey: Kj9#mP2$nQ4&rT6*uY8@wE1!zX3%vC5^
 node:

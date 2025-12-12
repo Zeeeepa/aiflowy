@@ -17,7 +17,7 @@ const defaultPreferences: Preferences = {
     contentPaddingTop: 0,
     defaultAvatar:
       'https://unpkg.com/@aiflowy/static-source@0.1.7/source/avatar-v1.webp',
-    defaultHomePath: '/analytics',
+    defaultHomePath: '/bots',
     dynamicTitle: true,
     enableCheckUpdates: true,
     enablePreferences: true,
@@ -27,7 +27,7 @@ const defaultPreferences: Preferences = {
     layout: 'sidebar-nav',
     locale: 'zh-CN',
     loginExpiredMode: 'page',
-    name: 'AIFlowy Usercenter',
+    name: 'AIFlowy Admin',
     preferencesButtonPosition: 'auto',
     watermark: false,
     watermarkContent: '',
@@ -65,7 +65,8 @@ const defaultPreferences: Preferences = {
   logo: {
     enable: true,
     fit: 'contain',
-    source: '/favicon.svg',
+    source: '/logo.svg',
+    sourceDark: '/logoDark.svg',
   },
   navigation: {
     accordion: true,
@@ -96,7 +97,7 @@ const defaultPreferences: Preferences = {
   },
   tabbar: {
     draggable: true,
-    enable: true,
+    enable: false,
     height: 38,
     keepAlive: true,
     maxCount: 0,
@@ -111,7 +112,7 @@ const defaultPreferences: Preferences = {
   theme: {
     builtinType: 'default',
     colorDestructive: 'hsl(348 100% 61%)',
-    colorPrimary: 'hsl(212 100% 45%)',
+    colorPrimary: 'hsl(216 100% 50%)',
     colorSuccess: 'hsl(144 57% 58%)',
     colorWarning: 'hsl(42 84% 61%)',
     mode: 'dark',

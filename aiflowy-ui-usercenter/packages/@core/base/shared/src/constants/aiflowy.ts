@@ -6,7 +6,7 @@ export const APP_GITHUB_URL = 'https://github.com/aiflowy/aiflowy';
 /**
  * @zh_CN 文档地址
  */
-export const APP_DOC_URL = 'https://doc.aiflowy.tech';
+export const APP_DOC_URL = 'https://aiflowy.tech';
 
 /**
  * @zh_CN AIFlowy Logo

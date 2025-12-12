@@ -94,11 +94,11 @@ const logoSrc = computed(() => {
             :alt="appName"
             :src="logoSrc"
             class="mr-2"
-            width="42"
+            width="120"
           />
-          <p v-if="appName" class="m-0 text-xl font-medium">
+          <!-- <p v-if="appName" class="m-0 text-xl font-medium">
             {{ appName }}
-          </p>
+          </p> -->
         </div>
       </div>
     </slot>
@@ -121,11 +121,11 @@ const logoSrc = computed(() => {
             <img
               :alt="appName"
               :src="sloganImage"
-              class="animate-float h-64 w-2/5"
+              class="animate-float w-1/4"
             />
           </template>
-          <SloganIcon v-else :alt="appName" class="animate-float h-64 w-2/5" />
-          <div class="text-1xl text-foreground mt-6 font-sans lg:text-2xl">
+          <SloganIcon v-else :alt="appName" class="animate-float h-64 w-1/4" />
+          <div class="text-foreground mt-6 font-sans text-2xl lg:text-3xl">
             {{ pageTitle }}
           </div>
           <div class="dark:text-muted-foreground mt-2">

@@ -23,7 +23,7 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/api/v1/auth/login', data);
+  return requestClient.post<AuthApi.LoginResult>('/userCenter/auth/login', data);
 }
 
 /**

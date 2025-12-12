@@ -45,7 +45,7 @@ defineOptions({
 const props = withDefaults(defineProps<Props>(), {
   collapsed: false,
   href: 'javascript:void 0',
-  logoSize: 32,
+  logoSize: 120,
   src: '',
   srcDark: '',
   theme: 'light',
@@ -80,13 +80,13 @@ const logoSrc = computed(() => {
         :fit="fit"
         class="relative rounded-none bg-transparent"
       />
-      <template v-if="!collapsed">
+      <!-- <template v-if="!collapsed">
         <slot name="text">
           <span class="text-foreground truncate text-nowrap font-semibold">
             {{ text }}
           </span>
         </slot>
-      </template>
+      </template> -->
     </a>
   </div>
 </template>
