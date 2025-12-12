@@ -132,23 +132,25 @@ const handleSearch = (query: string) => {
             </ElCollapse>
           </template>
           <template v-else>
-            <div v-for="(item, index) in pageList" :key="index">
-              <div class="content-title-wrapper">
-                <div class="content-sec-left-container">
+            <div class="container-second">
+              <div v-for="(item, index) in pageList" :key="index">
+                <div class="content-title-wrapper">
+                  <div class="content-sec-left-container">
+                    <div>
+                      <ElAvatar :src="item.icon" v-if="item.icon" />
+                      <ElAvatar v-else src="/favicon.png" shape="circle" />
+                    </div>
+                    <div class="title-sec-right-container">
+                      <div class="title">{{ item.title }}</div>
+                      <div class="desc">{{ item.description }}</div>
+                    </div>
+                  </div>
                   <div>
-                    <ElAvatar :src="item.icon" v-if="item.icon" />
-                    <ElAvatar v-else src="/favicon.png" shape="circle" />
+                    <ElCheckbox
+                      :model-value="isSelected(item.id)"
+                      @change="(val) => toggleSelection(item.id, val)"
+                    />
                   </div>
-                  <div class="title-sec-right-container">
-                    <div class="title">{{ item.title }}</div>
-                    <div class="desc">{{ item.description }}</div>
-                  </div>
-                </div>
-                <div>
-                  <ElCheckbox
-                    :model-value="isSelected(item.id)"
-                    @change="(val) => toggleSelection(item.id, val)"
-                  />
                 </div>
               </div>
             </div>
@@ -171,6 +173,8 @@ const handleSearch = (query: string) => {
 .select-modal-container {
   height: calc(100vh - 161px);
   overflow: auto;
+  background-color: var(--bot-select-data-item-back);
+  border-radius: 8px;
 }
 
 .select-modal-header-container {
@@ -185,15 +189,26 @@ const handleSearch = (query: string) => {
 .content-title-wrapper {
   display: flex;
   align-items: center;
-  margin-left: 20px;
   justify-content: space-between;
-  padding-right: 20px;
+  height: 113px;
+  background-color: var(--el-bg-color);
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 20px 50px 20px 20px;
 }
 
 .title {
   font-size: 16px;
-  font-weight: 600;
-  color: var(--el-text-color-primary);
+  font-family:
+    PingFangSC,
+    PingFang SC;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 24px;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
 }
 .content-left-container {
   display: flex;
@@ -203,11 +218,17 @@ const handleSearch = (query: string) => {
   display: flex;
 }
 .desc {
-  margin: 0;
   width: 100%;
+  font-family:
+    PingFangSC,
+    PingFang SC;
+  font-weight: 400;
   font-size: 14px;
-  color: #606266;
-  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 22px;
+  text-align: left;
+  font-style: normal;
+  text-transform: none;
   height: 42px;
   min-height: 42px;
   display: -webkit-box;
@@ -215,6 +236,7 @@ const handleSearch = (query: string) => {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 12px;
 }
 
 .title-right-container {
@@ -257,5 +279,11 @@ const handleSearch = (query: string) => {
 .select-modal-container
   :deep(.el-collapse-item.is-active .el-collapse-item__header) {
   border-bottom-color: transparent;
+}
+.container-second {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 20px;
 }
 </style>

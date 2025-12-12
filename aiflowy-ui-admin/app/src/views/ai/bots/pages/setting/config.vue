@@ -662,7 +662,7 @@ const handleUpdatePublishWx = () => {
     </div>
 
     <!-- 发布 -->
-    <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
+    <div class="publish-container flex flex-col gap-3 rounded-lg bg-white p-3">
       <h1 class="text-base font-medium text-[#1A1A1A]">发布</h1>
       <div class="flex w-full flex-col justify-between rounded-lg">
         <ElCollapse expand-icon-position="left">
@@ -703,6 +703,7 @@ const handleUpdatePublishWx = () => {
 
     <!-- 选择插件-->
     <CommonSelectDataModal
+      width="730"
       ref="pluginToolDataRef"
       page-url="/api/v1/aiPlugin/pageByCategory"
       :is-select-plugin="true"
@@ -714,6 +715,7 @@ const handleUpdatePublishWx = () => {
 
     <!-- 选择知识库-->
     <CommonSelectDataModal
+      width="730"
       ref="knowledgeDataRef"
       page-url="/api/v1/aiKnowledge/page"
       @get-data="confirmUpdateAiBotKnowledge"
@@ -721,6 +723,7 @@ const handleUpdatePublishWx = () => {
 
     <!-- 选择工作流-->
     <CommonSelectDataModal
+      width="730"
       ref="workflowDataRef"
       page-url="/api/v1/aiWorkflow/page"
       @get-data="confirmUpdateAiBotWorkflow"
@@ -756,6 +759,7 @@ const handleUpdatePublishWx = () => {
   width: 18px;
   height: 18px;
   border-radius: 50%;
+  color: var(--el-color-white);
   background-color: var(--el-color-primary);
   font-size: 12px;
   font-weight: 500;
@@ -851,5 +855,8 @@ const handleUpdatePublishWx = () => {
 }
 .llm-back-container {
   background-color: var(--bot-collapse-itme-back);
+}
+.publish-container {
+  flex: 1;
 }
 </style>

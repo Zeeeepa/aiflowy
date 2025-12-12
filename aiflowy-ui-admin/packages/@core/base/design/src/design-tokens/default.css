@@ -112,6 +112,7 @@
   --bot-chat-message-container: hsl(228deg 33.33% 97.06%);
   --bot-chat-message-item-back: hsl(228deg 11.11% 91.18%);
   --common-font-placeholder-color: hsl(220deg 1.45% 59.41%);
+  --bot-select-data-item-back: hsl(0deg 0% 98.04%);
 }
 
 [data-theme='violet'] {
