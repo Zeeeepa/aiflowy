@@ -6,8 +6,6 @@ import { useRoute } from 'vue-router';
 
 import { tryit } from '@aiflowy/utils';
 
-import { ElCol, ElRow } from 'element-plus';
-
 import { getBotDetails } from '#/api';
 import { hasPermission } from '#/api/common/hasPermission';
 
@@ -46,7 +44,7 @@ const fetchBotDetail = async (id: string) => {
         <Config :bot="bot" :has-save-permission="hasSavePermission" />
       </div>
       <div class="row-item">
-        <Preview />
+        <Preview :bot="bot" />
       </div>
     </div>
   </div>

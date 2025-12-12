@@ -14,32 +14,25 @@ interface BasicFormItem {
 
 const emit = defineEmits(['success']);
 const dialogVisible = ref(false);
+
+const generateDefaultFormItems = (
+  data: BasicFormItem[] = [],
+): BasicFormItem[] => {
+  return Array.from({ length: 5 }, (_, i) => ({
+    key: (i + 1).toString(),
+    description: data[i]?.description || '',
+  }));
+};
+
 const openDialog = (data: BasicFormItem[]) => {
   nextTick(() => {
     basicFormRef.value?.resetFields();
   });
-  basicForm.value =
-    data.length === 0
-      ? [
-          { key: '1', description: '' },
-          { key: '2', description: '' },
-          { key: '3', description: '' },
-          { key: '4', description: '' },
-          { key: '5', description: '' },
-        ]
-      : data;
-
+  basicForm.value = generateDefaultFormItems(data);
   dialogVisible.value = true;
 };
 
-const basicForm: Ref<BasicFormItem[]> = ref([
-  { key: '1', description: '' },
-  { key: '2', description: '' },
-  { key: '3', description: '' },
-  { key: '4', description: '' },
-  { key: '5', description: '' },
-]);
-
+const basicForm: Ref<BasicFormItem[]> = ref(generateDefaultFormItems());
 const basicFormRef = ref();
 
 defineExpose({

@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { Brush } from '@element-plus/icons-vue';
 import { ElButton, ElIcon } from 'element-plus';
 
 import Chat from '#/components/chat/chat.vue';
-import { ref } from 'vue';
+
 const chatRef = ref();
+
 const handleClear = () => {
   chatRef.value.clear();
 };

@@ -10,6 +10,7 @@ import { tryit } from '@aiflowy/utils';
 import { Delete, Plus, Setting } from '@element-plus/icons-vue';
 import { useDebounceFn } from '@vueuse/core';
 import {
+  ElButton,
   ElCol,
   ElCollapse,
   ElCollapseItem,
@@ -330,9 +331,45 @@ const handleProblemPresuppositionSuccess = (data: any) => {
       }
     });
 };
-
+const handleDeletePresetQuestion = (item: any) => {
+  const tempData = botInfo.value?.options.presetQuestions.filter(
+    (i: any) => i.key !== item,
+  );
+  api
+    .post('/api/v1/aiBot/updateOptions', {
+      id: botId.value,
+      options: {
+        presetQuestions: tempData,
+      },
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        getBotDetail();
+      }
+    });
+};
 const handlePublishWx = () => {
   publishWxRef.value.openDialog(botId.value, botInfo.value?.options);
+};
+const handleUpdatePublishWx = () => {
+  api
+    .post('/api/v1/aiBot/updateOptions', {
+      id: botId.value,
+      options: {
+        weChatMpAppId: '',
+        weChatMpSecret: '',
+        weChatMpToken: '',
+        EncodingAESKey: '',
+      },
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        getBotDetail();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
 };
 </script>
 
@@ -342,7 +379,7 @@ const handlePublishWx = () => {
     <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
       <h1 class="text-base font-medium text-[#1A1A1A]">大模型</h1>
       <div
-        class="flex w-full flex-col justify-between gap-1 rounded-lg bg-[#F7F7F7] p-3"
+        class="llm-back-container flex w-full flex-col justify-between gap-1 rounded-lg p-3"
       >
         <ElSelect
           v-model="selectedId"
@@ -509,9 +546,7 @@ const handlePublishWx = () => {
     <!-- 技能 -->
     <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
       <h1 class="text-base font-medium text-[#1A1A1A]">技能</h1>
-      <div
-        class="flex w-full flex-col justify-between rounded-lg bg-[#F7F7F7] p-3"
-      >
+      <div class="flex w-full flex-col justify-between">
         <ElCollapse expand-icon-position="left">
           <ElCollapseItem title="工作流">
             <template #title>
@@ -578,9 +613,7 @@ const handlePublishWx = () => {
     <!-- 对话设置 -->
     <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
       <h1 class="text-base font-medium text-[#1A1A1A]">对话设置</h1>
-      <div
-        class="flex w-full flex-col justify-between rounded-lg bg-[#F7F7F7] p-3"
-      >
+      <div class="flex w-full flex-col justify-between rounded-lg">
         <ElCollapse expand-icon-position="left">
           <ElCollapseItem title="问题预设">
             <template #title>
@@ -595,18 +628,14 @@ const handlePublishWx = () => {
             </template>
             <div>
               <div
-                v-for="(item, index) in botInfo?.options.presetQuestions"
-                :key="index"
+                v-for="item in botInfo?.options?.presetQuestions"
+                :key="item.key"
               >
                 <div class="presetQues-container" v-if="item.description">
                   <span>{{ item.description }}</span>
                   <span
                     class="preset-delete"
-                    @click="
-                      handleProblemPresuppositionSuccess(
-                        botInfo?.options.presetQuestions.splice(index, 1),
-                      )
-                    "
+                    @click="handleDeletePresetQuestion(item.key)"
                   >
                     <ElIcon>
                       <Delete />
@@ -635,20 +664,36 @@ const handlePublishWx = () => {
     <!-- 发布 -->
     <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
       <h1 class="text-base font-medium text-[#1A1A1A]">发布</h1>
-      <div
-        class="flex w-full flex-col justify-between rounded-lg bg-[#F7F7F7] p-3"
-      >
+      <div class="flex w-full flex-col justify-between rounded-lg">
         <ElCollapse expand-icon-position="left">
-          <ElCollapseItem title="嵌入" />
-          <ElCollapseItem title="API" />
           <ElCollapseItem title="发布到微信公众号">
             <div class="publish-wx">
-              <span>未配置</span>
-              <div class="publish-wx-right-container" @click="handlePublishWx">
-                <ElIcon>
-                  <Setting />
-                </ElIcon>
-                <span>{{ $t('button.edit') }}</span>
+              <span v-if="botInfo?.options.weChatMpAppId">已配置</span>
+              <span v-else>未配置</span>
+              <div class="publish-config-operation">
+                <div
+                  class="publish-wx-right-container"
+                  @click="handlePublishWx"
+                >
+                  <ElButton link type="primary">
+                    <ElIcon class="mr-1">
+                      <Setting />
+                    </ElIcon>
+                    {{ $t('button.edit') }}
+                  </ElButton>
+                </div>
+                <div
+                  v-if="botInfo?.options.weChatMpAppId"
+                  class="publish-wx-right-container"
+                  @click="handleUpdatePublishWx"
+                >
+                  <ElButton link type="danger">
+                    <ElIcon class="mr-1">
+                      <Delete />
+                    </ElIcon>
+                    {{ $t('button.delete') }}
+                  </ElButton>
+                </div>
               </div>
             </div>
           </ElCollapseItem>
@@ -686,16 +731,16 @@ const handlePublishWx = () => {
       ref="problemPresuppositionRef"
       @success="handleProblemPresuppositionSuccess"
     />
-    <PublishWxOfficalAccount ref="publishWxRef"/>
+    <PublishWxOfficalAccount ref="publishWxRef" />
   </div>
 </template>
 
 <style scoped>
 .config-container {
   height: 100%;
+  min-height: 100%;
   overflow-y: auto;
   width: 100%;
-  background-color: var(--el-bg-color);
   border-radius: 8px;
 }
 .collapse-right-container {
@@ -712,7 +757,6 @@ const handlePublishWx = () => {
   height: 18px;
   border-radius: 50%;
   background-color: var(--el-color-primary);
-  color: var(--el-bg-color);
   font-size: 12px;
   font-weight: 500;
   line-height: 1;
@@ -778,5 +822,34 @@ const handlePublishWx = () => {
   align-items: center;
   gap: 5px;
   cursor: pointer;
+}
+.publish-config-operation {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+:deep(.el-collapse-item__header) {
+  background-color: var(--bot-collapse-itme-back);
+}
+:deep(.el-collapse) {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
+}
+
+:deep(.el-collapse-item__header) {
+  border-bottom: 1px solid #e4e7ed;
+  border-radius: 0;
+}
+
+:deep(.el-collapse-item:last-child .el-collapse-item__header) {
+  border-bottom: none;
+}
+:deep(.el-collapse-icon-position-left .el-collapse-item__header) {
+  padding: 8px;
+}
+.llm-back-container {
+  background-color: var(--bot-collapse-itme-back);
 }
 </style>

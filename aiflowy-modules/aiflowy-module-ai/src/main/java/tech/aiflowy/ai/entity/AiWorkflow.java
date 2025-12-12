@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.entity;
 
+import com.agentsflex.core.model.chat.tool.Tool;
 import com.mybatisflex.annotation.Table;
 import tech.aiflowy.ai.entity.base.AiWorkflowBase;
 
@@ -13,4 +14,7 @@ import tech.aiflowy.ai.entity.base.AiWorkflowBase;
 @Table("tb_ai_workflow")
 public class AiWorkflow extends AiWorkflowBase {
 
+    public Tool toFunction(boolean needEnglishName) {
+        return new AiWorkflowFunction(this, needEnglishName);
+    }
 }

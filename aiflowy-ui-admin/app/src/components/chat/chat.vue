@@ -4,27 +4,19 @@ import type { TypewriterInstance } from 'vue-element-plus-x/types/Typewriter';
 
 import type { BotInfo, ChatMessage } from '@aiflowy/types';
 
-import { nextTick, onMounted, ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { BubbleList, Sender } from 'vue-element-plus-x';
 import { useRoute, useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
-import { useUserStore } from '@aiflowy/stores';
 import { cn, tryit, uuid } from '@aiflowy/utils';
 
-import {
-  DocumentCopy,
-  Microphone,
-  Paperclip,
-  Promotion,
-  Refresh,
-} from '@element-plus/icons-vue';
-import { ElAvatar, ElButton, ElIcon, ElMessage, ElSpace } from 'element-plus';
+import { CopyDocument, Promotion, RefreshRight } from '@element-plus/icons-vue';
+import { ElButton, ElIcon, ElMessage, ElSpace } from 'element-plus';
 
 import { getMessageList } from '#/api';
 import { api, sseClient } from '#/api/request';
 import MarkdownRenderer from '#/components/chat/MarkdownRenderer.vue';
-import SenderHeader from '#/components/chat/SenderHeader.vue';
 
 import BotAvatar from '../botAvatar/botAvatar.vue';
 import SendingIcon from '../icons/SendingIcon.vue';
@@ -39,10 +31,14 @@ interface historyMessageType {
   role: string;
   content: string;
 }
+interface presetQuestionsType {
+  key: string;
+  description: string;
+}
 const route = useRoute();
 const botId = ref<string>((route.params.id as string) || '');
 const router = useRouter();
-const userStore = useUserStore();
+
 const bubbleItems = ref<BubbleListProps<ChatMessage>['list']>([]);
 const senderRef = ref<InstanceType<typeof Sender>>();
 const senderValue = ref('');
@@ -50,12 +46,32 @@ const sending = ref(false);
 const sessionId = ref(
   props.sessionId && props.sessionId.length > 0 ? props.sessionId : uuid(),
 );
+const presetQuestions = ref<presetQuestionsType[]>([]);
 defineExpose({
   clear() {
     bubbleItems.value = [];
     messages.value = [];
   },
 });
+const getPresetQuestions = () => {
+  api
+    .get('/api/v1/aiBot/detail', {
+      params: {
+        id: botId.value,
+      },
+    })
+    .then((res) => {
+      presetQuestions.value = res.data.options.presetQuestions
+        .filter(
+          (item: presetQuestionsType) =>
+            item.description && item.description.trim() !== '',
+        )
+        .map((item: presetQuestionsType) => ({
+          key: item.key,
+          description: item.description,
+        }));
+    });
+};
 const getMessagesHistory = () => {
   // 如果是外部地址获取记录
   if (props.isExternalMsg === 0) {
@@ -86,6 +102,7 @@ const getMessagesHistory = () => {
 };
 onMounted(() => {
   getMessagesHistory();
+  getPresetQuestions();
 });
 watchEffect(async () => {
   if (props.bot && props.sessionId) {
@@ -240,17 +257,16 @@ const handleCopy = (content: string) => {
 const handleRefresh = () => {
   handleSubmit(lastUserMessage.value);
 };
-const uploadRef = ref();
-const senderHeader = ref();
-async function handlePasteFile(firstFile: File, fileList: FileList) {
-  if (senderRef.value) {
-    senderRef.value.openHeader();
-    await nextTick();
-    if (senderHeader.value) {
-      senderHeader.value.init(firstFile, fileList);
-    }
-  }
-}
+// const senderHeader = ref();
+// async function handlePasteFile(firstFile: File, fileList: FileList) {
+//   if (senderRef.value) {
+//     senderRef.value.openHeader();
+//     await nextTick();
+//     if (senderHeader.value) {
+//       senderHeader.value.init(firstFile);
+//     }
+//   }
+// }
 </script>
 
 <template>
@@ -266,7 +282,7 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
       <!-- 对话列表 -->
       <div
         v-if="sessionId || bubbleItems.length > 0"
-        class="w-full flex-1 overflow-hidden"
+        class="message-container w-full flex-1 overflow-hidden"
       >
         <BubbleList
           class="!h-full"
@@ -274,6 +290,11 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
           max-height="none"
           @complete="handleComplete"
         >
+          <template #header="{ item }">
+            <span class="chat-bubble-item-time-style">
+              {{ new Date(item.created).toLocaleString() }}
+            </span>
+          </template>
           <!-- 自定义头像 -->
           <template #avatar="{ item }">
             <BotAvatar
@@ -281,7 +302,6 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
               :src="bot?.icon"
               :size="40"
             />
-            <ElAvatar v-else :src="userStore.userInfo?.avatar" :size="40" />
           </template>
           <template #content="{ item }">
             <MarkdownRenderer :content="item.content" />
@@ -290,25 +310,17 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
           <template #footer="{ item }">
             <ElSpace :size="10">
               <ElSpace>
-                <ElButton
-                  @click="handleRefresh()"
-                  v-if="item.role === 'assistant'"
-                  type="info"
-                  :icon="Refresh"
-                  size="small"
-                  circle
-                />
-                <ElButton
-                  @click="handleCopy(item.content)"
-                  color="#626aef"
-                  :icon="DocumentCopy"
-                  size="small"
-                  circle
-                />
+                <span @click="handleRefresh()" style="cursor: pointer">
+                  <ElIcon>
+                    <RefreshRight />
+                  </ElIcon>
+                </span>
+                <span @click="handleCopy(item.content)" style="cursor: pointer">
+                  <ElIcon>
+                    <CopyDocument />
+                  </ElIcon>
+                </span>
               </ElSpace>
-              <div class="text-xs">
-                {{ new Date(item.created).toLocaleString() }}
-              </div>
             </ElSpace>
           </template>
         </BubbleList>
@@ -323,6 +335,16 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
         <span class="text-sm text-[#757575]">{{ bot?.description }}</span>
       </div>
 
+      <!--问题预设-->
+      <div class="questions-preset-container" v-if="presetQuestions.length > 0">
+        <ElButton
+          v-for="item in presetQuestions"
+          :key="item.key"
+          @click="handleSubmit(item.description)"
+        >
+          {{ item.description }}
+        </ElButton>
+      </div>
       <!-- Sender -->
       <Sender
         ref="senderRef"
@@ -332,24 +354,23 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
         :auto-size="{ minRows: 3, maxRows: 6 }"
         allow-speech
         @submit="handleSubmit"
-        @paste-file="handlePasteFile"
       >
         <!-- 自定义头部内容 -->
-        <template #header>
+        <!--        <template #header>
           <div class="header-self-wrap">
             <SenderHeader ref="senderHeader" />
           </div>
-        </template>
+        </template>-->
 
         <template #action-list>
           <ElSpace>
-            <ElButton circle @click="uploadRef.triggerFileSelect()">
+            <!--<ElButton circle @click="uploadRef.triggerFileSelect()">
               <ElIcon><Paperclip /></ElIcon>
             </ElButton>
             <ElButton circle>
               <ElIcon><Microphone /></ElIcon>
-              <!-- <ElIcon color="#0066FF"><RecordingIcon /></ElIcon> -->
-            </ElButton>
+              &lt;!&ndash; <ElIcon color="#0066FF"><RecordingIcon /></ElIcon> &ndash;&gt;
+            </ElButton>-->
             <ElButton v-if="sending" circle @click="stopSse">
               <ElIcon size="30" color="#409eff"><SendingIcon /></ElIcon>
             </ElButton>
@@ -362,3 +383,28 @@ async function handlePasteFile(firstFile: File, fileList: FileList) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.questions-preset-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  overflow: auto;
+}
+.message-container {
+  background-color: var(--bot-chat-message-container);
+  border-radius: 8px;
+  padding: 8px;
+}
+:deep(.el-bubble-content-wrapper .el-bubble-content-filled[data-v-a52d8fe0]) {
+  background-color: var(--bot-chat-message-item-back);
+}
+.chat-bubble-item-time-style {
+  color: var(--common-font-placeholder-color);
+  font-size: 12px;
+}
+</style>
