@@ -12,8 +12,11 @@ public class ChainEventListenerForSave implements ChainEventListener {
 
     private static final Logger log = LoggerFactory.getLogger(ChainEventListenerForSave.class);
 
+
+
     @Override
     public void onEvent(Event event, Chain chain) {
+        String executeId = chain.getState().getInstanceId();
         if (event instanceof ChainStartEvent) {
             handleChainStartEvent((ChainStartEvent) event, chain);
         }
@@ -44,6 +47,7 @@ public class ChainEventListenerForSave implements ChainEventListener {
 
     private void handleNodeStartEvent(NodeStartEvent event, Chain chain) {
         log.info("NodeStartEvent: {}", event);
+
     }
 
     private void handleNodeEndEvent(NodeEndEvent event, Chain chain) {
