@@ -1,6 +1,4 @@
 <script setup lang="ts" generic="T extends { icon?: any; [key: string]: any }">
-import type { ElEmpty } from 'element-plus';
-
 import type { Component } from 'vue';
 
 import { ref } from 'vue';
@@ -13,7 +11,8 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElIcon,
+  ElEmpty,
+  ElIcon
 } from 'element-plus';
 
 interface Props {
@@ -21,6 +20,7 @@ interface Props {
   menus: T[];
   labelKey: string;
   valueKey: string;
+  iconSize: number;
   controlBtns?: {
     icon?: any;
     label: string;
@@ -86,7 +86,15 @@ const isComponent = (icon: any) => {
               v-if="item.icon"
               class="ml-[-3px] flex items-center justify-center"
             >
-              <img v-if="!isComponent(item.icon)" :src="item.icon" />
+              <img
+                v-if="!isComponent(item.icon)"
+                :src="item.icon"
+                :style="{
+                  width: `${iconSize}px`,
+                  height: `${iconSize}px`,
+                  objectFit: 'contain',
+                }"
+              />
               <ElIcon v-else>
                 <component :is="item.icon as Component" v-bind="$attrs" />
               </ElIcon>
