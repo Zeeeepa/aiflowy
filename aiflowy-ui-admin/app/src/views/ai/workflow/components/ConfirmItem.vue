@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { defineEmits, defineProps } from 'vue';
-
 import { Download } from '@element-plus/icons-vue';
 import { ElIcon, ElText } from 'element-plus';
 

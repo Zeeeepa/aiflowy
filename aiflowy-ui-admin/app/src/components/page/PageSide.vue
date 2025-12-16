@@ -1,9 +1,7 @@
 <script setup lang="ts" generic="T extends { icon?: any; [key: string]: any }">
-import type { ElEmpty } from 'element-plus';
-
 import type { Component } from 'vue';
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import { cn } from '@aiflowy/utils';
 
@@ -13,6 +11,7 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
+  ElEmpty,
   ElIcon,
 } from 'element-plus';
 
@@ -21,6 +20,7 @@ interface Props {
   menus: T[];
   labelKey: string;
   valueKey: string;
+  iconSize?: number;
   controlBtns?: {
     icon?: any;
     label: string;
@@ -35,7 +35,13 @@ interface Props {
   defaultSelected?: string;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  iconSize: 16,
+  controlBtns: () => [],
+  footerButton: undefined,
+  defaultSelected: '',
+});
 const emits = defineEmits<{
   (e: 'change', item: T): void;
 }>();
@@ -47,6 +53,20 @@ const handleChange = (item: T) => {
   selected.value = item[props.valueKey];
   emits('change', item);
 };
+// 监听 defaultSelected 的变化
+watch(
+  () => props.defaultSelected,
+  (newVal) => {
+    if (newVal) {
+      selected.value = newVal;
+      const item = props.menus.find((menu) => menu[props.valueKey] === newVal);
+      if (item) {
+        emits('change', item);
+      }
+    }
+  },
+  { immediate: true },
+);
 const handleMouseEvent = (id?: string) => {
   if (id === undefined) {
     setTimeout(() => {
@@ -86,7 +106,15 @@ const isComponent = (icon: any) => {
               v-if="item.icon"
               class="ml-[-3px] flex items-center justify-center"
             >
-              <img v-if="!isComponent(item.icon)" :src="item.icon" />
+              <img
+                v-if="!isComponent(item.icon)"
+                :src="item.icon"
+                :style="{
+                  width: `${iconSize}px`,
+                  height: `${iconSize}px`,
+                  objectFit: 'contain',
+                }"
+              />
               <ElIcon v-else>
                 <component :is="item.icon as Component" v-bind="$attrs" />
               </ElIcon>

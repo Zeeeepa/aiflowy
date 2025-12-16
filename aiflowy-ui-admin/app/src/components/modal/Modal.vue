@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, nextTick, onMounted, reactive, ref } from 'vue';
+import { nextTick, onMounted, reactive, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
@@ -34,7 +34,7 @@ const openDialog = () => {
   dialogVisible.value = true;
 };
 
-const basicForm: basicFormType = reactive({});
+const basicForm: basicFormType = reactive({ brand: '', apiKey: '' });
 const basicFormRef = ref();
 defineExpose({
   openDialog,

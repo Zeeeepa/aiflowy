@@ -5,12 +5,12 @@ import cn.hutool.core.util.IdUtil;
 import com.agentsflex.core.util.StringUtil;
 import com.mybatisflex.core.tenant.TenantManager;
 import dev.tinyflow.core.chain.Chain;
-import dev.tinyflow.core.node.BaseNode;
 import dev.tinyflow.core.chain.Parameter;
+import dev.tinyflow.core.node.BaseNode;
 import tech.aiflowy.ai.entity.AiResource;
 import tech.aiflowy.ai.service.AiResourceService;
 import tech.aiflowy.ai.utils.DocUtil;
-import tech.aiflowy.common.constant.Constants;
+import tech.aiflowy.ai.utils.WorkFlowUtil;
 import tech.aiflowy.common.constant.enums.EnumResourceOriginType;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.filestorage.FileStorageManager;
@@ -57,12 +57,7 @@ public class DownloadNode extends BaseNode {
 
         AiResource resource = new AiResource();
 
-        // 默认为未知来源
-        LoginAccount account = defaultAccount();
-        Object cache = chain.getState().getMemory().get(Constants.LOGIN_USER_KEY);
-        if (cache != null) {
-            account = (LoginAccount) cache;
-        }
+        LoginAccount account = WorkFlowUtil.getOperator(chain);
 
         resource.setDeptId(account.getDeptId());
         resource.setTenantId(account.getTenantId());
@@ -92,14 +87,6 @@ public class DownloadNode extends BaseNode {
         }
         res.put(key, resourceUrl);
         return res;
-    }
-
-    private LoginAccount defaultAccount() {
-        LoginAccount account = new LoginAccount();
-        account.setId(new BigInteger("0"));
-        account.setDeptId(new BigInteger("0"));
-        account.setTenantId(new BigInteger("0"));
-        return account;
     }
 
     public Integer getResourceType() {

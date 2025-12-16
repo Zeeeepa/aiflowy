@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, nextTick, onMounted, reactive, ref } from 'vue';
+import { nextTick, onMounted, reactive, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 

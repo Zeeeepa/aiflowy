@@ -1,12 +1,5 @@
 <script setup>
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  isVNode,
-  onMounted,
-  ref,
-} from 'vue';
+import { computed, isVNode, onMounted, ref } from 'vue';
 
 import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 import { ElIcon } from 'element-plus';

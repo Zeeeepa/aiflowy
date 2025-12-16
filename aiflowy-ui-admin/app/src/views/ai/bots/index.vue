@@ -9,13 +9,7 @@ import { useRouter } from 'vue-router';
 import { $t } from '@aiflowy/locales';
 import { tryit } from '@aiflowy/utils';
 
-import {
-  Delete,
-  Edit,
-  Plus,
-  Setting,
-  VideoPlay,
-} from '@element-plus/icons-vue';
+import { Delete, Edit, Plus, Setting } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { removeBotFromId } from '#/api';
@@ -58,17 +52,6 @@ const actions: ActionButton[] = [
     permission: '',
     onClick(row: BotInfo) {
       router.push({ path: `/ai/bots/setting/${row.id}` });
-    },
-  },
-  {
-    icon: VideoPlay,
-    text: $t('button.run'),
-    className: '',
-    permission: '',
-    onClick(row: BotInfo) {
-      router.push({ path: `/ai/bots/run/${row.id}` });
-      // 打开新窗口
-      // window.open(`/ai/bots/run/${item.id}`, '_blank');
     },
   },
   {

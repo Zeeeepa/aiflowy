@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
 
-import { defineEmits, nextTick, ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
