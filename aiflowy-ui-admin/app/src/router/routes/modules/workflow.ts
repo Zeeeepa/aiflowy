@@ -26,6 +26,30 @@ const routes: RouteRecordRaw[] = [
     path: '/ai/workflow/run',
     component: () => import('#/views/ai/workflow/RunPage.vue'),
   },
+  {
+    meta: {
+      title: $t('aiWorkflowExecRecord.moduleName'),
+      hideInMenu: true,
+      hideInTab: true,
+      hideInBreadcrumb: true,
+    },
+    name: 'ExecRecord',
+    path: '/ai/workflow/executeRecords',
+    component: () =>
+      import('#/views/ai/workflow/execRecord/AiWorkflowExecRecordList.vue'),
+  },
+  {
+    meta: {
+      title: $t('aiWorkflowRecordStep.moduleName'),
+      hideInMenu: true,
+      hideInTab: true,
+      hideInBreadcrumb: true,
+    },
+    name: 'RecordStep',
+    path: '/ai/workflow/executeSteps',
+    component: () =>
+      import('#/views/ai/workflow/execRecord/AiWorkflowRecordStepList.vue'),
+  },
 ];
 
 export default routes;

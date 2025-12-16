@@ -1,5 +1,6 @@
 package tech.aiflowy.admin.controller.ai;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ public class AiWorkflowExecRecordController extends BaseCurdController<AiWorkflo
 
     @GetMapping("/del")
     @Transactional(rollbackFor = Exception.class)
+    @SaCheckPermission("/api/v1/aiWorkflow/remove")
     public Result<Void> del(BigInteger id) {
         LoginAccount account = SaTokenUtil.getLoginAccount();
         AiWorkflowExecRecord record = service.getById(id);

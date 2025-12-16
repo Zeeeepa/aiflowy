@@ -1,12 +1,12 @@
 package tech.aiflowy.ai.node;
 
 import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.chain.runtime.ChainExecutor;
 import dev.tinyflow.core.node.BaseNode;
 import tech.aiflowy.ai.entity.AiWorkflow;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.common.util.SpringContextUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class WorkflowNode extends BaseNode {
@@ -29,9 +29,8 @@ public class WorkflowNode extends BaseNode {
         if (workflow == null) {
             throw new RuntimeException("工作流不存在：" + workflowId);
         }
-        //Chain subChain = workflow.toTinyflow().toChain();
-
-        return new HashMap<>();
+        ChainExecutor executor = SpringContextUtil.getBean(ChainExecutor.class);
+        return executor.execute(workflowId, params);
     }
 
     public String getWorkflowId() {
