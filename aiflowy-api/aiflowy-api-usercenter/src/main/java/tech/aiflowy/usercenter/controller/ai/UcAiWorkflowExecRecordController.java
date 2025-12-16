@@ -1,4 +1,4 @@
-package tech.aiflowy.admin.controller.ai;
+package tech.aiflowy.usercenter.controller.ai;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
@@ -25,17 +25,20 @@ import java.math.BigInteger;
  * 工作流执行记录
  */
 @RestController
-@RequestMapping("/api/v1/aiWorkflowExecRecord")
+@RequestMapping("/userCenter/aiWorkflowExecRecord")
 @UsePermission(moduleName = "/api/v1/aiWorkflow")
-public class AiWorkflowExecRecordController extends BaseCurdController<AiWorkflowExecRecordService, AiWorkflowExecRecord> {
+public class UcAiWorkflowExecRecordController extends BaseCurdController<AiWorkflowExecRecordService, AiWorkflowExecRecord> {
 
     @Resource
     private AiWorkflowRecordStepService recordStepService;
 
-    public AiWorkflowExecRecordController(AiWorkflowExecRecordService service) {
+    public UcAiWorkflowExecRecordController(AiWorkflowExecRecordService service) {
         super(service);
     }
 
+    /**
+     * 删除
+     */
     @GetMapping("/del")
     @Transactional(rollbackFor = Exception.class)
     @SaCheckPermission("/api/v1/aiWorkflow/remove")

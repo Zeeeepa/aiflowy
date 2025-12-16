@@ -19,6 +19,7 @@ import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.ai.tinyflow.entity.ChainInfo;
 import tech.aiflowy.ai.tinyflow.entity.NodeInfo;
+import tech.aiflowy.ai.tinyflow.service.TinyFlowService;
 import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.entity.LoginAccount;
@@ -54,6 +55,8 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
     private ChainExecutor chainExecutor;
     @Resource
     private ChainParser chainParser;
+    @Resource
+    private TinyFlowService tinyFlowService;
 
     public AiWorkflowController(AiWorkflowService service, AiLlmService aiLlmService) {
         super(service);
@@ -105,56 +108,8 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
     @PostMapping("/getChainStatus")
     public Result<ChainInfo> getChainStatus(@JsonBody(value = "executeId") String executeId,
                                             @JsonBody("nodes") List<NodeInfo> nodes) {
-        ChainStateRepository chainStateRepository = chainExecutor.getChainStateRepository();
-        NodeStateRepository nodeStateRepository = chainExecutor.getNodeStateRepository();
-
-        ChainState chainState = chainStateRepository.load(executeId);
-
-        ChainInfo res = new ChainInfo();
-        res.setExecuteId(executeId);
-        res.setStatus(chainState.getStatus().getValue());
-        ExceptionSummary chainError = chainState.getError();
-        if (chainError != null) {
-            res.setMessage(chainError.getRootCauseClass() + " --> " + chainError.getRootCauseMessage());
-        }
-        Map<String, Object> executeResult = chainState.getExecuteResult();
-        if (executeResult != null && !executeResult.isEmpty()) {
-            res.setResult(executeResult);
-        }
-
-        Set<String> childStateIds = chainState.getChildStateIds();
-
-        for (NodeInfo node : nodes) {
-            String nodeId = node.getNodeId();
-            NodeState nodeState = nodeStateRepository.load(executeId, nodeId);
-            if (NodeStatus.READY.equals(nodeState.getStatus())) {
-                if (childStateIds != null && !childStateIds.isEmpty()) {
-                    for (String childStateId : childStateIds) {
-                        ChainState childChainState = chainStateRepository.load(childStateId);
-                        NodeState nodeStateInChild = nodeStateRepository.load(childStateId, nodeId);
-                        setNodeStatus(node, nodeStateInChild, childChainState);
-                    }
-                }
-            } else {
-                setNodeStatus(node, nodeState, chainState);
-            }
-            res.getNodes().put(nodeId, node);
-        }
+        ChainInfo res = tinyFlowService.getChainStatus(executeId, nodes);
         return Result.ok(res);
-    }
-
-    private void setNodeStatus(NodeInfo node, NodeState nodeState, ChainState chainState) {
-        String nodeId = node.getNodeId();
-        node.setStatus(nodeState.getStatus().getValue());
-        ExceptionSummary error = nodeState.getError();
-        if (error != null) {
-            node.setMessage(error.getRootCauseClass() + " --> " + error.getRootCauseMessage());
-        }
-        Map<String, Object> nodeExecuteResult = chainState.getNodeExecuteResult(nodeId);
-        if (nodeExecuteResult != null && !nodeExecuteResult.isEmpty()) {
-            node.setResult(nodeExecuteResult);
-        }
-        node.setSuspendForParameters(chainState.getSuspendForParameters());
     }
 
     /**

@@ -15,6 +15,7 @@ import {
   Download,
   Edit,
   Plus,
+  Tickets,
   VideoPlay,
 } from '@element-plus/icons-vue';
 import {
@@ -60,7 +61,7 @@ const actions: ActionButton[] = [
     icon: Edit,
     text: $t('button.edit'),
     className: '',
-    permission: '',
+    permission: '/api/v1/aiWorkflow/save',
     onClick: (row: any) => {
       showDialog(row);
     },
@@ -69,7 +70,7 @@ const actions: ActionButton[] = [
     icon: DesignIcon,
     text: $t('button.design'),
     className: '',
-    permission: '',
+    permission: '/api/v1/aiWorkflow/save',
     onClick: (row: any) => {
       toDesignPage(row);
     },
@@ -84,6 +85,20 @@ const actions: ActionButton[] = [
         name: 'RunPage',
         query: {
           id: row.id,
+        },
+      });
+    },
+  },
+  {
+    icon: Tickets,
+    text: $t('aiWorkflowExecRecord.moduleName'),
+    className: '',
+    permission: '/api/v1/aiWorkflow/save',
+    onClick: (row: any) => {
+      router.push({
+        name: 'ExecRecord',
+        query: {
+          workflowId: row.id,
         },
       });
     },

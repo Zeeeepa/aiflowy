@@ -38,10 +38,11 @@ export default defineConfig({
         },
 
         nav: [
+            {text: '首页', link: 'https://aiflowy.tech', noIcon: true, target: '_self'},
+            {text: '定价方案', link: 'https://aiflowy.tech/pricing', noIcon: true, target: '_self'},
             {text: '开发文档', link: '/zh/development/getting-started/getting-started'},
             {text: '产品手册', link: '/zh/product/info/what-is-aiflowy'},
-            {text: '价格', link: 'https://aiflowy.tech/pricing'},
-            {text: '更新记录', link: '/zh/product/changes'},
+            {text: '关于我们', link: 'https://aiflowy.tech/about', noIcon: true, target: '_self'},
         ],
 
         sidebar: {
@@ -51,7 +52,7 @@ export default defineConfig({
 
         socialLinks: [
             {icon: {svg: gitee_icon_svg}, link: 'https://gitee.com/aiflowy/aiflowy'},
-            // { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+            {icon: 'github', link: 'https://github.com/aiflowy/aiflowy'}
         ],
 
 
@@ -168,6 +169,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '什么是 AIFlowy？', link: 'info/what-is-aiflowy'},
                 {text: '技术规格', link: 'info/specifications'},
+                {text: '更新记录', link: 'changes'},
             ]
         },
         {

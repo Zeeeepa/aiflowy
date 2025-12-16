@@ -7,7 +7,7 @@ import dev.tinyflow.core.chain.Chain;
 import dev.tinyflow.core.node.BaseNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.aiflowy.common.constant.Constants;
+import tech.aiflowy.ai.utils.WorkFlowUtil;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.datacenter.service.DatacenterTableService;
@@ -38,11 +38,7 @@ public class SaveToDatacenterNode extends BaseNode {
         Map<String, Object> res = new HashMap<>();
 
         // 默认为未知来源
-        LoginAccount account = defaultAccount();
-        Object cache = chain.getState().getMemory().get(Constants.LOGIN_USER_KEY);
-        if (cache != null) {
-            account = (LoginAccount) cache;
-        }
+        LoginAccount account = WorkFlowUtil.getOperator(chain);
 
         DatacenterTableService service = SpringContextUtil.getBean(DatacenterTableService.class);
 
@@ -76,11 +72,4 @@ public class SaveToDatacenterNode extends BaseNode {
         this.tableId = tableId;
     }
 
-    private LoginAccount defaultAccount() {
-        LoginAccount account = new LoginAccount();
-        account.setId(new BigInteger("0"));
-        account.setDeptId(new BigInteger("0"));
-        account.setTenantId(new BigInteger("0"));
-        return account;
-    }
 }
