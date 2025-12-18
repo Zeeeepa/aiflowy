@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import { ArrowLeft, Avatar, Plus } from '@element-plus/icons-vue';
+import { ArrowLeft, Minus, Plus } from '@element-plus/icons-vue';
 import {
   ElAside,
   ElAvatar,
@@ -9,18 +10,71 @@ import {
   ElContainer,
   ElIcon,
   ElMain,
+  ElMessage,
   ElSpace,
 } from 'element-plus';
 
-import {
-  Card,
-  CardAvatar,
-  CardDescription,
-  CardTitle,
-} from '#/components/card';
+import { api } from '#/api/request';
+import defaultBotAvatar from '#/assets/defaultBotAvatar.png';
+import { Card, CardDescription, CardTitle } from '#/components/card';
 import { ChatSender } from '#/components/chat';
+import { $t } from '#/locales';
 
+onMounted(async () => {
+  getUserUsed();
+  getBotDetail();
+});
 const router = useRouter();
+const route = useRoute();
+const usedList = ref<any[]>([]);
+const botInfo = ref<any>({});
+const btnLoading = ref(false);
+function getUserUsed() {
+  api.get('/userCenter/aiBotRecentlyUsed/list').then((res) => {
+    usedList.value = res.data.map((item: any) => item.botId);
+  });
+}
+function getBotDetail() {
+  api
+    .get('/userCenter/aiBot/getDetail', {
+      params: {
+        id: route.params.id,
+      },
+    })
+    .then((res) => {
+      botInfo.value = res.data;
+    });
+}
+function addBotToRecentlyUsed(botId: any) {
+  btnLoading.value = true;
+  api
+    .post('/userCenter/aiBotRecentlyUsed/save', {
+      botId,
+    })
+    .then((res) => {
+      btnLoading.value = false;
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.success'));
+        getUserUsed();
+      }
+    });
+}
+function removeBotFromRecentlyUsed(botId: any) {
+  btnLoading.value = true;
+  api
+    .get('/userCenter/aiBotRecentlyUsed/removeByBotId', {
+      params: {
+        botId,
+      },
+    })
+    .then((res) => {
+      btnLoading.value = false;
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.success'));
+        getUserUsed();
+      }
+    });
+}
 </script>
 
 <template>
@@ -33,18 +87,20 @@ const router = useRouter();
       <ElSpace :size="16" class="cursor-pointer" @click="router.back()">
         <ElIcon color="#969799" :size="24"><ArrowLeft /></ElIcon>
         <ElSpace :size="12">
-          <ElAvatar :size="36" :icon="Avatar" />
-          <h1 class="text-base font-semibold text-[#042A62]">AI陪伴</h1>
+          <ElAvatar :size="36" :src="botInfo.icon || defaultBotAvatar" />
+          <h1 class="text-base font-semibold text-[#042A62]">
+            {{ botInfo.title }}
+          </h1>
         </ElSpace>
       </ElSpace>
       <ElMain class="relative mx-auto w-full max-w-[884px] !p-0">
         <Card
           class="absolute left-1/2 top-1/2 max-w-[340px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0"
         >
-          <CardAvatar :size="64" />
-          <CardTitle class="mt-4 text-[#042A62]">AI陪伴</CardTitle>
+          <ElAvatar :size="64" :src="botInfo.icon || defaultBotAvatar" />
+          <CardTitle class="mt-4 text-[#042A62]">{{ botInfo.title }}</CardTitle>
           <CardDescription class="mt-2.5 text-center text-[#566882]">
-            AI陪伴专为需要倾诉寻求陪伴和日常互动的人群打造，满足用户在孤独、压力或闲暇时的交流需求。
+            {{ botInfo.description }}
           </CardDescription>
         </Card>
         <ChatSender class="absolute bottom-11 left-0 w-full" />
@@ -52,13 +108,30 @@ const router = useRouter();
     </ElMain>
     <ElAside width="407px" class="px-3 pt-10">
       <Card class="mx-auto max-w-[340px] flex-col items-center gap-0">
-        <CardAvatar :size="64" />
-        <CardTitle class="mt-4 text-[#042A62]">AI陪伴</CardTitle>
+        <ElAvatar :size="64" :src="botInfo.icon || defaultBotAvatar" />
+        <CardTitle class="mt-4 text-[#042A62]">{{ botInfo.title }}</CardTitle>
         <CardDescription class="mt-2.5 text-center text-[#566882]">
-          AI陪伴专为需要倾诉寻求陪伴和日常互动的人群打造，满足用户在孤独、压力或闲暇时的交流需求。
+          {{ botInfo.description }}
         </CardDescription>
-        <ElButton class="mt-8 !h-9 w-full" type="primary" :icon="Plus">
+        <ElButton
+          v-if="!usedList.includes(botInfo.id)"
+          :loading="btnLoading"
+          class="mt-8 !h-9 w-full"
+          type="primary"
+          :icon="Plus"
+          @click="addBotToRecentlyUsed(botInfo.id)"
+        >
           添加到聊天助理
+        </ElButton>
+        <ElButton
+          v-else
+          :loading="btnLoading"
+          class="mt-8 !h-9 w-full"
+          type="primary"
+          :icon="Minus"
+          @click="removeBotFromRecentlyUsed(botInfo.id)"
+        >
+          从聊天助理中移除
         </ElButton>
       </Card>
     </ElAside>
