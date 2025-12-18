@@ -33,6 +33,8 @@ interface BotInfo {
   };
   tenantId: number;
   title: string;
+  categoryId: any;
+  status: number;
 }
 
 interface Session {

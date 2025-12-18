@@ -23,6 +23,7 @@ CREATE TABLE `tb_ai_bot`
     `modified`    datetime NULL DEFAULT NULL COMMENT '修改时间',
     `modified_by` bigint UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
     `status`      tinyint(1) NULL DEFAULT NULL COMMENT '数据状态',
+    `category_id` bigint unsigned DEFAULT NULL COMMENT '分类ID',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `tb_ai_bot_alias_uindex`(`alias`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -1104,6 +1105,34 @@ CREATE TABLE `tb_ai_workflow_record_step`
     UNIQUE KEY `uni_exec` (`exec_key`) USING BTREE,
     KEY          `idx_record_id` (`record_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='执行记录步骤';
+
+-- ----------------------------
+-- Table structure for tb_ai_bot_category
+-- ----------------------------
+CREATE TABLE `tb_ai_bot_category`
+(
+    `id`            bigint unsigned NOT NULL COMMENT '主键',
+    `category_name` varchar(50) NOT NULL COMMENT '分类名称',
+    `sort_no`       int                  DEFAULT '0' COMMENT '排序',
+    `created`       datetime    NOT NULL COMMENT '创建时间',
+    `created_by`    bigint unsigned NOT NULL COMMENT '创建者',
+    `modified`      datetime    NOT NULL COMMENT '修改时间',
+    `modified_by`   bigint unsigned NOT NULL COMMENT '修改者',
+    `status`        int         NOT NULL DEFAULT '0' COMMENT '数据状态',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='bot分类';
+
+-- ----------------------------
+-- Table structure for tb_ai_bot_recently_used
+-- ----------------------------
+CREATE TABLE `tb_ai_bot_recently_used`
+(
+    `id`         bigint unsigned NOT NULL COMMENT '主键',
+    `bot_id`     bigint unsigned NOT NULL COMMENT 'botId',
+    `created`    datetime NOT NULL COMMENT '创建时间',
+    `created_by` bigint unsigned NOT NULL COMMENT '创建者',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='最近使用';
 
 SET
 FOREIGN_KEY_CHECKS = 1;

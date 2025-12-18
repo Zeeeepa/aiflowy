@@ -32,6 +32,8 @@ export interface SaveBotParams {
   title: string;
   alias: string;
   description: string;
+  categoryId: any;
+  status: number;
 }
 /** 创建Bot */
 export const saveBot = (params: SaveBotParams) => {

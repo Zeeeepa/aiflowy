@@ -18,6 +18,7 @@ import {
 } from 'element-plus';
 
 import { saveBot, updateBotApi } from '#/api/ai/bot';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import UploadAvatar from '#/components/upload/UploadAvatar.vue';
 
 const emit = defineEmits(['success']);
@@ -27,6 +28,8 @@ const initialFormData = {
   title: '',
   alias: '',
   description: '',
+  categoryId: '',
+  status: 1,
 };
 const dialogVisible = ref(false);
 const dialogType = ref<'create' | 'edit'>('create');
@@ -63,6 +66,8 @@ defineExpose({
           title: bot.title,
           alias: bot.alias,
           description: bot.description,
+          categoryId: bot.categoryId,
+          status: bot.status,
         }
       : initialFormData;
     dialogType.value = type;
@@ -82,6 +87,9 @@ defineExpose({
       <ElFormItem :label="$t('common.avatar')" prop="icon">
         <UploadAvatar v-model="formData.icon" />
       </ElFormItem>
+      <ElFormItem prop="categoryId" :label="$t('aiWorkflow.categoryId')">
+        <DictSelect v-model="formData.categoryId" dict-code="aiBotCategory" />
+      </ElFormItem>
       <ElFormItem :label="$t('aiWorkflow.title')" prop="title">
         <ElInput v-model="formData.title" />
       </ElFormItem>
@@ -90,6 +98,9 @@ defineExpose({
       </ElFormItem>
       <ElFormItem :label="$t('plugin.description')" prop="description">
         <ElInput type="textarea" :rows="3" v-model="formData.description" />
+      </ElFormItem>
+      <ElFormItem prop="status" :label="$t('aiWorkflow.status')">
+        <DictSelect v-model="formData.status" dict-code="dataStatus" />
       </ElFormItem>
     </ElForm>
 

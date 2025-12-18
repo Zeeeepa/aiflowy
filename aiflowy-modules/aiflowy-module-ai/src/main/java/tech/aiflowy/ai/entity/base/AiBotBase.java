@@ -100,6 +100,18 @@ public class AiBotBase extends DateEntity implements Serializable {
     @Column(comment = "修改者ID")
     private BigInteger modifiedBy;
 
+    /**
+     * 数据状态
+     */
+    @Column(comment = "数据状态")
+    private Integer status;
+
+    /**
+     * 分类ID
+     */
+    @Column(comment = "分类ID")
+    private BigInteger categoryId;
+
     public BigInteger getId() {
         return id;
     }
@@ -212,6 +224,19 @@ public class AiBotBase extends DateEntity implements Serializable {
         this.alias = alias;
     }
 
-    
+    public Integer getStatus() {
+        return status;
+    }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public BigInteger getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(BigInteger categoryId) {
+        this.categoryId = categoryId;
+    }
 }
