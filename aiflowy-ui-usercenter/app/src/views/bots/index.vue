@@ -5,7 +5,7 @@ import { Search } from '@element-plus/icons-vue';
 import { ElContainer, ElHeader, ElInput, ElMain, ElSpace } from 'element-plus';
 
 import { api } from '#/api/request';
-import defaultBotAvatar from '#/assets/defaultBotAvatar.png';
+import defaultBotAvatar from '#/assets/ai/workflow/workflowIcon.png';
 import {
   Card,
   CardAvatar,

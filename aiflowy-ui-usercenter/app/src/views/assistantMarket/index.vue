@@ -1,20 +1,23 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@aiflowy/icons';
 
-import { Plus, Search } from '@element-plus/icons-vue';
+import { Minus, Plus, Search } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElCol,
   ElContainer,
   ElHeader,
   ElInput,
-  ElMain,
+  ElMain, ElMessage,
   ElRow,
   ElSpace,
 } from 'element-plus';
 
+import { api } from '#/api/request';
+import defaultBotAvatar from '#/assets/defaultBotAvatar.png';
 import {
   Card,
   CardAvatar,
@@ -22,51 +25,85 @@ import {
   CardDescription,
   CardTitle,
 } from '#/components/card';
+import {$t} from "#/locales";
 
 const router = useRouter();
-const categories = ['推荐', '最新', '智能客服', '学习教育', '聊天陪伴'];
-const assistantList = [
-  {
-    id: 0,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 1,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 2,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 3,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 4,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 5,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 6,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-  {
-    id: 7,
-    title: 'AI陪伴',
-    description: 'AI陪伴专为需要倾诉寻求陪伴和日常互动的',
-  },
-];
+const categories = ref<any[]>([]);
+const botList = ref<any[]>([]);
+const queryParams = ref<any>({});
+const pageLoading = ref(false);
+const activeTag = ref('');
+const usedList = ref<any[]>([]);
+const btnLoading = ref(false);
+onMounted(async () => {
+  getBotList();
+  getCategoryList();
+  getUserUsed();
+});
+function getCategoryList() {
+  api.get('/userCenter/aiBotCategory/list').then((res) => {
+    categories.value = [
+      {
+        id: '',
+        categoryName: '全部',
+      },
+      ...res.data,
+    ];
+  });
+}
+function getBotList() {
+  pageLoading.value = true;
+  api
+    .get('/userCenter/aiBot/list', {
+      params: { ...queryParams.value },
+    })
+    .then((res) => {
+      pageLoading.value = false;
+      botList.value = res.data;
+    });
+}
+function handleTagClick(tag: any) {
+  activeTag.value = tag;
+  queryParams.value.categoryId = tag;
+  getBotList();
+}
+function getUserUsed() {
+  api.get('/userCenter/aiBotRecentlyUsed/list').then((res) => {
+    usedList.value = res.data.map((item: any) => item.botId);
+  });
+}
+function addBotToRecentlyUsed(botId: any) {
+  btnLoading.value = true;
+  api
+    .post('/userCenter/aiBotRecentlyUsed/save', {
+      botId,
+    })
+    .then((res) => {
+      btnLoading.value = false;
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.success'));
+        getUserUsed();
+        getBotList();
+      }
+    });
+}
+function removeBotFromRecentlyUsed(botId: any) {
+  btnLoading.value = true;
+  api
+    .get('/userCenter/aiBotRecentlyUsed/removeByBotId', {
+      params: {
+        botId,
+      },
+    })
+    .then((res) => {
+      btnLoading.value = false;
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.success'));
+        getUserUsed();
+        getBotList();
+      }
+    });
+}
 </script>
 
 <template>
@@ -75,30 +112,39 @@ const assistantList = [
       <ElSpace direction="vertical" :size="24" alignment="flex-start">
         <h1 class="text-2xl font-medium text-[#333333]">助理应用市场</h1>
         <ElSpace :size="20">
-          <ElInput placeholder="搜索" :prefix-icon="Search" />
+          <ElInput
+            placeholder="搜索"
+            v-model="queryParams.title"
+            @keyup.enter="getBotList"
+            :prefix-icon="Search"
+          />
           <ElSpace :size="12">
             <button
               type="button"
               class="h-[35px] w-[94px] rounded-3xl border border-[#E6E9EE] text-sm text-[#566882] hover:border-[#0066FF] hover:bg-[rgba(0,102,255,0.08)] hover:text-[#0066FF]"
               v-for="category in categories"
-              :key="category"
+              :key="category.id"
+              @click="handleTagClick(category.id)"
             >
-              {{ category }}
+              {{ category.categoryName }}
             </button>
           </ElSpace>
         </ElSpace>
       </ElSpace>
     </ElHeader>
     <ElMain class="!px-8">
-      <div class="flex flex-wrap items-center gap-5">
+      <div class="flex flex-wrap items-center gap-5" v-loading="pageLoading">
         <Card
           class="h-[168px] w-full max-w-[378px] flex-col justify-between rounded-xl border border-[#E6E9EE] p-6 pb-5 pr-4 transition hover:-translate-y-2 hover:shadow-xl"
-          v-for="assistant in assistantList"
+          v-for="assistant in botList"
           :key="assistant.id"
         >
           <CardContent class="gap-3">
             <CardContent class="flex-row items-center gap-3">
-              <CardAvatar />
+              <CardAvatar
+                :src="assistant.icon"
+                :default-avatar="defaultBotAvatar"
+              />
               <CardTitle class="text-[#042A62]">
                 {{ assistant.title }}
               </CardTitle>
@@ -113,14 +159,28 @@ const assistantList = [
           <ElRow class="w-full" :gutter="16">
             <ElCol :span="12">
               <ElButton
+                v-if="!usedList.includes(assistant.id)"
+                :loading="btnLoading"
                 class="w-full"
                 type="primary"
                 style="--el-border: none"
                 :icon="Plus"
                 plain
-                @click.stop
+                @click="addBotToRecentlyUsed(assistant.id)"
               >
                 添加到聊天助理
+              </ElButton>
+              <ElButton
+                v-else
+                :loading="btnLoading"
+                class="w-full"
+                type="primary"
+                style="--el-border: none"
+                :icon="Minus"
+                plain
+                @click="removeBotFromRecentlyUsed(assistant.id)"
+              >
+                从聊天助理中移除
               </ElButton>
             </ElCol>
             <ElCol :span="12">
