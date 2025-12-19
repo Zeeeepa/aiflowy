@@ -5,8 +5,8 @@ import { useUserStore } from '@aiflowy/stores';
 
 import { ElAvatar } from 'element-plus';
 
-import defaultBotAvatar from '#/assets/defaultBotAvatar.png';
 import defaultUserAvatar from '#/assets/defaultUserAvatar.png';
+import AssistantAvatar from '#/components/avatar/Assistant.vue';
 
 // type listType = BubbleListItemProps & {
 //   key: number;
@@ -49,9 +49,6 @@ interface Props {
 const props = defineProps<Props>();
 const store = useUserStore();
 
-function getBotAvatar() {
-  return props.bot.icon || defaultBotAvatar;
-}
 function getUserAvatar() {
   return store.userInfo?.avatar || defaultUserAvatar;
 }
@@ -61,10 +58,11 @@ function getUserAvatar() {
   <BubbleList :list="messages" max-height="calc(100vh - 345px)">
     <!-- 自定义头像 -->
     <template #avatar="{ item }">
-      <ElAvatar
-        :src="item.role === 'assistant' ? getBotAvatar() : getUserAvatar()"
-        :size="40"
+      <AssistantAvatar
+        v-if="item.role === 'assistant'"
+        :size="props.bot.icon"
       />
+      <ElAvatar v-else :src="getUserAvatar()" :size="40" />
     </template>
 
     <!-- 自定义头部 -->

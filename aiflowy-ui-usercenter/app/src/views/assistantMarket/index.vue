@@ -56,7 +56,7 @@ function getBotList() {
   pageLoading.value = true;
   api
     .get('/userCenter/aiBot/list', {
-      params: { ...queryParams.value },
+      params: { ...queryParams.value, status: 1 },
     })
     .then((res) => {
       pageLoading.value = false;

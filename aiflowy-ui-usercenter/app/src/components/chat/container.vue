@@ -1,25 +1,33 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { provide, ref, watch } from 'vue';
 
 import { cn } from '@aiflowy/utils';
 
+import { Delete, Edit, MoreFilled } from '@element-plus/icons-vue';
 import {
   ElAside,
   ElButton,
   ElContainer,
+  ElDialog,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElForm,
+  ElFormItem,
   ElHeader,
-  ElIcon,
+  ElInput,
   ElMain,
+  ElTooltip,
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import AssistantAvatar from '#/components/avatar/Assistant.vue';
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from '#/components/card';
-import AssistantIcon from '#/components/icons/AssistantIcon.vue';
 import ChatIcon from '#/components/icons/ChatIcon.vue';
 
 interface Props {
@@ -29,6 +37,8 @@ interface Props {
 const props = defineProps<Props>();
 const sessionList = ref<any>([]);
 const currentSession = ref<any>({});
+const hoverId = ref<string>();
+const dialogVisible = ref(false);
 watch(
   () => props.bot.id,
   () => {
@@ -37,8 +47,8 @@ watch(
 );
 defineExpose({
   getSessionList,
-  updateSessionTitle,
 });
+
 function getSessionList(resetSession = false) {
   api
     .get('/userCenter/conversation/list', {
@@ -55,6 +65,7 @@ function getSessionList(resetSession = false) {
       }
     });
 }
+provide('getSessionList', getSessionList);
 function addSession() {
   const data = {
     botId: props.bot.id,
@@ -62,7 +73,6 @@ function addSession() {
     sessionId: crypto.randomUUID(),
   };
   sessionList.value.push(data);
-  api.post('/userCenter/conversation/save', data);
 }
 function clickSession(session: any) {
   currentSession.value = session;
@@ -82,22 +92,27 @@ function getMessageList() {
       }
     });
 }
-function updateSessionTitle(title: string) {
-  api.post('/userCenter/conversation/update', {
-    sessionId: currentSession.value.sessionId,
-    title,
-  });
+function formatCreatedTime(time: string) {
+  const createTime = Math.floor(new Date(time).getTime() / 1000);
+  const today = Math.floor(Date.now() / 1000 / 86_400) * 86_400;
+  return time.split(' ')[createTime < today ? 0 : 1];
 }
+const handleMouseEvent = (id?: string) => {
+  if (id === undefined) {
+    setTimeout(() => {
+      hoverId.value = id;
+    }, 200);
+  } else {
+    hoverId.value = id;
+  }
+};
 </script>
 
 <template>
-  <ElContainer class="border-border h-full rounded-lg border">
+  <ElContainer class="border-border bg-background h-full rounded-lg border">
     <ElAside width="287px" class="border-border border-r p-6">
       <Card class="max-w-max p-0">
-        <!-- <CardAvatar /> -->
-        <ElIcon class="!text-primary" :size="36">
-          <AssistantIcon />
-        </ElIcon>
+        <AssistantAvatar :src="bot.icon" />
         <CardContent>
           <CardTitle>{{ bot.title }}</CardTitle>
           <CardDescription>{{ bot.description }}</CardDescription>
@@ -118,7 +133,7 @@ function updateSessionTitle(title: string) {
           :key="session.sessionId"
           :class="
             cn(
-              'flex cursor-pointer items-center justify-between rounded-lg px-5 py-2.5 text-sm',
+              'group flex h-10 cursor-pointer items-center justify-between gap-1 rounded-lg px-5 text-sm',
               currentSession.sessionId === session.sessionId
                 ? 'bg-[hsl(var(--primary)/15%)] dark:bg-[hsl(var(--accent))]'
                 : 'hover:bg-[hsl(var(--accent))]',
@@ -126,25 +141,62 @@ function updateSessionTitle(title: string) {
           "
           @click="clickSession(session)"
         >
+          <ElTooltip :content="session.title || '未命名'">
+            <span
+              :class="
+                cn(
+                  'text-foreground overflow-hidden text-ellipsis text-nowrap',
+                  currentSession.sessionId === session.sessionId &&
+                    'text-primary',
+                )
+              "
+            >
+              {{ session.title || '未命名' }}
+            </span>
+          </ElTooltip>
           <span
             :class="
               cn(
-                'text-foreground',
-                currentSession.sessionId === session.sessionId &&
-                  'text-primary',
+                'text-foreground group-hover:hidden',
+                hoverId === session.sessionId && 'hidden',
               )
             "
           >
-            {{ session.title || '未命名' }}
+            {{ formatCreatedTime(session.created) }}
           </span>
-          <span class="text-foreground">
-            {{ session.created }}
-          </span>
+          <ElDropdown
+            :class="
+              cn(
+                'group-hover:!inline-flex',
+                (!hoverId || session.sessionId !== hoverId) && '!hidden',
+              )
+            "
+            @click.stop
+          >
+            <ElButton link :icon="MoreFilled" />
+
+            <template #dropdown>
+              <ElDropdownMenu
+                @mouseenter="handleMouseEvent(session.sessionId)"
+                @mouseleave="handleMouseEvent()"
+              >
+                <ElDropdownItem @click="dialogVisible = true">
+                  <ElButton link :icon="Edit">编辑</ElButton>
+                </ElDropdownItem>
+                <ElDropdownItem>
+                  <ElButton link type="danger" :icon="Delete">删除</ElButton>
+                </ElDropdownItem>
+              </ElDropdownMenu>
+            </template>
+          </ElDropdown>
         </div>
       </div>
     </ElAside>
     <ElContainer>
-      <ElHeader class="border border-[#E6E9EE] bg-[#FAFAFA]" height="53px">
+      <ElHeader
+        class="rounded-tr-lg border border-[#E6E9EE] bg-[#FAFAFA]"
+        height="53px"
+      >
         <span class="text-base/[53px] font-medium text-[#323233]">
           {{ currentSession.title || '未命名' }}
         </span>
@@ -153,6 +205,20 @@ function updateSessionTitle(title: string) {
         <slot :session-id="currentSession.sessionId"></slot>
       </ElMain>
     </ElContainer>
+    <ElDialog title="编辑" v-model="dialogVisible">
+      <div class="p-5">
+        <ElForm>
+          <ElFormItem>
+            <ElInput />
+          </ElFormItem>
+        </ElForm>
+      </div>
+
+      <template #footer>
+        <ElButton @click="dialogVisible = false">取消</ElButton>
+        <ElButton type="primary">确认</ElButton>
+      </template>
+    </ElDialog>
   </ElContainer>
 </template>
 

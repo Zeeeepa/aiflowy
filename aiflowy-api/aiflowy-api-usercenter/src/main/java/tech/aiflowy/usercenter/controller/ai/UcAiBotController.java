@@ -85,6 +85,8 @@ public class UcAiBotController extends BaseCurdController<AiBotService, AiBot> {
     private AiBotPluginsService aiBotPluginsService;
     @Resource
     private AiPluginToolService aiPluginToolService;
+    @Resource
+    private AiBotConversationMessageService conversationMessageService;
 
     @PostMapping("updateOptions")
     @SaCheckPermission("/api/v1/aiBot/save")
@@ -201,6 +203,22 @@ public class UcAiBotController extends BaseCurdController<AiBotService, AiBot> {
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
         memoryPrompt.addMessage(userMessage);
         ChatOptions chatOptions = getChatOptions(llmOptions);
+
+        AiBotConversationMessage conversation = conversationMessageService.getById(sessionId);
+        if (conversation == null) {
+            conversation = new AiBotConversationMessage();
+            conversation.setSessionId(sessionId);
+            if (prompt.length() > 200) {
+                conversation.setTitle(prompt.substring(0, 200));
+            } else {
+                conversation.setTitle(prompt);
+            }
+            conversation.setBotId(botId);
+            conversation.setAccountId(SaTokenUtil.getLoginAccount().getId());
+            conversation.setCreated(new Date());
+            conversationMessageService.save(conversation);
+        }
+
         return aiBotService.startChat(botId, chatModel, prompt, memoryPrompt, chatOptions, sessionId, messages);
 
     }

@@ -10,6 +10,7 @@ import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.service.AiLlmService;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 
 @Component
 public class LlmProviderImpl implements LlmProvider {
@@ -20,7 +21,7 @@ public class LlmProviderImpl implements LlmProvider {
 
     @Override
     public Llm getChatModel(Object modelId) {
-        AiLlm aiLlm = aiLlmService.getById(modelId.toString());
+        AiLlm aiLlm = aiLlmService.getLlmInstance(new BigInteger(modelId.toString()));
         if (aiLlm == null) {
             log.error("LlmProviderImpl.getChatModel: modelId not found: {}", modelId);
             return null;
