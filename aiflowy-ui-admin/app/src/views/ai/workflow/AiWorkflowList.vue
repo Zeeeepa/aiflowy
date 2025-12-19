@@ -366,7 +366,7 @@ const getSideList = async () => {
       @search="handleSearch"
       @button-click="showDialog({})"
     />
-    <div class="flex flex-1 gap-6">
+    <div class="flex max-h-[calc(100vh-191px)] flex-1 gap-6">
       <PageSide
         label-key="categoryName"
         value-key="id"
@@ -375,7 +375,7 @@ const getSideList = async () => {
         :footer-button="footerButton"
         @change="changeCategory"
       />
-      <div class="h-[calc(100vh-192px)] flex-1 overflow-auto">
+      <div class="h-full flex-1 overflow-auto">
         <PageData
           ref="pageDataRef"
           page-url="/api/v1/aiWorkflow/page"
