@@ -3,9 +3,10 @@ import { ref } from 'vue';
 import { Sender } from 'vue-element-plus-x';
 
 import { Promotion } from '@element-plus/icons-vue';
-import { ElButton } from 'element-plus';
+import { ElButton, ElIcon } from 'element-plus';
 
 import { sseClient } from '#/api/request';
+import SendingIcon from '#/components/icons/SendingIcon.vue';
 // import PaperclipIcon from '#/components/icons/PaperclipIcon.vue';
 
 interface Props {
