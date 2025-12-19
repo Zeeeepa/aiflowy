@@ -44,7 +44,7 @@ function getBotDetail() {
     })
     .then((res) => {
       botInfo.value = res.data;
-      addSession();
+      sessionId.value = crypto.randomUUID();
     });
 }
 function addBotToRecentlyUsed(botId: any) {
@@ -87,15 +87,6 @@ function addMessage(message: any) {
   } else {
     messageList.value[index] = message;
   }
-}
-function addSession() {
-  const data = {
-    botId: botInfo.value.id,
-    title: '新对话',
-    sessionId: crypto.randomUUID(),
-  };
-  api.post('/userCenter/conversation/save', data);
-  sessionId.value = data.sessionId;
 }
 </script>
 

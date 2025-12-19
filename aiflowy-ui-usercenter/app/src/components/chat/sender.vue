@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { Sender } from 'vue-element-plus-x';
 
 import { Promotion } from '@element-plus/icons-vue';
@@ -17,7 +17,7 @@ interface Props {
 const props = defineProps<Props>();
 const senderValue = ref('');
 const btnLoading = ref(false);
-
+const getSessionList = inject<any>('getSessionList');
 function sendMessage() {
   if (getDisabled()) {
     return;
@@ -49,6 +49,7 @@ function sendMessage() {
       };
       if (res.event === 'finish') {
         btnLoading.value = false;
+        getSessionList();
       }
       if (str !== res.data && res.event !== 'finish') {
         props.addMessage?.(msg);

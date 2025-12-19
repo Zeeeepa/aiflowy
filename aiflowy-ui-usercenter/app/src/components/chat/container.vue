@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { provide, ref, watch } from 'vue';
 
 import { cn } from '@aiflowy/utils';
 
@@ -37,8 +37,8 @@ watch(
 );
 defineExpose({
   getSessionList,
-  updateSessionTitle,
 });
+
 function getSessionList(resetSession = false) {
   api
     .get('/userCenter/conversation/list', {
@@ -55,6 +55,7 @@ function getSessionList(resetSession = false) {
       }
     });
 }
+provide('getSessionList', getSessionList);
 function addSession() {
   const data = {
     botId: props.bot.id,
@@ -62,7 +63,6 @@ function addSession() {
     sessionId: crypto.randomUUID(),
   };
   sessionList.value.push(data);
-  api.post('/userCenter/conversation/save', data);
 }
 function clickSession(session: any) {
   currentSession.value = session;
@@ -81,12 +81,6 @@ function getMessageList() {
         props.onMessageList?.(res.data);
       }
     });
-}
-function updateSessionTitle(title: string) {
-  api.post('/userCenter/conversation/update', {
-    sessionId: currentSession.value.sessionId,
-    title,
-  });
 }
 </script>
 
