@@ -82,13 +82,12 @@ function handleSave() {
 <template>
   <div class="settings-container">
     <div class="settings-config-container">
-      <!-- <div class="settings-notice">
-        注意：有很多大模型（比如：暗月之面等）都是兼容 ChatGPT
-        的，因此若需要配置系统未内置的平台的大模型，供应商可以选择OpenAi。
-      </div> -->
+      <div style="text-align: center;">
+        系统 AI 功能设置
+      </div>
       <ElAlert
         class="!mb-5"
-        title="注意：有很多大模型（比如：暗月之面等）都是兼容 ChatGPT 的，因此若需要配置系统未内置的平台的大模型，供应商可以选择OpenAi。"
+        title="注意：此项配置，仅用于系统的 AI 功能，而非【聊天助手】。"
         type="warning"
       />
       <ElForm :model="entity" class="demo-form-inline" label-width="150px">
