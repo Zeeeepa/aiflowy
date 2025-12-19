@@ -89,10 +89,10 @@ const isSvgString = (icon: any) => {
 
 <template>
   <div
-    class="flex h-full w-[225px] flex-col rounded-lg border border-[var(--el-border-color)] bg-[var(--el-bg-color)] p-2"
+    class="flex h-full max-h-[calc(100vh-192px)] w-[225px] flex-col rounded-lg border border-[var(--el-border-color)] bg-[var(--el-bg-color)] p-2"
     :style="{ width: `${panelWidth}px` }"
   >
-    <div class="flex flex-1 flex-col gap-5">
+    <div class="flex flex-1 flex-col gap-5 overflow-hidden">
       <h3 v-if="title && title.length > 0" class="text-base font-medium">
         {{ title }}
       </h3>
