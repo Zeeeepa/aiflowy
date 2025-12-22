@@ -226,10 +226,10 @@ CREATE TABLE `tb_document_history`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Table structure for tb_knowledge
+-- Table structure for tb_document_collection
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_knowledge`;
-CREATE TABLE `tb_knowledge`
+DROP TABLE IF EXISTS `tb_document_collection`;
+CREATE TABLE `tb_document_collection`
 (
     `id`                      bigint UNSIGNED NOT NULL COMMENT 'Id',
     `alias`                   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '别名',
@@ -253,7 +253,7 @@ CREATE TABLE `tb_knowledge`
     `search_engine_enable`    tinyint(1) NULL DEFAULT NULL COMMENT '是否启用搜索引擎',
     `english_name`            varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
     PRIMARY KEY (`id`) USING BTREE,
-    UNIQUE INDEX `tb_knowledge_alias_uindex`(`alias`) USING BTREE
+    UNIQUE INDEX `tb_document_collection_alias_uindex`(`alias`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '知识库' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

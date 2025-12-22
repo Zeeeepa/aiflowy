@@ -23,7 +23,7 @@ import tech.aiflowy.common.util.PropertiesUtil;
  * @since 2024-08-23
  */
 
-@Table("tb_knowledge")
+@Table("tb_document_collection")
 public class AiKnowledge extends AiKnowledgeBase {
 
     public DocumentStore toDocumentStore() {
