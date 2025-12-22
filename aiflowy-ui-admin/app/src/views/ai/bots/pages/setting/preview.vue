@@ -22,7 +22,7 @@ const handleClear = () => {
       </ElButton>
     </div>
     <div class="relative flex-1">
-      <Chat ref="chatRef" class="absolute inset-0" :is-external-msg="0" />
+      <Chat ref="chatRef" class="absolute inset-0" :ishowChatConversations="false" />
     </div>
   </div>
 </template>

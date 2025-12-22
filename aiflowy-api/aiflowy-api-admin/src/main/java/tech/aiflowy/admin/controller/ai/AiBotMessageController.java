@@ -89,21 +89,19 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
     @SaIgnore
     public Result<?> messageList(@RequestParam(value = "botId") String botId,
                               @RequestParam(value = "sessionId") String sessionId,
-                              @RequestParam(value = "isExternalMsg") int isExternalMsg,
                               @RequestParam(value = "tempUserId", required = false) String tempUserId,
                               @RequestParam(value = "tempUserSession", required = false) String tempUserSessionId
     ) {
 
-        return aiBotMessageService.messageList(botId, sessionId, isExternalMsg, tempUserId, tempUserSessionId);
+        return aiBotMessageService.messageList(botId, sessionId,  tempUserId, tempUserSessionId);
     }
 
     @PostMapping("removeMsg")
     public Result<Boolean> removeMsg(@JsonBody(value = "botId", required = true) String botId,
-                                     @JsonBody(value = "sessionId", required = true) String sessionId,
-                                     @JsonBody(value = "isExternalMsg", required = true) int isExternalMsg
+                                     @JsonBody(value = "sessionId", required = true) String sessionId
     ) {
 
-        return Result.ok(aiBotMessageService.removeMsg(botId, sessionId, isExternalMsg));
+        return Result.ok(aiBotMessageService.removeMsg(botId, sessionId));
     }
 
 

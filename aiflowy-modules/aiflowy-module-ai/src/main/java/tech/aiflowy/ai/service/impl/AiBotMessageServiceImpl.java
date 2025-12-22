@@ -45,7 +45,7 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
      * @return
      */
     @Override
-    public Result<?> messageList(String botId, String sessionId, int isExternalMsg, String tempUserId, String tempUserSessionId) {
+    public Result<?> messageList(String botId, String sessionId, String tempUserId, String tempUserSessionId) {
         boolean login = StpUtil.isLogin();
         if (login) {
             QueryWrapper queryConversation = QueryWrapper.create()
@@ -53,7 +53,6 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
                     .from("tb_ai_bot_message")
                     .where("bot_id = ? ", botId)
                     .where("session_id = ? ", sessionId)
-                    .where("is_external_msg = ? ", isExternalMsg)
                     .where("account_id = ? ", SaTokenUtil.getLoginAccount().getId());
             List<AiBotMessage> messages = aiBotMessageMapper.selectListByQueryAs(queryConversation, AiBotMessage.class);
             List<Maps> finalMessages = new ArrayList<>();
@@ -125,13 +124,12 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
     }
 
     @Override
-    public boolean removeMsg(String botId, String sessionId, int isExternalMsg) {
+    public boolean removeMsg(String botId, String sessionId) {
         QueryWrapper queryWrapper =  QueryWrapper.create()
                  .select("*")
                  .from("tb_ai_bot_message")
                  .where("bot_id = ? ", botId)
-                 .where("session_id = ? ", sessionId)
-                 .where("is_external_msg = ? ", isExternalMsg);
+                 .where("session_id = ? ", sessionId);
 
         aiBotMessageMapper.deleteByQuery(queryWrapper);
         return true;

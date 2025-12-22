@@ -56,7 +56,6 @@ export const removeBotFromId = (id: string) => {
 export interface GetMessageListParams {
   sessionId: string;
   botId: string;
-  isExternalMsg: number;
   tempUserId: string;
 }
 /** 获取单个对话的信息列表 */

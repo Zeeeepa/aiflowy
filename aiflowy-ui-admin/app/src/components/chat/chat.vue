@@ -26,8 +26,8 @@ import SendingIcon from '../icons/SendingIcon.vue';
 
 const props = defineProps<{
   bot?: BotInfo;
-  // 是否是外部消息 1 外部消息 0 内部消息
-  isExternalMsg: number;
+  // 是否显示对话列表
+  showChatConversations: boolean;
   sessionId?: string;
 }>();
 const botStore = useBotStore();
@@ -79,8 +79,7 @@ const getPresetQuestions = () => {
     });
 };
 const getMessagesHistory = () => {
-  // 如果是外部地址获取记录
-  if (props.isExternalMsg === 0) {
+  if (!props.showChatConversations) {
     return;
   }
   api

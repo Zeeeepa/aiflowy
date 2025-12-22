@@ -1,10 +1,8 @@
 package tech.aiflowy.ai.service;
 
-import tech.aiflowy.ai.entity.AiBotMessage;
 import com.mybatisflex.core.service.IService;
+import tech.aiflowy.ai.entity.AiBotMessage;
 import tech.aiflowy.common.domain.Result;
-
-import java.math.BigInteger;
 
 /**
  * Bot 消息记录表 服务层。
@@ -15,7 +13,7 @@ import java.math.BigInteger;
 public interface AiBotMessageService extends IService<AiBotMessage> {
 
 
-    Result messageList(String botId, String sessionId, int isExternalMsg, String tempUserId, String tempUserSessionId);
+    Result messageList(String botId, String sessionId, String tempUserId, String tempUserSessionId);
 
-    boolean removeMsg(String botId, String sessionId, int isExternalMsg);
+    boolean removeMsg(String botId, String sessionId);
 }
