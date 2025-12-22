@@ -816,10 +816,10 @@ CREATE TABLE `tb_sys_api_key_resource`
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '请求接口表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Table structure for tb_sys_api_key_resource_relationship
+-- Table structure for tb_sys_api_key_resource_mapping
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_sys_api_key_resource_relationship`;
-CREATE TABLE `tb_sys_api_key_resource_relationship`
+DROP TABLE IF EXISTS `tb_sys_api_key_resource_mapping`;
+CREATE TABLE `tb_sys_api_key_resource_mapping`
 (
     `id`                  bigint UNSIGNED NOT NULL COMMENT 'id',
     `api_key_id`          bigint UNSIGNED NOT NULL COMMENT 'api_key_id',

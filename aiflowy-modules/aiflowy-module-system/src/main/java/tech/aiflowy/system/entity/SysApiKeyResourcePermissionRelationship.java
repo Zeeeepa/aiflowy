@@ -10,6 +10,6 @@ import tech.aiflowy.system.entity.base.SysApiKeyResourcePermissionRelationshipBa
  * @author 12076
  * @since 2025-12-01
  */
-@Table(value = "tb_sys_api_key_resource_relationship", comment = "apikey-请求接口表")
+@Table(value = "tb_sys_api_key_resource_mapping", comment = "apikey-请求接口表")
 public class SysApiKeyResourcePermissionRelationship extends SysApiKeyResourcePermissionRelationshipBase {
 }
