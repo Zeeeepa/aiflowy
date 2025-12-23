@@ -1,7 +1,7 @@
 package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiLlmProviderBase;
+import tech.aiflowy.ai.entity.base.ModelProviderBase;
 
 
 /**
@@ -11,5 +11,5 @@ import tech.aiflowy.ai.entity.base.AiLlmProviderBase;
  * @since 2025-12-16
  */
 @Table("tb_model_provider")
-public class ModelProvider extends AiLlmProviderBase {
+public class ModelProvider extends ModelProviderBase {
 }

@@ -1,7 +1,7 @@
 package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiPluginCategoryRelationBase;
+import tech.aiflowy.ai.entity.base.PluginCategoryMappingBase;
 
 
 /**
@@ -11,5 +11,5 @@ import tech.aiflowy.ai.entity.base.AiPluginCategoryRelationBase;
  * @since 2025-05-21
  */
 @Table("tb_plugin_category_mapping")
-public class PluginCategoryMapping extends AiPluginCategoryRelationBase {
+public class PluginCategoryMapping extends PluginCategoryMappingBase {
 }

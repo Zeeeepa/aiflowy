@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
-public class AiResourceBase extends DateEntity implements Serializable {
+public class ResourceBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

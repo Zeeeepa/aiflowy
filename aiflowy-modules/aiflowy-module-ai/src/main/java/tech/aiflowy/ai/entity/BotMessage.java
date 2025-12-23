@@ -6,7 +6,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiBotMessageBase;
+import tech.aiflowy.ai.entity.base.BotMessageBase;
 
 
 /**
@@ -17,7 +17,7 @@ import tech.aiflowy.ai.entity.base.AiBotMessageBase;
  */
 
 @Table(value = "tb_bot_message", comment = "Bot 消息记录表")
-public class BotMessage extends AiBotMessageBase {
+public class BotMessage extends BotMessageBase {
 
     @Column(ignore = true)
     private String key;

@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
-public class AiPluginToolBase implements Serializable {
+public class PluginItemBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

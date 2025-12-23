@@ -3,13 +3,14 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import tech.aiflowy.common.entity.DateEntity;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
-import tech.aiflowy.common.entity.DateEntity;
 
 
-public class AiLlmProviderBase extends DateEntity implements Serializable {
+public class ModelProviderBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

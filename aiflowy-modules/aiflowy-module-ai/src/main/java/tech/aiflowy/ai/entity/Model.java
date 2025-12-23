@@ -21,7 +21,7 @@ import com.agentsflex.rerank.gitee.GiteeRerankModelConfig;
 import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.Table;
 import org.springframework.util.StringUtils;
-import tech.aiflowy.ai.entity.base.AiLlmBase;
+import tech.aiflowy.ai.entity.base.ModelBase;
 import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 
@@ -35,7 +35,7 @@ import java.util.Map;
  */
 
 @Table("tb_model")
-public class Model extends AiLlmBase {
+public class Model extends ModelBase {
 
     @RelationManyToOne(selfField = "providerId", targetField = "id")
     private ModelProvider modelProvider;

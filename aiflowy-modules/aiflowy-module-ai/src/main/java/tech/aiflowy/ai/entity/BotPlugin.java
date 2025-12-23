@@ -2,7 +2,7 @@ package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiBotPluginsBase;
+import tech.aiflowy.ai.entity.base.BotPluginBase;
 
 
 /**
@@ -12,7 +12,7 @@ import tech.aiflowy.ai.entity.base.AiBotPluginsBase;
  * @since 2025-04-07
  */
 @Table("tb_bot_plugin")
-public class BotPlugin extends AiBotPluginsBase {
+public class BotPlugin extends BotPluginBase {
 
     @RelationOneToOne(selfField = "pluginId", targetField = "id")
     private Plugin plugin;

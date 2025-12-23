@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Map;
 
 
-public class AiBotMessageBase extends DateEntity implements Serializable {
+public class BotMessageBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

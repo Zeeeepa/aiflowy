@@ -4,15 +4,13 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-import org.apache.ibatis.type.ArrayTypeHandler;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
 
 
-public class AiLlmBase implements Serializable {
+public class ModelBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

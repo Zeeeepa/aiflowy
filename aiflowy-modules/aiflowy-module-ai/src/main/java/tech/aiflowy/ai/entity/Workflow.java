@@ -2,7 +2,7 @@ package tech.aiflowy.ai.entity;
 
 import com.agentsflex.core.model.chat.tool.Tool;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiWorkflowBase;
+import tech.aiflowy.ai.entity.base.WorkflowBase;
 
 /**
  * 实体类。
@@ -12,7 +12,7 @@ import tech.aiflowy.ai.entity.base.AiWorkflowBase;
  */
 
 @Table("tb_workflow")
-public class Workflow extends AiWorkflowBase {
+public class Workflow extends WorkflowBase {
 
     public Tool toFunction(boolean needEnglishName) {
         return new WorkflowTool(this, needEnglishName);

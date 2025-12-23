@@ -1,7 +1,7 @@
 package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiWorkflowExecRecordBase;
+import tech.aiflowy.ai.entity.base.WorkflowExecResultBase;
 
 
 /**
@@ -11,7 +11,7 @@ import tech.aiflowy.ai.entity.base.AiWorkflowExecRecordBase;
  * @since 2025-05-28
  */
 @Table(value = "tb_workflow_exec_result", comment = "工作流执行记录")
-public class WorkflowExecResult extends AiWorkflowExecRecordBase {
+public class WorkflowExecResult extends WorkflowExecResultBase {
 
     public Long getExecTime() {
         if (getEndTime() == null) {

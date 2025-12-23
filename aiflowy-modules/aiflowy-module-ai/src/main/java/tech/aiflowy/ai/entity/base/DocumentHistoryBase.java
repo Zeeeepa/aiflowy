@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
-public class AiDocumentHistoryBase implements Serializable {
+public class DocumentHistoryBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

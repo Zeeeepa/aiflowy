@@ -1,7 +1,7 @@
 package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiResourceBase;
+import tech.aiflowy.ai.entity.base.ResourceBase;
 
 
 /**
@@ -11,5 +11,5 @@ import tech.aiflowy.ai.entity.base.AiResourceBase;
  * @since 2025-06-27
  */
 @Table(value = "tb_resource", comment = "素材库")
-public class Resource extends AiResourceBase {
+public class Resource extends ResourceBase {
 }

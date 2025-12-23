@@ -2,7 +2,7 @@ package tech.aiflowy.ai.entity;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiWorkflowRecordStepBase;
+import tech.aiflowy.ai.entity.base.WorkflowExecStepBase;
 
 
 /**
@@ -12,7 +12,7 @@ import tech.aiflowy.ai.entity.base.AiWorkflowRecordStepBase;
  * @since 2025-05-28
  */
 @Table(value = "tb_workflow_exec_step", comment = "执行记录步骤")
-public class WorkflowExecStep extends AiWorkflowRecordStepBase {
+public class WorkflowExecStep extends WorkflowExecStepBase {
 
     /**
      * 节点类型，agentsflex里没有这个属性

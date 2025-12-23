@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
-public class AiBotRecentlyUsedBase implements Serializable {
+public class BotRecentlyUsedBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

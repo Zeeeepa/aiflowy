@@ -10,16 +10,16 @@ import java.math.BigInteger;
 import java.util.Map;
 
 
-public class AiBotLlmBase implements Serializable {
+public class BotDocumentCollectionBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    @Id(keyType = KeyType.Auto, value = "snowFlakeId")
     private BigInteger id;
 
     private BigInteger botId;
 
-    private BigInteger llmId;
+    private BigInteger knowledgeId;
 
     @Column(typeHandler = FastjsonTypeHandler.class)
     private Map<String, Object> options;
@@ -40,12 +40,12 @@ public class AiBotLlmBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getLlmId() {
-        return llmId;
+    public BigInteger getKnowledgeId() {
+        return knowledgeId;
     }
 
-    public void setLlmId(BigInteger llmId) {
-        this.llmId = llmId;
+    public void setKnowledgeId(BigInteger knowledgeId) {
+        this.knowledgeId = knowledgeId;
     }
 
     public Map<String, Object> getOptions() {

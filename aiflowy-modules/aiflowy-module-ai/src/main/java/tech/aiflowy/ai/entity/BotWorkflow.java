@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiBotWorkflowBase;
+import tech.aiflowy.ai.entity.base.BotWorkflowBase;
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
 
@@ -12,7 +12,7 @@ import com.mybatisflex.annotation.Table;
  */
 
 @Table("tb_bot_workflow")
-public class BotWorkflow extends AiBotWorkflowBase {
+public class BotWorkflow extends BotWorkflowBase {
 
     @RelationOneToOne(selfField = "workflowId", targetField = "id")
     private Workflow workflow;

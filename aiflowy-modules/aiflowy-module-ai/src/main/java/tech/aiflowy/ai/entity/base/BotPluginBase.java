@@ -1,28 +1,23 @@
 package tech.aiflowy.ai.entity.base;
 
-import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Map;
 
 
-public class AiBotKnowledgeBase implements Serializable {
+public class BotPluginBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Auto, value = "snowFlakeId")
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
     private BigInteger id;
 
     private BigInteger botId;
 
-    private BigInteger knowledgeId;
+    private BigInteger pluginToolId;
 
-    @Column(typeHandler = FastjsonTypeHandler.class)
-    private Map<String, Object> options;
+    private String options;
 
     public BigInteger getId() {
         return id;
@@ -40,19 +35,19 @@ public class AiBotKnowledgeBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getKnowledgeId() {
-        return knowledgeId;
+    public BigInteger getPluginToolId() {
+        return pluginToolId;
     }
 
-    public void setKnowledgeId(BigInteger knowledgeId) {
-        this.knowledgeId = knowledgeId;
+    public void setPluginToolId(BigInteger pluginToolId) {
+        this.pluginToolId = pluginToolId;
     }
 
-    public Map<String, Object> getOptions() {
+    public String getOptions() {
         return options;
     }
 
-    public void setOptions(Map<String, Object> options) {
+    public void setOptions(String options) {
         this.options = options;
     }
 

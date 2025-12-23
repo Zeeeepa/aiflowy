@@ -3,7 +3,7 @@ package tech.aiflowy.ai.entity;
 import com.agentsflex.core.model.chat.tool.Tool;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiPluginToolBase;
+import tech.aiflowy.ai.entity.base.PluginItemBase;
 
 
 /**
@@ -13,7 +13,7 @@ import tech.aiflowy.ai.entity.base.AiPluginToolBase;
  * @since 2025-04-27
  */
 @Table("tb_plugin_item")
-public class PluginItem extends AiPluginToolBase {
+public class PluginItem extends PluginItemBase {
 
     @Column(ignore = true)
     private boolean joinBot;

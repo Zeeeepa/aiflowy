@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiDocumentBase;
+import tech.aiflowy.ai.entity.base.DocumentBase;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 
@@ -14,7 +14,7 @@ import java.math.BigInteger;
  */
 
 @Table("tb_document")
-public class Document extends AiDocumentBase {
+public class Document extends DocumentBase {
 
     // 每条document对应的有多少条documentChunk分段
     @Column(ignore = true)

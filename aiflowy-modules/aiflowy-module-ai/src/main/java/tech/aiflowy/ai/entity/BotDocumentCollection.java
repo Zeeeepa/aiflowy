@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiBotKnowledgeBase;
+import tech.aiflowy.ai.entity.base.BotDocumentCollectionBase;
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
 
@@ -12,7 +12,7 @@ import com.mybatisflex.annotation.Table;
  */
 
 @Table("tb_bot_document_collection")
-public class BotDocumentCollection extends AiBotKnowledgeBase {
+public class BotDocumentCollection extends BotDocumentCollectionBase {
 
     @RelationOneToOne(selfField = "knowledgeId", targetField = "id")
     private DocumentCollection knowledge;

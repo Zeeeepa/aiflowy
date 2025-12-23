@@ -13,7 +13,7 @@ import com.agentsflex.store.qcloud.QCloudVectorStoreConfig;
 import com.agentsflex.store.redis.RedisVectorStore;
 import com.agentsflex.store.redis.RedisVectorStoreConfig;
 import com.mybatisflex.annotation.Table;
-import tech.aiflowy.ai.entity.base.AiKnowledgeBase;
+import tech.aiflowy.ai.entity.base.DocumentCollectionBase;
 import tech.aiflowy.common.util.PropertiesUtil;
 
 /**
@@ -24,7 +24,7 @@ import tech.aiflowy.common.util.PropertiesUtil;
  */
 
 @Table("tb_document_collection")
-public class DocumentCollection extends AiKnowledgeBase {
+public class DocumentCollection extends DocumentCollectionBase {
 
     public DocumentStore toDocumentStore() {
         String storeType = this.getVectorStoreType();

@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 
-public class AiDocumentChunkBase implements Serializable {
+public class DocumentChunkBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

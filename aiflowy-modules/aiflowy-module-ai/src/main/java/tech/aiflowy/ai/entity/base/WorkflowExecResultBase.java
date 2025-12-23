@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.util.Date;
 
 
-public class AiWorkflowExecRecordBase implements Serializable {
+public class WorkflowExecResultBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

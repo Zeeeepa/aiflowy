@@ -10,7 +10,7 @@ import java.math.BigInteger;
 import java.util.Map;
 
 
-public class AiBotWorkflowBase implements Serializable {
+public class BotWorkflowBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

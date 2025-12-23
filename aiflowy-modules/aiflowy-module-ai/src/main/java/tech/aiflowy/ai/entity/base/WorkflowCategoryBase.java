@@ -9,7 +9,7 @@ import java.util.Date;
 import tech.aiflowy.common.entity.DateEntity;
 
 
-public class AiWorkflowCategoryBase extends DateEntity implements Serializable {
+public class WorkflowCategoryBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

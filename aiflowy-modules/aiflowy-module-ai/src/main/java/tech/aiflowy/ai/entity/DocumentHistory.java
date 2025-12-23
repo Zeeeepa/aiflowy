@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiDocumentHistoryBase;
+import tech.aiflowy.ai.entity.base.DocumentHistoryBase;
 import com.mybatisflex.annotation.Table;
 
 /**
@@ -11,5 +11,5 @@ import com.mybatisflex.annotation.Table;
  */
 
 @Table("tb_document_history")
-public class DocumentHistory extends AiDocumentHistoryBase {
+public class DocumentHistory extends DocumentHistoryBase {
 }

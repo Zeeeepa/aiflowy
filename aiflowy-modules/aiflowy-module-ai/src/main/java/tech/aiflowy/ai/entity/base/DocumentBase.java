@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Map;
 
 
-public class AiDocumentBase extends DateTreeEntity implements Serializable {
+public class DocumentBase extends DateTreeEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

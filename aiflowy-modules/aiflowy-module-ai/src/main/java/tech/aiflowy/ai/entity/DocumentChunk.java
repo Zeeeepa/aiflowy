@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiDocumentChunkBase;
+import tech.aiflowy.ai.entity.base.DocumentChunkBase;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.RelationOneToOne;
 import com.mybatisflex.annotation.Table;
@@ -13,7 +13,7 @@ import com.mybatisflex.annotation.Table;
  */
 
 @Table("tb_document_chunk")
-public class DocumentChunk extends AiDocumentChunkBase {
+public class DocumentChunk extends DocumentChunkBase {
 
     @RelationOneToOne(selfField = "documentId",
             targetTable = "tb_document",

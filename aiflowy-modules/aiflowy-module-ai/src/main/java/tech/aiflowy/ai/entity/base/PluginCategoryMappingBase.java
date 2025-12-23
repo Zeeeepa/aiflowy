@@ -4,7 +4,7 @@ import com.mybatisflex.annotation.Id;
 import java.io.Serializable;
 
 
-public class AiPluginCategoryRelationBase implements Serializable {
+public class PluginCategoryMappingBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
