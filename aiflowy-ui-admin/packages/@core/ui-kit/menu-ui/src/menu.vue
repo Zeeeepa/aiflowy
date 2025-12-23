@@ -26,7 +26,7 @@ const forward = useForwardProps(props);
 <template>
   <Menu v-bind="forward">
     <template v-for="menu in menus" :key="menu.path">
-      <SubMenu :menu="menu" />
+      <SubMenu :menu="menu" :collapse="collapse" />
     </template>
   </Menu>
 </template>
