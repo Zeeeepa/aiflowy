@@ -217,7 +217,7 @@ function remove(row: any) {
           <span
             :class="
               cn(
-                'text-foreground group-hover:hidden',
+                'text-foreground/50 text-nowrap text-xs group-hover:hidden',
                 hoverId === session.sessionId && 'hidden',
               )
             "

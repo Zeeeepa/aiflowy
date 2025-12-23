@@ -77,7 +77,7 @@ function setMessageList(messages: any) {
         </Card>
       </div>
     </ElAside>
-    <ElMain class="p-6 pl-0">
+    <ElMain class="p-6 !pl-0">
       <ChatContainer :bot="currentBot" :on-message-list="setMessageList">
         <template #default="{ sessionId }">
           <div class="flex h-full flex-col justify-between">

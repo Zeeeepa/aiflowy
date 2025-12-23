@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+import { cn } from '@aiflowy/utils';
+
 import { Search } from '@element-plus/icons-vue';
 import { ElContainer, ElHeader, ElInput, ElMain, ElSpace } from 'element-plus';
 
@@ -68,11 +70,13 @@ function handleTagClick(tag: any) {
             <button
               type="button"
               :class="
-                activeTag === category.id
-                  ? 'border-primary text-primary bg-[hsl(var(--primary)/15%)] dark:bg-[hsl(var(--accent))]'
-                  : 'hover:bg-[hsl(var(--accent))]'
+                cn(
+                  'border-border text-foreground bg-background h-[35px] w-[94px] rounded-3xl border text-sm',
+                  activeTag === category.id
+                    ? 'border-primary text-primary'
+                    : 'hover:bg-accent',
+                )
               "
-              class="border-border text-foreground h-[35px] w-[94px] rounded-3xl border text-sm"
               v-for="category in categories"
               :key="category.id"
               @click="handleTagClick(category.id)"
