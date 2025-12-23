@@ -73,7 +73,7 @@ function handleTagClick(tag: any) {
                 cn(
                   'border-border text-foreground bg-background h-[35px] w-[94px] rounded-3xl border text-sm',
                   activeTag === category.id
-                    ? 'border-primary text-primary'
+                    ? 'border-primary text-primary bg-primary/10'
                     : 'hover:bg-accent',
                 )
               "

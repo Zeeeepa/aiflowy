@@ -3,20 +3,13 @@ import { onMounted } from 'vue';
 
 import { formatBytes } from '@aiflowy/utils';
 
-import {
-  Delete,
-  Download,
-  EditPen,
-  MoreFilled,
-  View,
-} from '@element-plus/icons-vue';
+import { Delete, Download, MoreFilled } from '@element-plus/icons-vue';
 import {
   ElAvatar,
   ElButton,
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElIcon,
   ElTable,
   ElTableColumn,
   ElText,
@@ -97,30 +90,35 @@ function handleSelectionChange(items: any[]) {
         </template>
       </ElTableColumn>
       <ElTableColumn prop="modified" label="修改时间" align="center" />
-      <ElTableColumn label="操作" width="80" align="center">
+      <ElTableColumn label="操作" width="150" align="center">
         <template #default="{ row }">
-          <ElDropdown>
-            <ElIcon>
-              <MoreFilled />
-            </ElIcon>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center">
+              <ElButton link type="primary" @click="onPreview?.(row)">
+                预览
+              </ElButton>
+              <ElButton link type="primary" @click="onEdit?.(row)">
+                编辑
+              </ElButton>
+            </div>
 
-            <template #dropdown>
-              <ElDropdownMenu>
-                <ElDropdownItem @click="onPreview?.(row)">
-                  <ElButton :icon="View" link>预览</ElButton>
-                </ElDropdownItem>
-                <ElDropdownItem @click="onDownload?.(row)">
-                  <ElButton :icon="Download" link>下载</ElButton>
-                </ElDropdownItem>
-                <ElDropdownItem @click="onEdit?.(row)">
-                  <ElButton :icon="EditPen" link>编辑</ElButton>
-                </ElDropdownItem>
-                <ElDropdownItem @click="onRemove?.(row)">
-                  <ElButton type="danger" :icon="Delete" link> 删除 </ElButton>
-                </ElDropdownItem>
-              </ElDropdownMenu>
-            </template>
-          </ElDropdown>
+            <ElDropdown>
+              <ElButton link :icon="MoreFilled" />
+
+              <template #dropdown>
+                <ElDropdownMenu>
+                  <ElDropdownItem @click="onDownload?.(row)">
+                    <ElButton :icon="Download" link>下载</ElButton>
+                  </ElDropdownItem>
+                  <ElDropdownItem @click="onRemove?.(row)">
+                    <ElButton type="danger" :icon="Delete" link>
+                      删除
+                    </ElButton>
+                  </ElDropdownItem>
+                </ElDropdownMenu>
+              </template>
+            </ElDropdown>
+          </div>
         </template>
       </ElTableColumn>
     </ElTable>
@@ -130,10 +128,14 @@ function handleSelectionChange(items: any[]) {
 <style lang="css" scoped>
 .el-table {
   --el-table-text-color: hsl(var(--foreground) / 0.9);
-  --el-font-size-base: 12px;
+  --el-font-size-base: 14px;
   --el-table-header-text-color: hsl(var(--accent-foreground));
-  --el-table-header-bg-color: hsl(var(--accent));
+  --el-table-header-bg-color: #f7f9fd;
   --el-table-border: none;
+}
+
+.el-table:where(.dark, .dark *) {
+  --el-table-header-bg-color: hsl(var(--accent));
 }
 
 :deep(.el-table__header) {

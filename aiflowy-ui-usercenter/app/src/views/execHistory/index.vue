@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Delete, MoreFilled, View } from '@element-plus/icons-vue';
+import { Delete, MoreFilled } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElContainer,
@@ -11,7 +11,6 @@ import {
   ElDropdownItem,
   ElDropdownMenu,
   ElHeader,
-  ElIcon,
   ElMain,
   ElSelect,
   ElSpace,
@@ -163,7 +162,7 @@ function getDateRange() {
     <ElMain class="!px-8">
       <ElContainer class="bg-background rounded-lg p-5">
         <ElHeader
-          class="bg-accent grid grid-cols-5 place-items-center rounded-lg !p-0"
+          class="dark:bg-accent grid grid-cols-[repeat(4,minmax(0,1fr))_120px] place-items-center rounded-lg bg-[#f7f9fd] !p-0"
           height="54px"
         >
           <span
@@ -183,7 +182,7 @@ function getDateRange() {
               >
                 <template #default="{ pageList }">
                   <div
-                    class="text-foreground/90 grid h-[60px] grid-cols-5 place-items-center text-sm hover:bg-[var(--el-fill-color-light)]"
+                    class="text-foreground/90 grid h-[60px] grid-cols-[repeat(4,minmax(0,1fr))_120px] place-items-center text-sm hover:bg-[var(--el-fill-color-light)]"
                     v-for="record in pageList"
                     :key="record.id"
                   >
@@ -196,24 +195,25 @@ function getDateRange() {
                       </ElTag>
                     </span>
 
-                    <ElDropdown>
-                      <ElIcon>
-                        <MoreFilled />
-                      </ElIcon>
+                    <div class="flex items-center gap-3">
+                      <ElButton link type="primary" @click="toDetail(record)">
+                        查看详情
+                      </ElButton>
 
-                      <template #dropdown>
-                        <ElDropdownMenu>
-                          <ElDropdownItem @click="toDetail(record)">
-                            <ElButton :icon="View" link>查看详情</ElButton>
-                          </ElDropdownItem>
-                          <ElDropdownItem>
-                            <ElButton type="danger" :icon="Delete" link>
-                              删除
-                            </ElButton>
-                          </ElDropdownItem>
-                        </ElDropdownMenu>
-                      </template>
-                    </ElDropdown>
+                      <ElDropdown>
+                        <ElButton :icon="MoreFilled" link />
+
+                        <template #dropdown>
+                          <ElDropdownMenu>
+                            <ElDropdownItem>
+                              <ElButton type="danger" :icon="Delete" link>
+                                删除
+                              </ElButton>
+                            </ElDropdownItem>
+                          </ElDropdownMenu>
+                        </template>
+                      </ElDropdown>
+                    </div>
                   </div>
                 </template>
               </PageData>

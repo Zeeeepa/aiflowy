@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { IconifyIcon } from '@aiflowy/icons';
 import { cn } from '@aiflowy/utils';
 
-import { Delete, Edit, Plus, View } from '@element-plus/icons-vue';
+import { Delete, EditPen, Plus, View } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElContainer,
@@ -177,26 +177,17 @@ function handleOperation(type: string) {
           </button>
         </ElSpace>
         <div class="flex items-center gap-2.5">
-          <div class="operation-div" v-if="checkedItems.length > 0">
-            <ElButton
-              type="primary"
-              link
-              :icon="View"
-              @click="handleOperation('preview')"
-            >
+          <div
+            v-if="checkedItems.length > 0"
+            class="border-border bg-background flex items-center rounded border px-2 py-1.5"
+          >
+            <ElButton link :icon="View" @click="handleOperation('preview')">
               预览
             </ElButton>
-            <ElButton
-              type="primary"
-              link
-              :icon="Edit"
-              @click="handleOperation('edit')"
-            >
+            <ElButton link :icon="EditPen" @click="handleOperation('edit')">
               编辑
             </ElButton>
-            <ElButton type="danger" link :icon="Delete" @click="batchRemove">
-              删除
-            </ElButton>
+            <ElButton link :icon="Delete" @click="batchRemove">删除</ElButton>
           </div>
           <ElButton type="primary" :icon="Plus" @click="showDialog({})">
             本地上传
@@ -234,10 +225,3 @@ function handleOperation(type: string) {
     <AiResourceModal ref="saveDialog" @reload="reset" />
   </ElContainer>
 </template>
-<style scoped>
-.operation-div {
-  border: 1px solid hsl(var(--border));
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-</style>

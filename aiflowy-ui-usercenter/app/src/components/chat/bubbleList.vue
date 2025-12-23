@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { BubbleList } from 'vue-element-plus-x';
-
 import { useUserStore } from '@aiflowy/stores';
 
 import { ElAvatar } from 'element-plus';
@@ -55,7 +53,7 @@ function getUserAvatar() {
 </script>
 
 <template>
-  <BubbleList :list="messages" max-height="calc(100vh - 345px)">
+  <el-bubble-list :list="messages" max-height="calc(100vh - 345px)">
     <!-- 自定义头像 -->
     <template #avatar="{ item }">
       <AssistantAvatar
@@ -89,5 +87,5 @@ function getUserAvatar() {
         </template>
       </div>
     </template>-->
-  </BubbleList>
+  </el-bubble-list>
 </template>

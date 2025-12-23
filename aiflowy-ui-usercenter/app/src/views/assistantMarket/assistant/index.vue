@@ -104,7 +104,7 @@ function addMessage(message: any) {
           </h1>
         </ElSpace>
       </ElSpace>
-      <ElMain class="relative mx-auto w-full max-w-[884px] !p-0">
+      <div class="relative mx-auto w-full max-w-[884px] flex-1">
         <Card
           v-if="messageList.length === 0"
           class="absolute left-1/2 top-1/2 max-w-[340px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-0"
@@ -122,7 +122,7 @@ function addMessage(message: any) {
           :bot="botInfo"
           :session-id="sessionId"
         />
-      </ElMain>
+      </div>
     </ElMain>
     <ElAside width="407px" class="px-3 pt-10">
       <Card class="mx-auto max-w-[340px] flex-col items-center gap-0">

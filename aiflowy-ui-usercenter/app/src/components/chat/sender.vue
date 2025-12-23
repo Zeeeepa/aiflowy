@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import { Sender } from 'vue-element-plus-x';
 
 import { Promotion } from '@element-plus/icons-vue';
 import { ElButton, ElIcon } from 'element-plus';
@@ -75,7 +74,7 @@ const stopSse = () => {
 </script>
 
 <template>
-  <Sender
+  <el-sender
     v-model="senderValue"
     variant="updown"
     :auto-size="{ minRows: 2, maxRows: 5 }"
@@ -104,5 +103,5 @@ const stopSse = () => {
         />
       </div>
     </template>
-  </Sender>
+  </el-sender>
 </template>

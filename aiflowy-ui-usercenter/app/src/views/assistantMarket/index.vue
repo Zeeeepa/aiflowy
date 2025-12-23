@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@aiflowy/icons';
+import { cn } from '@aiflowy/utils';
 
 import { Minus, Plus, Search } from '@element-plus/icons-vue';
 import {
@@ -120,7 +121,14 @@ function removeBotFromRecentlyUsed(botId: any) {
           <ElSpace :size="12">
             <button
               type="button"
-              class="border-border text-foreground hover:border-primary hover:text-primary h-[35px] w-[94px] rounded-3xl border text-sm hover:bg-[rgba(0,102,255,0.08)]"
+              :class="
+                cn(
+                  'border-border text-foreground bg-background h-[35px] w-[94px] rounded-3xl border text-sm',
+                  activeTag === category.id
+                    ? 'border-primary text-primary bg-primary/10'
+                    : 'hover:bg-accent',
+                )
+              "
               v-for="category in categories"
               :key="category.id"
               @click="handleTagClick(category.id)"
@@ -137,7 +145,7 @@ function removeBotFromRecentlyUsed(botId: any) {
         v-loading="pageLoading"
       >
         <Card
-          class="border-border bg-background h-[168px] w-full max-w-none flex-col justify-between rounded-xl border p-6 pb-5 transition hover:-translate-y-2 hover:shadow-md"
+          class="border-border bg-background h-[168px] w-full max-w-none flex-col justify-between rounded-xl border p-6 pb-5 transition hover:-translate-y-2 hover:shadow-[0px_2px_16px_0px_rgba(6,27,57,0.07)]"
           v-for="assistant in botList"
           :key="assistant.id"
         >
@@ -152,7 +160,7 @@ function removeBotFromRecentlyUsed(botId: any) {
               </CardTitle>
             </CardContent>
             <CardDescription
-              class="text-foreground/50 line-clamp-2 text-sm"
+              class="text-foreground/50 line-clamp-2 text-wrap text-sm"
               :title="assistant.description"
             >
               {{ assistant.description }}

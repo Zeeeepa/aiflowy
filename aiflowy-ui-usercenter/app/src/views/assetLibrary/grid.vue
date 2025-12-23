@@ -65,7 +65,7 @@ function checkedItems() {
       @change="handleCheckedIdsChange"
     >
       <Card
-        class="border-border bg-background group relative max-w-[378px] flex-col gap-3 border p-3 transition hover:-translate-y-2 hover:shadow-md"
+        class="bg-background dark:border-border group relative max-w-none flex-col gap-3 border border-[#f0f0f0] p-3 transition hover:-translate-y-2 hover:shadow-[0px_2px_16px_0px_rgba(6,27,57,0.07)]"
         v-for="asset in props.data"
         :key="asset.id"
       >
