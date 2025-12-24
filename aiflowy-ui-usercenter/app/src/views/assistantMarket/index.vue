@@ -110,7 +110,7 @@ function removeBotFromRecentlyUsed(botId: any) {
   <ElContainer class="bg-background-deep h-full">
     <ElHeader class="!h-auto !p-8 !pb-0">
       <ElSpace direction="vertical" :size="24" alignment="flex-start">
-        <h1 class="text-2xl font-medium">助理应用市场</h1>
+        <h1 class="text-2xl font-medium">助理市场</h1>
         <ElSpace :size="20">
           <ElInput
             placeholder="搜索"

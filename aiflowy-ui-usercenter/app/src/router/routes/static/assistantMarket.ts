@@ -7,8 +7,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('#/views/assistantMarket/index.vue'),
     meta: {
       icon: 'svg:app-store',
-      order: 4,
-      title: '助理应用市场',
+      order: 11,
+      title: '助理市场',
     },
   },
   {
@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
     path: '/assistantMarket/:id',
     component: () => import('#/views/assistantMarket/assistant/index.vue'),
     meta: {
-      title: '助理应用市场',
+      title: '助理市场',
       hideInMenu: true,
       hideInTab: true,
       hideInBreadcrumb: true,

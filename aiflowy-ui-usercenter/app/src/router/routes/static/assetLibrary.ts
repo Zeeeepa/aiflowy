@@ -7,8 +7,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('#/views/assetLibrary/index.vue'),
     meta: {
       icon: 'svg:asset-library',
-      order: 3,
-      title: '素材库',
+      order: 77,
+      title: '我的素材',
     },
   },
 ];

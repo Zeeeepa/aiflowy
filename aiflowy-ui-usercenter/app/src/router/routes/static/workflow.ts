@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('#/views/bots/index.vue'),
     meta: {
       icon: 'svg:bot',
-      order: 1,
+      order: 33,
       title: '智能体',
     },
   },
