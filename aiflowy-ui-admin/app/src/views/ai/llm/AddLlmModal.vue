@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ModelAbilityItem } from './llmUtils/model-ability';
+
 import { reactive, ref, watch } from 'vue';
 
 import {
@@ -8,25 +10,45 @@ import {
   ElFormItem,
   ElInput,
   ElMessage,
+  ElTag,
 } from 'element-plus';
 
 import { api } from '#/api/request';
 import { $t } from '#/locales';
 
-type BooleanField =
-  | 'supportEmbedding'
-  | 'supportFree'
-  | 'supportReasoning'
-  | 'supportRerank'
-  | 'supportTool';
+import {
+  getDefaultModelAbility,
+  handleTagClick as handleTagClickUtil,
+  syncTagSelectedStatus as syncTagSelectedStatusUtil,
+} from './llmUtils/model-ability';
+import {
+  generateFeaturesFromModelAbility,
+  resetModelAbility,
+} from './llmUtils/model-ability-utils';
 
-interface ModelAbilityItem {
-  activeType: 'danger' | 'info' | 'primary' | 'success' | 'warning';
-  defaultType: 'info';
-  field: BooleanField;
-  label: string;
-  selected: boolean;
-  value: string;
+interface FormData {
+  modelType: string;
+  title: string;
+  modelName: string;
+  groupName: string;
+  providerId: string;
+  provider: string;
+  apiKey: string;
+  endpoint: string;
+  requestPath: string;
+  supportThinking: boolean;
+  supportTool: boolean;
+  supportImage: boolean;
+  supportAudio: boolean;
+  supportFree: boolean;
+  supportVideo: boolean;
+  supportImageB64Only: boolean;
+  options: {
+    chatPath: string;
+    embedPath: string;
+    llmEndpoint: string;
+    rerankPath: string;
+  };
 }
 
 const props = defineProps({
@@ -51,25 +73,77 @@ watch(
 );
 
 const formDataRef = ref();
+const isAdd = ref(true);
+const dialogVisible = ref(false);
+
+// 表单数据
+const formData = reactive<FormData>({
+  modelType: '',
+  title: '',
+  modelName: '',
+  groupName: '',
+  providerId: '',
+  provider: '',
+  apiKey: '',
+  endpoint: '',
+  requestPath: '',
+  supportThinking: false,
+  supportTool: false,
+  supportImage: false,
+  supportAudio: false,
+  supportFree: false,
+  supportVideo: false,
+  supportImageB64Only: false,
+  options: {
+    llmEndpoint: '',
+    chatPath: '',
+    embedPath: '',
+    rerankPath: '',
+  },
+});
+
+// 使用抽取的函数获取模型能力配置
+const modelAbility = ref<ModelAbilityItem[]>(getDefaultModelAbility());
+
+/**
+ * 同步标签选中状态与formData中的布尔字段
+ */
+const syncTagSelectedStatus = () => {
+  syncTagSelectedStatusUtil(modelAbility.value, formData);
+};
+
+/**
+ * 处理标签点击事件
+ */
+const handleTagClick = (item: ModelAbilityItem) => {
+  // handleTagClickUtil(modelAbility.value, item, formData);
+  handleTagClickUtil(item, formData);
+};
+
+// 打开新增弹窗
 defineExpose({
   openAddDialog(modelType: string) {
     isAdd.value = true;
     if (formDataRef.value) {
       formDataRef.value.resetFields();
     }
+
+    // 重置表单数据
     Object.assign(formData, {
       id: '',
       modelType,
       title: '',
-      llmModel: '',
+      modelName: '',
       groupName: '',
       provider: '',
       endPoint: '',
       providerId: '',
-      supportReasoning: false,
-      supportEmbedding: false,
-      supportRerank: false,
+      supportThinking: false,
       supportTool: false,
+      supportAudio: false,
+      supportVideo: false,
+      supportImage: false,
+      supportImageB64Only: false,
       supportFree: false,
       options: {
         llmEndpoint: '',
@@ -78,24 +152,31 @@ defineExpose({
         rerankPath: '',
       },
     });
-    syncTagSelectedStatus();
+
+    // 重置标签状态
+    resetModelAbility(modelAbility.value);
     dialogVisible.value = true;
   },
+
   openEditDialog(item: any) {
     dialogVisible.value = true;
     isAdd.value = false;
 
+    // 填充表单数据
     Object.assign(formData, {
       id: item.id,
       modelType: item.modelType || '',
       title: item.title || '',
-      llmModel: item.llmModel || '',
+      modelName: item.modelName || '',
       groupName: item.groupName || '',
       provider: item.provider || '',
-      endPoint: item.endPoint || '',
-      supportReasoning: item.supportReasoning || false,
-      supportEmbedding: item.supportEmbedding || false,
-      supportRerank: item.supportRerank || false,
+      endpoint: item.endpoint || '',
+      requestPath: item.requestPath || '',
+      supportThinking: item.supportThinking || false,
+      supportAudio: item.supportAudio || false,
+      supportImage: item.supportImage || false,
+      supportImageB64Only: item.supportImageB64Only || false,
+      supportVideo: item.supportVideo || false,
       supportTool: item.supportTool || false,
       supportFree: item.supportFree || false,
       options: {
@@ -106,81 +187,10 @@ defineExpose({
       },
     });
 
+    // 同步标签状态
     syncTagSelectedStatus();
   },
 });
-const isAdd = ref(true);
-const dialogVisible = ref(false);
-
-const formData = reactive({
-  modelType: '',
-  title: '',
-  llmModel: '',
-  groupName: '',
-  providerId: '',
-  provider: '',
-  endpoint: '',
-  supportReasoning: false,
-  supportEmbedding: false,
-  supportRerank: false,
-  supportTool: false,
-  supportFree: false,
-  options: {
-    llmEndpoint: '',
-    chatPath: '',
-    embedPath: '',
-    rerankPath: '',
-  },
-});
-
-const modelAbility = ref<ModelAbilityItem[]>([
-  {
-    label: $t('llm.modelAbility.reasoning'),
-    value: 'reasoning',
-    defaultType: 'info',
-    activeType: 'success',
-    selected: false,
-    field: 'supportReasoning', // 关联 supportReasoning
-  },
-  {
-    label: $t('llm.modelAbility.tool'),
-    value: 'tool',
-    defaultType: 'info',
-    activeType: 'primary',
-    selected: false,
-    field: 'supportTool', // 关联 supportTool
-  },
-  {
-    label: $t('llm.modelAbility.embedding'),
-    value: 'embedding',
-    defaultType: 'info',
-    activeType: 'warning',
-    selected: false,
-    field: 'supportEmbedding', // 关联 supportEmbedding
-  },
-  {
-    label: $t('llm.modelAbility.rerank'),
-    value: 'rerank',
-    defaultType: 'info',
-    activeType: 'danger',
-    selected: false,
-    field: 'supportRerank', // 关联 supportRerank
-  },
-  {
-    label: $t('llm.modelAbility.free'),
-    value: 'free',
-    defaultType: 'info',
-    activeType: 'success',
-    selected: false,
-    field: 'supportFree', // 关联 supportFree
-  },
-]);
-
-const syncTagSelectedStatus = () => {
-  modelAbility.value.forEach((tag) => {
-    tag.selected = formData[tag.field];
-  });
-};
 
 const closeDialog = () => {
   dialogVisible.value = false;
@@ -194,7 +204,7 @@ const rules = {
       trigger: 'blur',
     },
   ],
-  llmModel: [
+  modelName: [
     {
       required: true,
       message: $t('message.required'),
@@ -202,13 +212,6 @@ const rules = {
     },
   ],
   groupName: [
-    {
-      required: true,
-      message: $t('message.required'),
-      trigger: 'blur',
-    },
-  ],
-  modelType: [
     {
       required: true,
       message: $t('message.required'),
@@ -225,11 +228,17 @@ const rules = {
 };
 
 const btnLoading = ref(false);
+
 const save = async () => {
   btnLoading.value = true;
+
+  // 使用工具函数从模型能力生成features
+  const features = generateFeaturesFromModelAbility(modelAbility.value);
+
   try {
     await formDataRef.value.validate();
-    const submitData = { ...formData };
+    const submitData = { ...formData, ...features };
+
     if (isAdd.value) {
       submitData.providerId = selectedProviderId.value;
       const res = await api.post('/api/v1/model/save', submitData);
@@ -237,6 +246,8 @@ const save = async () => {
         ElMessage.success(res.message);
         emit('reload');
         closeDialog();
+      } else {
+        ElMessage.error(res.message || $t('message.operationFailed'));
       }
     } else {
       const res = await api.post('/api/v1/model/update', submitData);
@@ -244,9 +255,12 @@ const save = async () => {
         ElMessage.success(res.message);
         emit('reload');
         closeDialog();
+      } else {
+        ElMessage.error(res.message || $t('message.operationFailed'));
       }
     }
-  } catch {
+  } catch (error) {
+    console.error('Save model error:', error);
     ElMessage.error($t('message.operationFailed'));
   } finally {
     btnLoading.value = false;
@@ -274,20 +288,34 @@ const save = async () => {
       <ElFormItem prop="title" :label="$t('llm.title')">
         <ElInput v-model.trim="formData.title" />
       </ElFormItem>
-      <ElFormItem prop="llmModel" :label="$t('llm.llmModel')">
-        <ElInput v-model.trim="formData.llmModel" />
+      <ElFormItem prop="modelName" :label="$t('llm.llmModel')">
+        <ElInput v-model.trim="formData.modelName" />
+      </ElFormItem>
+      <ElFormItem prop="apiKey" :label="$t('llmProvider.apiKey')">
+        <ElInput v-model.trim="formData.apiKey" />
       </ElFormItem>
       <ElFormItem prop="endpoint" :label="$t('llmProvider.endpoint')">
         <ElInput v-model.trim="formData.endpoint" />
       </ElFormItem>
-      <ElFormItem prop="chatPath" :label="$t('llmProvider.chatPath')">
-        <ElInput v-model.trim="formData.options.chatPath" />
-      </ElFormItem>
-      <ElFormItem prop="embedPath" :label="$t('llmProvider.embedPath')">
-        <ElInput v-model.trim="formData.options.embedPath" />
+      <ElFormItem prop="requestPath" :label="$t('llm.requestPath')">
+        <ElInput v-model.trim="formData.requestPath" />
       </ElFormItem>
       <ElFormItem prop="groupName" :label="$t('llm.groupName')">
         <ElInput v-model.trim="formData.groupName" />
+      </ElFormItem>
+      <ElFormItem prop="ability" :label="$t('llm.ability')">
+        <div class="model-ability">
+          <ElTag
+            class="model-ability-tag"
+            v-for="item in modelAbility"
+            :key="item.value"
+            :type="item.selected ? item.activeType : item.defaultType"
+            @click="handleTagClick(item)"
+            :class="{ 'tag-selected': item.selected }"
+          >
+            {{ item.label }}
+          </ElTag>
+        </div>
       </ElFormItem>
     </ElForm>
     <template #footer>
@@ -309,14 +337,19 @@ const save = async () => {
 <style scoped>
 .model-ability {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  margin-top: 4px;
 }
+
 .model-ability-tag {
   cursor: pointer;
+  transition: all 0.2s;
 }
+
 .tag-selected {
   font-weight: bold;
+  transform: scale(1.05);
 }
 </style>

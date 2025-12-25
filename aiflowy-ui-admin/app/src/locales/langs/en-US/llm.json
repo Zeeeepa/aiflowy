@@ -66,10 +66,13 @@
   "searchTextPlaceholder": "Search for model name or name",
   "testSuccess": "TestSuccess",
   "modelAbility": {
-    "reasoning": "reasoning",
-    "tool": "Tool",
-    "embedding": "Embedding",
-    "rerank": "Rerank",
-    "free": "Free"
-  }
+    "supportThinking": "Thinking",
+    "supportTool": "Tool",
+    "SupportAudio": "Audio",
+    "SupportVideo": "Video",
+    "SupportImage": "Image",
+    "supportFree": "Free",
+    "supportImageB64Only": "ImageB64Only"
+  },
+  "requestPath": "RequestPath"
 }

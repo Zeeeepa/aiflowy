@@ -16,7 +16,7 @@ import { api } from '#/api/request';
 import UploadAvatar from '#/components/upload/UploadAvatar.vue';
 import { $t } from '#/locales';
 
-import providerList from './providerList.json';
+import providerList from './llmUtils/providerList.json';
 
 const emit = defineEmits(['reload']);
 

@@ -63,10 +63,13 @@
   "testSuccess": "检测成功",
   "searchTextPlaceholder": "搜索模型名称或名称",
   "modelAbility": {
-    "reasoning": "推理",
-    "tool": "工具",
-    "embedding": "嵌入",
-    "rerank": "重排",
-    "free": "免费"
-  }
+    "supportThinking": "推理",
+    "supportTool": "工具",
+    "supportAudio": "音频",
+    "supportVideo": "视频",
+    "supportImage": "图片",
+    "supportFree": "免费",
+    "supportImageB64Only": "支持base64图片"
+  },
+  "requestPath": "请求路径"
 }
