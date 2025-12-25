@@ -78,7 +78,9 @@ function save() {
       btnLoading.value = true;
       api
         .post(
-          isAdd.value ? 'api/v1/aiResource/save' : 'api/v1/aiResource/update',
+          isAdd.value
+            ? '/userCenter/resource/save'
+            : '/userCenter/resource/update',
           entity.value,
         )
         .then((res) => {

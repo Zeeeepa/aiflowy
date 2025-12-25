@@ -26,7 +26,7 @@ onMounted(async () => {
   getCategoryList();
 });
 function getCategoryList() {
-  api.get('/userCenter/aiWorkflowCategory/list').then((res) => {
+  api.get('/userCenter/workflowCategory/list').then((res) => {
     categories.value = [
       {
         id: '',
@@ -39,7 +39,7 @@ function getCategoryList() {
 function getWorkflowList() {
   pageLoading.value = true;
   api
-    .get('/userCenter/aiWorkflow/list', {
+    .get('/userCenter/workflow/list', {
       params: { ...queryParams.value, status: 1 },
     })
     .then((res) => {

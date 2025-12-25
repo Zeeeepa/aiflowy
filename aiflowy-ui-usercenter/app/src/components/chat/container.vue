@@ -55,7 +55,7 @@ defineExpose({
 
 function getSessionList(resetSession = false) {
   api
-    .get('/userCenter/conversation/list', {
+    .get('/userCenter/botConversation/list', {
       params: {
         botId: props.bot.id,
       },
@@ -71,7 +71,7 @@ function getSessionList(resetSession = false) {
 }
 provide('getSessionList', getSessionList);
 function addSession() {
-  api.get('/userCenter/aiBot/generateConversationId').then((res) => {
+  api.get('/userCenter/bot/generateConversationId').then((res) => {
     const data = {
       botId: props.bot.id,
       title: '新对话',
@@ -86,7 +86,7 @@ function clickSession(session: any) {
 }
 function getMessageList() {
   api
-    .get('/userCenter/aiBotMessage/getMessages', {
+    .get('/userCenter/botMessage/getMessages', {
       params: {
         botId: props.bot.id,
         conversationId: currentSession.value.id,
@@ -119,7 +119,7 @@ const updateLoading = ref(false);
 function updateTitle() {
   updateLoading.value = true;
   api
-    .get('/userCenter/conversation/updateConversation', {
+    .get('/userCenter/botConversation/updateConversation', {
       params: {
         botId: props.bot.id,
         conversationId: currentSession.value.id,
@@ -144,7 +144,7 @@ function remove(row: any) {
       if (action === 'confirm') {
         instance.confirmButtonLoading = true;
         api
-          .get('/userCenter/conversation/deleteConversation', {
+          .get('/userCenter/botConversation/deleteConversation', {
             params: {
               botId: props.bot.id,
               conversationId: row.id,

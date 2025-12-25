@@ -63,7 +63,7 @@ function search() {
 }
 function getWorkflowList() {
   api
-    .get('/userCenter/aiWorkflow/list', {
+    .get('/userCenter/workflow/list', {
       params: { ...queryParams.value },
     })
     .then((res) => {
@@ -177,7 +177,7 @@ function getDateRange() {
           <div class="flex flex-col items-center gap-5">
             <div class="w-full">
               <PageData
-                page-url="/userCenter/aiWorkflowExecRecord/getPage"
+                page-url="/userCenter/workflowExecResult/getPage"
                 ref="pageRef"
               >
                 <template #default="{ pageList }">

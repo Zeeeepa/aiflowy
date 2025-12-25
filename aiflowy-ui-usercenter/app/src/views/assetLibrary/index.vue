@@ -63,7 +63,7 @@ function remove(row: any) {
       if (action === 'confirm') {
         instance.confirmButtonLoading = true;
         api
-          .post('/userCenter/aiResource/remove', { id: row.id })
+          .post('/userCenter/resource/remove', { id: row.id })
           .then((res) => {
             instance.confirmButtonLoading = false;
             if (res.errorCode === 0) {
@@ -91,7 +91,7 @@ function batchRemove() {
       if (action === 'confirm') {
         instance.confirmButtonLoading = true;
         api
-          .post('/userCenter/aiResource/removeBatch', { ids })
+          .post('/userCenter/resource/removeBatch', { ids })
           .then((res) => {
             instance.confirmButtonLoading = false;
             if (res.errorCode === 0) {
@@ -215,7 +215,7 @@ function handleOperation(type: string) {
     <ElMain class="!px-8 !py-6">
       <PageData
         ref="pageDataRef"
-        page-url="/api/v1/resource/page"
+        page-url="/userCenter/resource/page"
         :page-size="10"
       >
         <template #default="{ pageList }">

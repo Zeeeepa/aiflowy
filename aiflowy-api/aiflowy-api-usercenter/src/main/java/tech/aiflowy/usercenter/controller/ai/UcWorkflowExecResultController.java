@@ -27,7 +27,7 @@ import java.math.BigInteger;
  * 工作流执行记录
  */
 @RestController
-@RequestMapping("/userCenter/aiWorkflowExecRecord")
+@RequestMapping("/userCenter/workflowExecResult")
 @UsePermission(moduleName = "/api/v1/workflow")
 public class UcWorkflowExecResultController extends BaseCurdController<WorkflowExecResultService, WorkflowExecResult> {
 

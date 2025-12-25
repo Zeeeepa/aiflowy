@@ -41,7 +41,7 @@ const executeId = ref('');
 function resume(data: any) {
   data.executeId = executeId.value;
   submitLoading.value = true;
-  api.post('/userCenter/aiWorkflow/resume', data).then((res) => {
+  api.post('/userCenter/workflow/resume', data).then((res) => {
     if (res.errorCode === 0) {
       startPolling(executeId.value);
     }
@@ -58,7 +58,7 @@ function submitV2() {
       };
       props.onSubmit?.(runParams.value);
       submitLoading.value = true;
-      api.post('/userCenter/aiWorkflow/runAsync', data).then((res) => {
+      api.post('/userCenter/workflow/runAsync', data).then((res) => {
         if (res.errorCode === 0 && res.data) {
           // executeId
           executeId.value = res.data;
@@ -82,7 +82,7 @@ function startPolling(executeId: any) {
 }
 function executePolling(executeId: any) {
   api
-    .post('/userCenter/aiWorkflow/getChainStatus', {
+    .post('/userCenter/workflow/getChainStatus', {
       executeId,
       nodes: nodes.value,
     })

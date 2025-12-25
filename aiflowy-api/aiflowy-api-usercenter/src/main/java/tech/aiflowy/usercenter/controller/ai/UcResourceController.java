@@ -23,7 +23,7 @@ import java.util.Date;
  * @since 2025-06-27
  */
 @RestController
-@RequestMapping("/userCenter/aiResource")
+@RequestMapping("/userCenter/resource")
 @UsePermission(moduleName = "/api/v1/resource")
 public class UcResourceController extends BaseCurdController<ResourceService, Resource> {
     public UcResourceController(ResourceService service) {

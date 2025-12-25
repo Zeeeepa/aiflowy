@@ -26,7 +26,7 @@ const handleSelectAssistant = (bot: any) => {
   messageList.value = [];
 };
 function getAssistantList() {
-  api.get('/userCenter/aiBotRecentlyUsed/getRecentlyBot').then((res) => {
+  api.get('/userCenter/botRecentlyUsed/getRecentlyBot').then((res) => {
     recentUsedAssistant.value = res.data;
     if (recentUsedAssistant.value.length > 0) {
       currentBot.value = recentUsedAssistant.value[0];

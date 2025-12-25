@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/userCenter/conversation")
+@RequestMapping("/userCenter/botConversation")
 @SaIgnore
 public class UcBotConversationController extends BaseCurdController<BotConversationService, BotConversation> {
 

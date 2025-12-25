@@ -27,7 +27,7 @@ import java.util.*;
  * 工作流
  */
 @RestController
-@RequestMapping("/userCenter/aiWorkflow")
+@RequestMapping("/userCenter/workflow")
 @UsePermission(moduleName = "/api/v1/workflow")
 public class UcWorkflowController extends BaseCurdController<WorkflowService, Workflow> {
 

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @since 2025-12-18
  */
 @RestController
-@RequestMapping("/userCenter/aiBotRecentlyUsed")
+@RequestMapping("/userCenter/botRecentlyUsed")
 @UsePermission(moduleName = "/api/v1/bot")
 public class UcBotRecentlyUsedController extends BaseCurdController<BotRecentlyUsedService, BotRecentlyUsed> {
 

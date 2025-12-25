@@ -51,7 +51,7 @@ import static tech.aiflowy.ai.entity.table.PluginItemTableDef.PLUGIN_ITEM;
  * @since 2024-08-23
  */
 @RestController
-@RequestMapping("/userCenter/aiBot")
+@RequestMapping("/userCenter/bot")
 @UsePermission(moduleName = "/api/v1/bot")
 public class UcBotController extends BaseCurdController<BotService, Bot> {
 

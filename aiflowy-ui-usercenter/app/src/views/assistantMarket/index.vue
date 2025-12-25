@@ -41,7 +41,7 @@ onMounted(async () => {
   getUserUsed();
 });
 function getCategoryList() {
-  api.get('/userCenter/aiBotCategory/list').then((res) => {
+  api.get('/userCenter/botCategory/list').then((res) => {
     categories.value = [
       {
         id: '',
@@ -54,7 +54,7 @@ function getCategoryList() {
 function getBotList() {
   pageLoading.value = true;
   api
-    .get('/userCenter/aiBot/list', {
+    .get('/userCenter/bot/list', {
       params: { ...queryParams.value, status: 1 },
     })
     .then((res) => {
@@ -68,14 +68,14 @@ function handleTagClick(tag: any) {
   getBotList();
 }
 function getUserUsed() {
-  api.get('/userCenter/aiBotRecentlyUsed/list').then((res) => {
+  api.get('/userCenter/botRecentlyUsed/list').then((res) => {
     usedList.value = res.data.map((item: any) => item.botId);
   });
 }
 function addBotToRecentlyUsed(botId: any) {
   btnLoading.value = true;
   api
-    .post('/userCenter/aiBotRecentlyUsed/save', {
+    .post('/userCenter/botRecentlyUsed/save', {
       botId,
     })
     .then((res) => {
@@ -90,7 +90,7 @@ function addBotToRecentlyUsed(botId: any) {
 function removeBotFromRecentlyUsed(botId: any) {
   btnLoading.value = true;
   api
-    .get('/userCenter/aiBotRecentlyUsed/removeByBotId', {
+    .get('/userCenter/botRecentlyUsed/removeByBotId', {
       params: {
         botId,
       },

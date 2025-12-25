@@ -31,13 +31,13 @@ const botInfo = ref<any>({});
 const btnLoading = ref(false);
 const conversationId = ref('');
 function getUserUsed() {
-  api.get('/userCenter/aiBotRecentlyUsed/list').then((res) => {
+  api.get('/userCenter/botRecentlyUsed/list').then((res) => {
     usedList.value = res.data.map((item: any) => item.botId);
   });
 }
 function getBotDetail() {
   api
-    .get('/userCenter/aiBot/getDetail', {
+    .get('/userCenter/bot/getDetail', {
       params: {
         id: route.params.id,
       },
@@ -45,14 +45,14 @@ function getBotDetail() {
     .then((res) => {
       botInfo.value = res.data;
     });
-  api.get('/userCenter/aiBot/generateConversationId').then((res) => {
+  api.get('/userCenter/bot/generateConversationId').then((res) => {
     conversationId.value = res.data;
   });
 }
 function addBotToRecentlyUsed(botId: any) {
   btnLoading.value = true;
   api
-    .post('/userCenter/aiBotRecentlyUsed/save', {
+    .post('/userCenter/botRecentlyUsed/save', {
       botId,
     })
     .then((res) => {
@@ -66,7 +66,7 @@ function addBotToRecentlyUsed(botId: any) {
 function removeBotFromRecentlyUsed(botId: any) {
   btnLoading.value = true;
   api
-    .get('/userCenter/aiBotRecentlyUsed/removeByBotId', {
+    .get('/userCenter/botRecentlyUsed/removeByBotId', {
       params: {
         botId,
       },

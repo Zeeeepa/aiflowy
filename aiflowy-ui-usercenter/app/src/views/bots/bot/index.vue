@@ -43,7 +43,7 @@ const initState = ref(false);
 const tinyFlowData = ref<any>(null);
 const workflowForm = ref();
 async function getWorkflowInfo(workflowId: any) {
-  api.get(`/userCenter/aiWorkflow/detail?id=${workflowId}`).then((res) => {
+  api.get(`/userCenter/workflow/detail?id=${workflowId}`).then((res) => {
     workflowInfo.value = res.data;
     tinyFlowData.value = workflowInfo.value.content
       ? JSON.parse(workflowInfo.value.content)
@@ -52,7 +52,7 @@ async function getWorkflowInfo(workflowId: any) {
 }
 async function getRunningParams() {
   api
-    .get(`/userCenter/aiWorkflow/getRunningParameters?id=${workflowId.value}`)
+    .get(`/userCenter/workflow/getRunningParameters?id=${workflowId.value}`)
     .then((res) => {
       runParams.value = res.data;
     });

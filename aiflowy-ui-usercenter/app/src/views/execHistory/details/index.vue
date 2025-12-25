@@ -39,7 +39,7 @@ const stepList = ref<any>([]);
 
 function getStepList() {
   api
-    .get('/userCenter/aiWorkflowRecordStep/getListByRecordId', {
+    .get('/userCenter/workflowExecStep/getListByRecordId', {
       params: {
         recordId: route.params.id,
       },

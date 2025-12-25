@@ -37,7 +37,7 @@ function sendMessage() {
   senderValue.value = '';
   const msgKey = crypto.randomUUID();
   let str = '';
-  sseClient.post('/userCenter/aiBot/chat', data, {
+  sseClient.post('/userCenter/bot/chat', data, {
     onMessage(res) {
       const msg = {
         key: msgKey,
