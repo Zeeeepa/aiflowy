@@ -24,7 +24,7 @@ import tech.aiflowy.ai.agentsflex.memory.BotMessageMemory;
 import tech.aiflowy.ai.mapper.BotMapper;
 import tech.aiflowy.ai.service.BotMessageService;
 import tech.aiflowy.ai.service.BotService;
-import tech.aiflowy.ai.utils.ChatStreamListener;
+import tech.aiflowy.ai.agentsflex.listener.ChatStreamListener;
 import tech.aiflowy.ai.utils.CustomBeanUtils;
 import tech.aiflowy.ai.utils.RegexUtils;
 import tech.aiflowy.common.ai.ChatSseEmitter;

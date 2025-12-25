@@ -1,4 +1,4 @@
-package tech.aiflowy.ai.utils;
+package tech.aiflowy.ai.agentsflex.listener;
 
 import com.agentsflex.core.model.chat.StreamResponseListener;
 import com.agentsflex.core.model.chat.response.AiMessageResponse;
