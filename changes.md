@@ -1,5 +1,96 @@
 # AIFlowy 更新记录
 
+## v2.0.2 2025-12-26
+- feat：更新列表、网格和折叠图标
+- feat：为大模型功能增加标签能力
+- feat：新增 AIFlowy 聊天协议规范与实现
+- feat：新增数据库表 tb_resource_category，用于资源分类
+- feat：在登录流程中集成 TAC 图形验证码
+- feat：新增资源分类管理功能并集成到系统中
+- feat：为 BotModel 实体添加选项检索方法
+- feat：更新任务模块的代码生成配置
+- feat：在项目中新增代码生成模块
+- feat：移除 iframe 嵌入令牌功能
+- feat：更新聊天组件的属性和内部逻辑
+- feat：新增 FileUtil、IdUtil、SSEUtil 等工具类
+- feat：为 AI 模块增加对默认重排序模型和供应商配置的支持
+- chore：更新 tinyflow-java 依赖至 beta.6 版本
+- chore：将协议名称从 aiflowy-chat-sse 更新为 aiflowy-chat
+- chore：更新助手市场详情页的路由模式
+- chore：替换菜单中的图标
+- chore：优化插件必填参数和知识库导入逻辑
+- chore：移除路由配置中重复的路由项
+- chore：清理知识库和插件相关的控制台警告
+- chore：优化知识库相关代码
+- chore：移除未使用的 common-util 模块依赖
+- chore：对多个界面（UI、登录页、菜单）进行样式、图标、布局和文案的调整
+- fix：修复可能存在的空指针异常问题
+- fix：修正中文欢迎信息的空格问题
+- fix：更新 AI 实体时间戳，并重构对话初始化逻辑
+- fix：修正 BotApiKeyServiceImpl 中 botId 的类型转换错误
+- fix：恢复 ChainEventListenerForSave 中递归查找祖先状态的功能
+- fix：修复添加大模型后，编辑并更改供应商名称会报错的问题
+- fix：修复大模型终端点设置不正确的问题
+- fix：修复文档集合相关的问题
+- fix：修复工作流相关的问题
+- fix：修复插件相关的问题
+- fix：修复机器人、模型、聊天相关的问题
+- docs：在导航菜单中新增公司新闻链接
+- refactor：Knowledge.vue 更名为 DocumentCollection.vue
+- refactor：llm.vue 更名为 Model.vue
+- refactor：将 Sender、BubbleList 和 Conversations 注册为全局组件
+- refactor：更新数据中心标签页的切换行为和标签文本
+- refactor：移除 RagRerankModelUtil 类，并将其移至 utils 包
+- refactor：重组 AI 监听器包，并移除未使用的工具类
+- refactor：将工具和记忆实体移动到 agentsflex 包中
+- refactor：将 ai 前缀的 API 端点重命名为 core 资源路径
+- refactor：重命名 AI 控制器以保持命名一致性
+- refactor：重组并增强数据库表结构的定义
+- refactor：将 BotBase 实体中的 llm 字段重命名为 model
+- refactor：更新模型和供应商实体结构
+- refactor：更新实体基类，增加公共字段和类型修改
+- refactor：将 TinyFlowConfigService 移动到 service 包
+- refactor：在系统服务中用类型化 Mapper 替换原始 SQL 操作
+- refactor：将聊天模块中的 sessionId 统一重命名为 conversationId
+- refactor：更新菜单顺序，并将 “bots” 重命名为 “workflow”
+- refactor：统一并优化数据库 Schema 类型和命名规范
+- refactor：生成新的基础实体
+- refactor：更新 AI 实体基类，增加类型处理器和字段变更
+- refactor：新增数据库变更文档 v2_db_changes.md
+- refactor：将代码生成拆分为独立的模块类
+- refactor：将 BotApiKeyMapperMapper 重命名为 BotApiKeyMapper
+- refactor：重命名数据中心表的字段、实体和服务类
+- refactor：更新 API 端点以使用新的命名规范
+- refactor：移除旧数据库表并更新 LLM 模型 Schema
+- refactor：重命名系统控制器以获得更清晰的命名
+- refactor：重命名 API Key 资源权限相关实体和服务
+- refactor：移除聊天消息主题和插件的基础实体类
+- refactor：重命名数据表和实体，移除 ai 前缀并更新命名约定
+- refactor：重命名 AI 控制器类以移除冗余前缀
+- refactor：重命名 AI 服务类以移除冗余的 Ai 前缀
+- refactor：重命名 Mapper 接口以遵循一致的命名约定
+- refactor：移除第三方消息处理组件
+- refactor：移除 OpenAI 请求/响应实体和平台枚举
+- refactor：重命名模型名称
+- refactor：将表 tb_bot_knowledge 重命名为 tb_bot_document_collection
+- refactor：将表 tb_workflow_record_step 重命名为 tb_workflow_exec_step
+- refactor：将工作流执行结果表重命名为 tb_workflow_exec_result
+- refactor：重命名 API Key 资源关系表
+- refactor：重命名 API Key 资源权限表和关系
+- refactor：将知识库表重命名为 document_collection
+- refactor：将插件分类关系表重命名为映射表
+- refactor：将对话消息表重命名为 conversation
+- refactor：重命名 AI 相关数据表和列名为通用名称
+- refactor：移除外部消息标识并更新聊天组件逻辑，简化代码
+- refactor：用 IdUtil 替换 UUIDGenerator 来生成令牌
+- refactor：替换已弃用的文件提取逻辑
+- refactor：用 SSEUtil 替换 ChatManager 来处理 SSE 响应
+- refactor：重组 AI 模块包结构，移除未使用的类
+- refactor：移除未使用的前端配置和工具类
+- refactor：将消息解析逻辑移至 AiBotMessage 实体
+- remove：移除未使用的 AI 控制器文件
+- remove：移除未使用的 AI 实体和服务类
+
 ## v2.0.1 2025-12-19
 - feat：用户中心对话编辑和删除。
 - feat：新增用户中心主页聊天、助手市场聊天、用户中心机器人聊天功能。
