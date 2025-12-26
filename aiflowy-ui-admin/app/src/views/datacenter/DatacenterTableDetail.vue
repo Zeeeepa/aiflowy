@@ -9,7 +9,6 @@ import {
   Delete,
   MoreFilled,
   Plus,
-  Refresh,
   Upload,
 } from '@element-plus/icons-vue';
 import {
@@ -50,8 +49,8 @@ const recordModal = ref();
 const batchImportModal = ref();
 const dictStore = useDictStore();
 const categoryData = [
-  { key: '1', name: $t('documentCollection.documentList') },
-  { key: '2', name: $t('documentCollection.knowledgeRetrieval') },
+  { key: '1', name: $t('datacenterTable.structure') },
+  { key: '2', name: $t('datacenterTable.data') },
 ];
 function initDict() {
   dictStore.fetchDictionary('fieldType');
@@ -113,6 +112,12 @@ function refresh() {
 function openImportModal() {
   batchImportModal.value.openDialog();
 }
+function changeTab(category: any) {
+  activeMenu.value = category.key;
+  if (category.key === '2') {
+    refresh();
+  }
+}
 </script>
 
 <template>
@@ -166,7 +171,7 @@ function openImportModal() {
         value-key="key"
         :menus="categoryData"
         default-selected="1"
-        @change="(category) => (activeMenu = category.key)"
+        @change="changeTab"
       />
 
       <div
@@ -206,11 +211,6 @@ function openImportModal() {
           :page-size="10"
         >
           <template #default="{ pageList }">
-            <ElButton link @click="refresh" class="float-right">
-              <ElIcon>
-                <Refresh />
-              </ElIcon>
-            </ElButton>
             <ElTable :data="pageList">
               <ElTableColumn
                 v-for="item in headers"
