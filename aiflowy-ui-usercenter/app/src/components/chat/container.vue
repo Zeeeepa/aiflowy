@@ -20,7 +20,6 @@ import {
   ElMain,
   ElMessage,
   ElMessageBox,
-  ElTooltip,
 } from 'element-plus';
 
 import { api } from '#/api/request';
@@ -200,18 +199,17 @@ function remove(row: any) {
           "
           @click="clickSession(conversation)"
         >
-          <ElTooltip :content="conversation.title || '未命名'">
-            <span
-              :class="
-                cn(
-                  'text-foreground overflow-hidden text-ellipsis text-nowrap',
-                  currentSession.id === conversation.id && 'text-primary',
-                )
-              "
-            >
-              {{ conversation.title || '未命名' }}
-            </span>
-          </ElTooltip>
+          <span
+            :class="
+              cn(
+                'text-foreground overflow-hidden text-ellipsis text-nowrap',
+                currentSession.id === conversation.id && 'text-primary',
+              )
+            "
+            :title="conversation.title || '未命名'"
+          >
+            {{ conversation.title || '未命名' }}
+          </span>
           <span
             :class="
               cn(
@@ -232,7 +230,7 @@ function remove(row: any) {
             @click.stop
             trigger="click"
           >
-            <ElButton link :icon="MoreFilled" />
+            <ElButton link :icon="MoreFilled" @click.stop />
 
             <template #dropdown>
               <ElDropdownMenu

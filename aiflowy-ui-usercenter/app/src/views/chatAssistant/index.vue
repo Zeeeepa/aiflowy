@@ -113,10 +113,13 @@ const toggleFold = () => {
                 :default-avatar="defaultAssistantAvatar"
               />
               <CardContent>
-                <CardTitle :class="cn(assistant.checked && 'text-primary')">
+                <CardTitle
+                  :title="assistant.title"
+                  :class="cn(assistant.checked && 'text-primary')"
+                >
                   {{ assistant.title }}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription :title="assistant.description">
                   {{ assistant.description }}
                 </CardDescription>
               </CardContent>
