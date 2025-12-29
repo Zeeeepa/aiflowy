@@ -104,10 +104,10 @@ export const getAiLlmList = (params: GetAiLlmListParams) => {
   });
 };
 
-/** 更新LlmId */
+/** 更新modelId */
 export interface UpdateLlmIdParams {
   id: string;
-  llmId: string;
+  modelId: string;
 }
 export const updateLlmId = (params: UpdateLlmIdParams) => {
   return api.post<RequestResult>('/api/v1/bot/updateLlmId', {

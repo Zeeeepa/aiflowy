@@ -176,13 +176,11 @@ const handleLlmChange = async (value: string) => {
 };
 const handleLlmOptionsChange = useDebounceFn(
   (key: keyof typeof llmConfig.value, value: number) => {
-    const _value = handleInvalidNumber(value);
-
-    llmConfig.value.temperature = _value;
+    llmConfig.value.temperature = value;
     updateLlmOptions({
       id: props.bot?.id || '',
       llmOptions: {
-        [key]: _value,
+        [key]: value,
       },
     });
   },
@@ -203,26 +201,6 @@ const handleDialogOptionsStrChange = useDebounceFn(
   },
   300,
 );
-/** 处理不合规数值 */
-const handleInvalidNumber = (
-  value: number,
-  min = 0.1,
-  max = 1,
-  decimal = 1,
-) => {
-  if (Number.isNaN(value) || value < min) {
-    return min;
-  } else if (value > max) {
-    return max;
-  }
-
-  if (value.toString().includes('.')) {
-    const factor = 10 ** decimal;
-    return Math.floor(value * factor) / factor;
-  }
-
-  return value;
-};
 const pluginToolDataRef = ref();
 const knowledgeDataRef = ref();
 const workflowDataRef = ref();

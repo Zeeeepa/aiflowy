@@ -109,7 +109,7 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
             ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
             RequestContextHolder.setRequestAttributes(sra, true);
             StreamResponseListener streamResponseListener = new ChatStreamListener(chatModel, memoryPrompt, chatSseEmitter);
-            chatModel.chatStream(memoryPrompt, streamResponseListener);
+            chatModel.chatStream(memoryPrompt, streamResponseListener, chatOptions);
         });
 
         return emitter;

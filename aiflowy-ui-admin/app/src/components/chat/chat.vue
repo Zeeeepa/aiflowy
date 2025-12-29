@@ -50,7 +50,7 @@ const getConversationId = async () => {
   const res = await api.get('/api/v1/bot/generateConversationId');
   return res.data;
 };
-const conversationId = ref<any>('');
+const localeConversationId = ref<any>('');
 
 const presetQuestions = ref<presetQuestionsType[]>([]);
 defineExpose({
@@ -82,7 +82,7 @@ const getPresetQuestions = () => {
 };
 onMounted(async () => {
   // 初始化 conversationId
-  conversationId.value =
+  localeConversationId.value =
     props.conversationId && props.conversationId.length > 0
       ? props.conversationId
       : await getConversationId();
@@ -142,7 +142,7 @@ const handleSubmit = async (refreshContent: string) => {
   const data = {
     botId: botId.value,
     prompt: currentPrompt,
-    conversationId: conversationId.value,
+    conversationId: localeConversationId.value,
     messages: copyMessages,
   };
   messages.value.pop();
@@ -195,7 +195,9 @@ const handleComplete = (_: TypewriterInstance, index: number) => {
     sending.value === false
   ) {
     setTimeout(() => {
-      router.replace({ params: { conversationId: conversationId.value } });
+      router.replace({
+        params: { conversationId: localeConversationId.value },
+      });
     }, 100);
   }
 };
@@ -234,16 +236,6 @@ const handleCopy = (content: string) => {
 const handleRefresh = () => {
   handleSubmit(lastUserMessage.value);
 };
-// const senderHeader = ref();
-// async function handlePasteFile(firstFile: File, fileList: FileList) {
-//   if (senderRef.value) {
-//     senderRef.value.openHeader();
-//     await nextTick();
-//     if (senderHeader.value) {
-//       senderHeader.value.init(firstFile);
-//     }
-//   }
-// }
 </script>
 
 <template>
@@ -252,13 +244,13 @@ const handleRefresh = () => {
       :class="
         cn(
           'flex h-full w-full flex-col gap-3',
-          !conversationId && 'items-center justify-center gap-8',
+          !localeConversationId && 'items-center justify-center gap-8',
         )
       "
     >
       <!-- 对话列表 -->
       <div
-        v-if="conversationId || bubbleItems.length > 0"
+        v-if="localeConversationId || bubbleItems.length > 0"
         class="message-container w-full flex-1 overflow-hidden"
       >
         <el-bubble-list
