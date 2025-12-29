@@ -80,40 +80,12 @@ const getPresetQuestions = () => {
       }
     });
 };
-const getMessagesHistory = () => {
-  if (!props.showChatConversations) {
-    return;
-  }
-  api
-    .get('/api/v1/botMessage/list', {
-      params: {
-        botId: botId.value,
-        conversationId: conversationId.value,
-      },
-    })
-    .then((res) => {
-      bubbleItems.value = res.data.map((item: ChatMessage) => {
-        return item.role === 'assistant'
-          ? {
-              ...item,
-              placement: 'start',
-              isAssistant: true,
-            }
-          : {
-              ...item,
-              placement: 'end',
-              isAssistant: false,
-            };
-      });
-    });
-};
 onMounted(async () => {
   // 初始化 conversationId
   conversationId.value =
     props.conversationId && props.conversationId.length > 0
       ? props.conversationId
       : await getConversationId();
-  getMessagesHistory();
   getPresetQuestions();
 });
 watchEffect(async () => {
@@ -162,63 +134,55 @@ const handleSubmit = async (refreshContent: string) => {
   }
   sending.value = true;
   lastUserMessage.value = currentPrompt;
-  if (!props.showChatConversations) {
-    messages.value.push({
-      role: 'user',
-      content: currentPrompt,
-    });
-  }
+  messages.value.push({
+    role: 'user',
+    content: currentPrompt,
+  });
+  const copyMessages = [...messages.value];
   const data = {
     botId: botId.value,
     prompt: currentPrompt,
     conversationId: conversationId.value,
-    messages: messages.value,
+    messages: copyMessages,
   };
+  messages.value.pop();
   const mockMessages = generateMockMessages(refreshContent);
   bubbleItems.value.push(...mockMessages);
   senderRef.value?.clear();
-
   sseClient.post('/api/v1/bot/chat', data, {
     onMessage(message) {
       const event = message.event;
       //  finish
-      if (event === 'finish') {
+      if (event === 'done') {
         sending.value = false;
         return;
       }
-      const content = JSON.parse(
-        message.data!.replace(/^Final Answer:\s*/i, ''),
-      );
-      if (event === 'needSaveMessage' && message.data) {
-        const dataObj = JSON.parse(message.data);
-        const role = dataObj.role;
-        const contentObj = JSON.parse(dataObj.content);
-        if (
-          messages.value.length > 0 &&
-          messages.value[messages.value.length - 1]?.role === 'user' &&
-          role === 'user'
-        ) {
-          messages.value.pop();
-        }
-        messages.value.push({
-          role,
-          content: contentObj,
-        });
+      if (!message.data) {
         return;
       }
+      const sseData = JSON.parse(message.data);
+      const delta = sseData.payload?.delta;
+      const role = sseData.payload?.role;
       const lastBubbleItem = bubbleItems.value[bubbleItems.value.length - 1];
 
-      if (lastBubbleItem) {
-        if (content === lastBubbleItem.content) {
+      if (lastBubbleItem && delta) {
+        if (delta === lastBubbleItem.content) {
           sending.value = false;
         } else {
           bubbleItems.value[bubbleItems.value.length - 1] = {
             ...lastBubbleItem,
-            content: lastBubbleItem.content + content,
+            content: lastBubbleItem.content + delta,
             loading: false,
             typing: true,
           };
         }
+      }
+
+      if (event === 'needSaveMessage') {
+        messages.value.push({
+          role,
+          content: sseData.payload?.content,
+        });
       }
     },
   });

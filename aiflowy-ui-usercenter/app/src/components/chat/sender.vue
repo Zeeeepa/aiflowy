@@ -39,18 +39,23 @@ function sendMessage() {
   let str = '';
   sseClient.post('/userCenter/bot/chat', data, {
     onMessage(res) {
+      if (!res.data) {
+        return;
+      }
+      const sseData = JSON.parse(res.data);
+      const delta = sseData.payload?.delta;
       const msg = {
         key: msgKey,
         role: 'assistant',
         placement: 'start',
-        content: (str += JSON.parse(res.data!)),
+        content: (str += delta),
         typing: true,
       };
-      if (res.event === 'finish') {
+      if (res.event === 'done') {
         btnLoading.value = false;
         getSessionList();
       }
-      if (str !== res.data && res.event !== 'finish') {
+      if (str !== res.data && res.event !== 'done') {
         props.addMessage?.(msg);
       }
     },

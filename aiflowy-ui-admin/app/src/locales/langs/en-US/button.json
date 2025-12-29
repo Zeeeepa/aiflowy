@@ -38,5 +38,7 @@
   "oneClickOptimization": "One-click optimization",
   "replace": "Replace",
   "markAsRead": "MarkAsRead",
-  "markAsResolved": "MarkAsResolved"
+  "markAsResolved": "MarkAsResolved",
+  "optimizing": "Optimizing",
+  "regenerate": "Regenerate"
 }

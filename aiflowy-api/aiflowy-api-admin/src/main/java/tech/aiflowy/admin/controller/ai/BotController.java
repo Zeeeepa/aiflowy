@@ -25,7 +25,6 @@ import tech.aiflowy.ai.entity.*;
 import tech.aiflowy.ai.mapper.BotConversationMapper;
 import tech.aiflowy.ai.service.*;
 import tech.aiflowy.ai.agentsflex.listener.PromptChoreChatStreamListener;
-import tech.aiflowy.common.ai.ChatSseEmitter;
 import tech.aiflowy.common.audio.core.AudioServiceManager;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.util.MapUtil;
@@ -34,6 +33,8 @@ import tech.aiflowy.common.util.SSEUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseUtil;
 import tech.aiflowy.system.mapper.SysApiKeyMapper;
 
 import javax.annotation.Resource;
@@ -162,52 +163,40 @@ public class BotController extends BaseCurdController<BotService, Bot> {
             @JsonBody(value = "messages") List<Map<String, String>>  messages
 
     ) {
-
         if (!StringUtils.hasLength(prompt)) {
             throw new BusinessException("提示词不能为空！");
         }
-
         Bot aiBot = service.getById(botId);
+        String conversationIdStr = conversationId.toString();
         if (aiBot == null) {
-            return SSEUtil.sseEmitterForContent( "机器人不存在");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "机器人不存在");
         }
-
         boolean login = StpUtil.isLogin();
         if (!login && !aiBot.isAnonymousEnabled()) {
-            return SSEUtil.sseEmitterForContent( "此bot不支持匿名访问");
-
+            return ChatSseUtil.sendSystemError(conversationIdStr, "此bot不支持匿名访问");
         }
-
         Map<String, Object> modelOptions = aiBot.getModelOptions();
         String systemPrompt = MapUtil.getString(modelOptions, "systemPrompt");
-
         Model model = modelService.getModelInstance(aiBot.getModelId());
         if (model == null) {
-            return SSEUtil.sseEmitterForContent( "LLM不存在");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "模型不存在，请检查配置");
         }
-
-
         ChatModel chatModel = model.toChatModel();
         if (chatModel == null) {
-            return SSEUtil.sseEmitterForContent( "LLM获取为空");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "对话模型获取失败，请检查配置");
         }
         final MemoryPrompt memoryPrompt = new MemoryPrompt();
         Integer maxMessageCount = MapUtil.getInteger(modelOptions, "maxMessageCount");
         if (maxMessageCount != null) {
             memoryPrompt.setMaxAttachedMessageCount(maxMessageCount);
         }
-
         if (StringUtils.hasLength(systemPrompt)) {
             memoryPrompt.setSystemMessage(SystemMessage.of(systemPrompt));
         }
-
-
         UserMessage userMessage = new UserMessage(prompt);
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
-
         ChatOptions chatOptions = getChatOptions(modelOptions);
         return botService.startChat(botId, chatModel, prompt, memoryPrompt, chatOptions, conversationId, messages, userMessage);
-
     }
 
     @PostMapping("updateLlmId")
@@ -475,16 +464,19 @@ public class BotController extends BaseCurdController<BotService, Bot> {
                 "[" + prompt + "]\n";
         Bot aiBot = service.getById(botId);
         if (aiBot == null) {
-            return SSEUtil.sseEmitterForContent( "聊天助手不存在");
+            return ChatSseUtil.sendSystemError(null, "聊天助手不存在");
         }
-        SseEmitter sseEmitter = ChatSseEmitter.create();
+        ChatSseEmitter sseEmitter = new ChatSseEmitter();
         Model model = modelService.getModelInstance(aiBot.getModelId());
         if (model == null) {
-            return SSEUtil.sseEmitterForContent("模型不存在");
+            return ChatSseUtil.sendSystemError(null, "模型不存在");
         }
         ChatModel chatModel = model.toChatModel();
+        if (chatModel == null) {
+            return ChatSseUtil.sendSystemError(null, "模型不存在");
+        }
         PromptChoreChatStreamListener promptChoreChatStreamListener = new PromptChoreChatStreamListener(sseEmitter);
         chatModel.chatStream(promptChore, promptChoreChatStreamListener);
-        return sseEmitter;
+        return sseEmitter.getEmitter();
     }
 }

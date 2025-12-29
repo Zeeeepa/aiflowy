@@ -7,6 +7,8 @@ import com.agentsflex.core.model.chat.ChatModel;
 import com.agentsflex.core.model.chat.ChatOptions;
 import com.agentsflex.core.model.chat.StreamResponseListener;
 import com.agentsflex.core.prompt.MemoryPrompt;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.slf4j.Logger;
@@ -27,13 +29,15 @@ import tech.aiflowy.ai.service.BotService;
 import tech.aiflowy.ai.agentsflex.listener.ChatStreamListener;
 import tech.aiflowy.ai.utils.CustomBeanUtils;
 import tech.aiflowy.ai.utils.RegexUtils;
-import tech.aiflowy.common.ai.ChatSseEmitter;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
+import tech.aiflowy.core.chat.protocol.MessageRole;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,31 +94,21 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
     @Override
     public SseEmitter startChat(BigInteger botId, ChatModel chatModel, String prompt, MemoryPrompt memoryPrompt, ChatOptions chatOptions, BigInteger conversationId, List<Map<String, String>> messages, UserMessage userMessage) {
 
-        SseEmitter emitter = ChatSseEmitter.create();
+        ChatSseEmitter chatSseEmitter = new ChatSseEmitter();
+        SseEmitter emitter = chatSseEmitter.getEmitter();
         if (messages != null && !messages.isEmpty()) {
-            ChatMemory defaultChatMemory = new DefaultBotMessageMemory(conversationId, emitter, messages);
-            defaultChatMemory.addMessage(new UserMessage(prompt));
+            ChatMemory defaultChatMemory = new DefaultBotMessageMemory(conversationId, chatSseEmitter, messages);
             memoryPrompt.setMemory(defaultChatMemory);
         } else {
             BotMessageMemory memory = new BotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), conversationId, botMessageService);
             memoryPrompt.setMemory(memory);
         }
-
         memoryPrompt.addMessage(userMessage);
-
-        String emitterKey = StpUtil.getLoginIdAsString() + "_" + conversationId;
-
-        emitter.onCompletion(() -> {
-            emitters.remove(emitterKey);
-            log.debug("SSE连接完成，移除用户[{}]的Emitter", emitterKey);
-        });
-        emitters.put(emitterKey, emitter);
-        log.debug("新增SSE连接，用户[{}]，当前活跃连接数：{}", emitterKey, emitters.size());
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         threadPoolTaskExecutor.execute(() -> {
             ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
             RequestContextHolder.setRequestAttributes(sra, true);
-            StreamResponseListener streamResponseListener = new ChatStreamListener(chatModel, memoryPrompt, emitter);
+            StreamResponseListener streamResponseListener = new ChatStreamListener(chatModel, memoryPrompt, chatSseEmitter);
             chatModel.chatStream(memoryPrompt, streamResponseListener);
         });
 

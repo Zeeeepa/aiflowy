@@ -9,20 +9,25 @@ import com.agentsflex.core.model.client.StreamContext;
 import com.agentsflex.core.prompt.MemoryPrompt;
 import com.alibaba.fastjson.JSON;
 import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import tech.aiflowy.common.util.StringUtil;
+import tech.aiflowy.core.chat.protocol.ChatDomain;
+import tech.aiflowy.core.chat.protocol.ChatEnvelope;
+import tech.aiflowy.core.chat.protocol.ChatType;
+import tech.aiflowy.core.chat.protocol.MessageRole;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatStreamListener implements StreamResponseListener {
 
     private final ChatModel chatModel;
     private final MemoryPrompt memoryPrompt;
-    private final SseEmitter sseEmitter;
+    private final ChatSseEmitter sseEmitter;
 
 
-    public ChatStreamListener(ChatModel chatModel, MemoryPrompt memoryPrompt, SseEmitter sseEmitter) {
+    public ChatStreamListener(ChatModel chatModel, MemoryPrompt memoryPrompt, ChatSseEmitter sseEmitter) {
         this.chatModel = chatModel;
         this.memoryPrompt = memoryPrompt;
         this.sseEmitter = sseEmitter;
@@ -54,7 +59,14 @@ public class ChatStreamListener implements StreamResponseListener {
             } else {
                 String delta = aiMessageResponse.getMessage().getContent();
                 if (StringUtil.hasText(delta)) {
-                    sseEmitter.send(JSON.toJSONString(delta));
+                    ChatEnvelope<Map<String, String>> chatEnvelope = new ChatEnvelope<>();
+                    chatEnvelope.setDomain(ChatDomain.LLM);
+                    chatEnvelope.setType(ChatType.MESSAGE);
+                    Map<String, String> deletaMap = new HashMap<>();
+                    deletaMap.put("delta", delta);
+                    deletaMap.put("role", MessageRole.ASSISTANT.getValue());
+                    chatEnvelope.setPayload(deletaMap);
+                    sseEmitter.send(chatEnvelope);
                 }
             }
         } catch (Exception e) {
@@ -65,12 +77,10 @@ public class ChatStreamListener implements StreamResponseListener {
     @Override
     public void onStop(StreamContext context) {
         System.out.println("onStop");
-        try {
-            memoryPrompt.addMessage(context.getAiMessage());
-            sseEmitter.send(SseEmitter.event().name("finish").data("finish"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        memoryPrompt.addMessage(context.getAiMessage());
+        ChatEnvelope<Map<String, String>> chatEnvelope = new ChatEnvelope<>();
+        chatEnvelope.setDomain(ChatDomain.SYSTEM);
+        sseEmitter.sendDone(chatEnvelope);
         StreamResponseListener.super.onStop(context);
     }
 

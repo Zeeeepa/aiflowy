@@ -63,10 +63,11 @@ public class Model extends ModelBase {
                 ollamaChatConfig.setEndpoint(checkAndGetEndpoint());
                 ollamaChatConfig.setApiKey(checkAndGetApiKey());
                 ollamaChatConfig.setModel(checkAndGetModelName());
+                ollamaChatConfig.setProvider(getModelProvider().getProviderName());
                 return new OllamaChatModel(ollamaChatConfig);
             case "deepseek":
                 DeepseekConfig deepseekConfig = new DeepseekConfig();
-                deepseekConfig.setProvider(getModelProvider().getProviderType());
+                deepseekConfig.setProvider(getModelProvider().getProviderName());
                 deepseekConfig.setEndpoint(checkAndGetEndpoint());
                 deepseekConfig.setApiKey(checkAndGetApiKey());
                 deepseekConfig.setModel(checkAndGetModelName());
@@ -74,7 +75,8 @@ public class Model extends ModelBase {
                 return new DeepseekChatModel(deepseekConfig);
             default:
                 OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
-                openAIChatConfig.setProvider(getModelProvider().getProviderType());
+                openAIChatConfig.setLogEnabled(true);
+                openAIChatConfig.setProvider(getModelProvider().getProviderName());
                 openAIChatConfig.setEndpoint(checkAndGetEndpoint());
                 openAIChatConfig.setApiKey(checkAndGetApiKey());
                 openAIChatConfig.setModel(checkAndGetModelName());
@@ -87,6 +89,7 @@ public class Model extends ModelBase {
         switch (modelProvider.getProviderType().toLowerCase()) {
             case "gitee":
                 GiteeRerankModelConfig giteeRerankModelConfig = new GiteeRerankModelConfig();
+                giteeRerankModelConfig.setProvider(getModelProvider().getProviderName());
                 giteeRerankModelConfig.setApiKey(checkAndGetApiKey());
                 giteeRerankModelConfig.setEndpoint(checkAndGetEndpoint());
                 giteeRerankModelConfig.setModel(checkAndGetModelName());
@@ -94,6 +97,7 @@ public class Model extends ModelBase {
                 return new GiteeRerankModel(giteeRerankModelConfig);
             default:
                 DefaultRerankModelConfig defaultRerankModelConfig = new DefaultRerankModelConfig();
+                defaultRerankModelConfig.setProvider(getModelProvider().getProviderName());
                 defaultRerankModelConfig.setApiKey(checkAndGetApiKey());
                 defaultRerankModelConfig.setEndpoint(checkAndGetEndpoint());
                 defaultRerankModelConfig.setRequestPath(checkAndGetRequestPath());
@@ -110,6 +114,7 @@ public class Model extends ModelBase {
         switch (providerType.toLowerCase()) {
             case "ollama":
                 OllamaEmbeddingConfig ollamaEmbeddingConfig = new OllamaEmbeddingConfig();
+                ollamaEmbeddingConfig.setProvider(getModelProvider().getProviderName());
                 ollamaEmbeddingConfig.setEndpoint(checkAndGetEndpoint());
                 ollamaEmbeddingConfig.setApiKey(getApiKey());
                 ollamaEmbeddingConfig.setModel(checkAndGetModelName());
@@ -117,6 +122,7 @@ public class Model extends ModelBase {
                 return new OllamaEmbeddingModel(ollamaEmbeddingConfig);
             default:
                 OpenAIEmbeddingConfig openAIEmbeddingConfig = new OpenAIEmbeddingConfig();
+                openAIEmbeddingConfig.setProvider(getModelProvider().getProviderName());
                 openAIEmbeddingConfig.setEndpoint(checkAndGetEndpoint());
                 openAIEmbeddingConfig.setApiKey(checkAndGetApiKey());
                 openAIEmbeddingConfig.setModel(checkAndGetModelName());

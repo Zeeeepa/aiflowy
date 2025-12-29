@@ -73,7 +73,10 @@ const handelReplacePrompt = (value: string) => {
     />
 
     <!--系统提示词优化模态框-->
-    <PromptChoreChatModal ref="promptChoreChatModalRef" @success="handelReplacePrompt"/>
+    <PromptChoreChatModal
+      ref="promptChoreChatModalRef"
+      @success="handelReplacePrompt"
+    />
   </div>
 </template>
 

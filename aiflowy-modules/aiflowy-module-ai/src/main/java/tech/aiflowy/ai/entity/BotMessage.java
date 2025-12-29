@@ -7,6 +7,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 import tech.aiflowy.ai.entity.base.BotMessageBase;
+import tech.aiflowy.core.chat.protocol.ChatDomain;
+import tech.aiflowy.core.chat.protocol.MessageRole;
 
 
 /**
@@ -35,25 +37,25 @@ public class BotMessage extends BotMessageBase {
         super.setContent(jsonMessage);
 
         if (msg instanceof AiMessage) {
-            super.setRole("assistant");
+            super.setRole(MessageRole.ASSISTANT.getValue());
         } else if (msg instanceof UserMessage) {
-            super.setRole("user");
+            super.setRole(MessageRole.USER.getValue());
         } else if (msg instanceof SystemMessage) {
-            super.setRole("system");
+            super.setRole(MessageRole.SYSTEM.getValue());
         } else if (msg instanceof ToolMessage) {
-            super.setRole("function");
+            super.setRole(MessageRole.TOOL.getValue());
         }
     }
 
     public Message getContentAsMessage() {
         String role = getRole();
-        if ("assistant".equals(role)) {
+        if (MessageRole.ASSISTANT.getValue().equals(role)) {
             return parseMessage(AiMessage.class);
-        } else if ("user".equals(role)) {
+        } else if (MessageRole.USER.getValue().equals(role)) {
             return parseMessage(UserMessage.class);
-        } else if ("system".equals(role)) {
+        } else if (MessageRole.SYSTEM.getValue().equals(role)) {
             return parseMessage(SystemMessage.class);
-        } else if ("function".equals(role)) {
+        } else if (MessageRole.TOOL.getValue().equals(role)) {
             return parseMessage(ToolMessage.class);
         }
         return null;

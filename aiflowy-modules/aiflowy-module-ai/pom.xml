@@ -89,5 +89,10 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-chat-protocol</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

@@ -47,6 +47,11 @@ public class ChatSseEmitter {
         complete();
     }
 
+    /** 通知前端保存该消息 */
+    public void sendMessageNeedSave(ChatEnvelope<?> envelope) {
+        send("needSaveMessage", envelope);
+    }
+
     /** SSE 底层发送 */
     private void send(String event, ChatEnvelope<?> envelope) {
         try {

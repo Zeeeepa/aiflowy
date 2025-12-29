@@ -34,6 +34,8 @@ import tech.aiflowy.common.util.SSEUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
+import tech.aiflowy.core.chat.protocol.sse.ChatSseUtil;
 import tech.aiflowy.system.mapper.SysApiKeyMapper;
 
 import javax.annotation.Resource;
@@ -169,29 +171,30 @@ public class UcBotController extends BaseCurdController<BotService, Bot> {
         if (!StringUtils.hasLength(prompt)) {
             throw new BusinessException("提示词不能为空！");
         }
-
+        String conversationIdStr = conversationId.toString();
         Bot aiBot = service.getById(botId);
         if (aiBot == null) {
-            return SSEUtil.sseEmitterForContent("机器人不存在");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "机器人不存在");
+
         }
 
         boolean login = StpUtil.isLogin();
         if (!login && !aiBot.isAnonymousEnabled()) {
-            return SSEUtil.sseEmitterForContent("此bot不支持匿名访问");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "此bot不支持匿名访问");
         }
 
         Map<String, Object> llmOptions = aiBot.getModelOptions();
         String systemPrompt = MapUtil.getString(llmOptions, "systemPrompt");
-
         Model model = modelService.getModelInstance(aiBot.getModelId());
         if (model == null) {
-            return SSEUtil.sseEmitterForContent("LLM不存在");
+            return ChatSseUtil.sendSystemError(conversationIdStr, "模型不存在，请检查配置");
         }
 
         ChatModel chatModel = model.toChatModel();
         if (chatModel == null) {
-            return SSEUtil.sseEmitterForContent("LLM获取为空");
+           return ChatSseUtil.sendSystemError(conversationIdStr, "对话模型获取失败，请检查配置");
         }
+
         final MemoryPrompt memoryPrompt = new MemoryPrompt();
         Integer maxMessageCount = MapUtil.getInteger(llmOptions, "maxMessageCount");
         if (maxMessageCount != null) {

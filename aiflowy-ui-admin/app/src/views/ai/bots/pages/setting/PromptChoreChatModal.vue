@@ -27,15 +27,17 @@ const handleSubmit = async () => {
   sseClient.post('/api/v1/bot/prompt/chore/chat', data, {
     onMessage(message) {
       const event = message.event;
-      //  finish
-      if (event === 'finish') {
+      //  done
+      if (event === 'done') {
         loading.value = false;
         return;
       }
-      const content = JSON.parse(
-        message.data!.replace(/^Final Answer:\s*/i, ''),
-      );
-      formData.value.prompt += content;
+      if (!message.data) {
+        return;
+      }
+      const sseData = JSON.parse(message.data);
+      const delta = sseData.payload?.delta;
+      formData.value.prompt += delta;
     },
   });
 };
@@ -50,6 +52,7 @@ defineExpose({
       prompt: systemPrompt,
     };
     dialogVisible.value = true;
+    handleSubmit();
   },
 });
 </script>
@@ -72,7 +75,7 @@ defineExpose({
       <ElButton @click="dialogVisible = false">
         {{ $t('button.cancel') }}
       </ElButton>
-      <ElButton type="primary" @click="handleReplace">
+      <ElButton type="primary" @click="handleReplace" v-if="!loading">
         {{ $t('button.replace') }}
       </ElButton>
       <ElButton
@@ -81,7 +84,7 @@ defineExpose({
         :disabled="loading"
         @click="handleSubmit"
       >
-        {{ $t('button.oneClickOptimization') }}
+        {{ loading ? $t('button.optimizing') : $t('button.regenerate') }}
       </ElButton>
     </template>
   </ElDialog>
