@@ -40,17 +40,23 @@ const handleSubmit = async () => {
 <template>
   <Teleport v-if="!route.path.includes('auth')" to="#app">
     <div
-      class="fixed bottom-8 right-8 cursor-pointer text-6xl active:opacity-70"
+      class="fixed bottom-3 right-5 cursor-pointer text-6xl active:opacity-70"
       @click="showDialog = !showDialog"
     >
       <IconifyIcon icon="svg:issue" />
     </div>
   </Teleport>
-  <ElDialog draggable v-model="showDialog" label-width="500px" title="问题反馈">
+  <ElDialog
+    draggable
+    v-model="showDialog"
+    title="问题反馈"
+    style="max-width: 560px"
+  >
     <ElForm
       ref="formRef"
       :model="formData"
-      label-width="120px"
+      label-width="80px"
+      label-position="left"
       require-asterisk-position="right"
     >
       <ElFormItem

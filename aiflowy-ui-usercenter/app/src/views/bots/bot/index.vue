@@ -75,24 +75,30 @@ function onAsyncExecute(info: any) {
       <div class="flex flex-col gap-6">
         <ElSpace class="cursor-pointer" :size="10" @click="router.back()">
           <ElIcon size="24"><ArrowLeft /></ElIcon>
-          <h1 class="text-2xl font-medium">
+          <h1 class="text-lg font-medium">
             {{ workflowInfo?.title }}
           </h1>
         </ElSpace>
         <div
-          class="bg-background border-border flex items-center justify-between rounded-lg border px-10 py-9"
+          class="bg-background border-border flex items-center justify-between overflow-hidden rounded-lg border px-5 py-6"
         >
-          <Card class="max-w-none cursor-auto items-center gap-7">
+          <Card class="w-full max-w-none cursor-auto items-center gap-7">
             <CardAvatar
               :size="72"
               :src="workflowInfo?.icon"
               :default-avatar="defaultBotAvatar"
             />
             <CardContent class="gap-3">
-              <CardTitle class="text-2xl font-medium">
+              <CardTitle
+                class="text-lg font-medium"
+                :title="workflowInfo?.title"
+              >
                 {{ workflowInfo?.title }}
               </CardTitle>
-              <CardDescription class="text-base">
+              <CardDescription
+                class="text-sm"
+                :title="workflowInfo?.description"
+              >
                 {{ workflowInfo?.description }}
               </CardDescription>
             </CardContent>
