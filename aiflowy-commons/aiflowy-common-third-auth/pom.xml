@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tech.aiflowy</groupId>
-        <artifactId>aiflowy-api</artifactId>
+        <artifactId>aiflowy-commons</artifactId>
         <version>${revision}</version>
     </parent>
 
-
-    <artifactId>aiflowy-api-admin</artifactId>
+    <artifactId>aiflowy-common-third-auth</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,24 +19,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-module-ai</artifactId>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
         </dependency>
         <dependency>
             <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-module-auth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-module-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-module-job</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-common-third-auth</artifactId>
+            <artifactId>aiflowy-common-base</artifactId>
         </dependency>
     </dependencies>
 </project>

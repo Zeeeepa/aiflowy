@@ -9,4 +9,6 @@ public interface CacheKey {
 
     String CHAIN_CACHE_KEY = "chainState:";
     String NODE_CACHE_KEY = "nodeState:";
+
+    String OAUTH_STATE_KEY = "oauth:state:";
 }

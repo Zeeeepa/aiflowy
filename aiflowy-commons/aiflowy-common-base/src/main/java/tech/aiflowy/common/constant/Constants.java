@@ -10,6 +10,8 @@ public interface Constants {
     BigInteger SUPER_ADMIN_ROLE_ID = BigInteger.valueOf(1L);
     // 默认租户ID
     BigInteger DEFAULT_TENANT_ID = BigInteger.valueOf(1000000L);
+    // 默认部门ID
+    BigInteger DEFAULT_DEPT_ID = BigInteger.valueOf(1L);
     // 登录账户KEY
     String LOGIN_USER_KEY = "loginUser";
     // 超级管理员角色标识

@@ -1,18 +1,27 @@
 <script lang="ts" setup>
 import type { AIFlowyFormSchema } from '@aiflowy/common-ui';
 
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import { AuthenticationLogin, z } from '@aiflowy/common-ui';
 import { useAppConfig } from '@aiflowy/hooks';
 import { $t } from '@aiflowy/locales';
 
+import { ElDivider, ElMessage } from 'element-plus';
+
+import { api } from '#/api/request';
+import dingTalkImg from '#/assets/login/dingding-60.png';
+import wxImg from '#/assets/login/wx-60.png';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
+onMounted(() => {});
 
 const authStore = useAuthStore();
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
+
+type PlatformType = 'ding_talk' | 'wx_web';
+
 const formSchema = computed((): AIFlowyFormSchema[] => {
   return [
     {
@@ -35,6 +44,7 @@ const formSchema = computed((): AIFlowyFormSchema[] => {
     },
   ];
 });
+
 function onSubmit(values: any) {
   // config 对象为TAC验证码的一些配置和验证的回调
   const config = {
@@ -80,6 +90,20 @@ function onSubmit(values: any) {
       console.error('初始化tac失败', error);
     });
 }
+
+function getAuthUrl(platform: PlatformType) {
+  return api.get('/thirdAuth/getAuthUrl', {
+    params: {
+      platform,
+    },
+  });
+}
+async function platformLogin(platform: PlatformType) {
+  const { errorCode, data } = await getAuthUrl(platform);
+  if (errorCode === 0) {
+    window.location.href = data;
+  }
+}
 </script>
 
 <template>
@@ -90,6 +114,23 @@ function onSubmit(values: any) {
       @submit="onSubmit"
     />
     <div id="captcha-box" class="captcha-div"></div>
+    <ElDivider content-position="center">
+      {{ $t('common.otherLoginType') }}
+    </ElDivider>
+    <div class="flex-center flex gap-[20px]">
+      <img
+        class="platform-icon"
+        :src="wxImg"
+        alt=""
+        @click="platformLogin('wx_web')"
+      />
+      <img
+        class="platform-icon"
+        :src="dingTalkImg"
+        alt=""
+        @click="platformLogin('ding_talk')"
+      />
+    </div>
   </div>
 </template>
 
@@ -98,5 +139,10 @@ function onSubmit(values: any) {
   position: absolute;
   top: 30vh;
   left: 21vh;
+}
+.platform-icon {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 }
 </style>

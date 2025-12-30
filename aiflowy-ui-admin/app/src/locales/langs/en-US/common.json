@@ -5,5 +5,6 @@
   "history": "History",
   "noDataAvailable": "No data available",
   "isRequired": " is required",
-  "avatar": "Avatar"
+  "avatar": "Avatar",
+  "otherLoginType": "Other login methods"
 }
