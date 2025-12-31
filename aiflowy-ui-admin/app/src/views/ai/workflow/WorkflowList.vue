@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import type { RequestResult } from '@aiflowy/types';
-
 import type { ActionButton } from '#/components/page/CardList.vue';
 
 import { computed, markRaw, onMounted, ref } from 'vue';
-
-import { tryit } from '@aiflowy/utils';
 
 import {
   CopyDocument,
@@ -28,6 +24,7 @@ import {
   ElMessage,
   ElMessageBox,
 } from 'element-plus';
+import { tryit } from 'radash';
 
 import { api } from '#/api/request';
 import workflowIcon from '#/assets/ai/workflow/workflowIcon.png';
@@ -340,11 +337,9 @@ function handleSubmit() {
   });
 }
 const getSideList = async () => {
-  const [, res] = await tryit<RequestResult>(
-    api.get('/api/v1/workflowCategory/list', {
-      params: { sortKey: 'sortNo', sortType: 'asc' },
-    }),
-  );
+  const [, res] = await tryit(api.get)('/api/v1/workflowCategory/list', {
+    params: { sortKey: 'sortNo', sortType: 'asc' },
+  });
 
   if (res && res.errorCode === 0) {
     sideList.value = [

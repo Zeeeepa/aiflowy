@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { computed, onMounted, ref } from 'vue';
 
-import { formatBytes, tryit } from '@aiflowy/utils';
+import { formatBytes } from '@aiflowy/utils';
 
 import {
   Delete,
@@ -31,6 +31,7 @@ import {
   ElText,
   ElTooltip,
 } from 'element-plus';
+import { tryit } from 'radash';
 
 import { api } from '#/api/request';
 import DictSelect from '#/components/dict/DictSelect.vue';
@@ -230,11 +231,9 @@ function handleSideSubmit() {
   });
 }
 const getSideList = async () => {
-  const [, res] = await tryit<any>(
-    api.get('/api/v1/resourceCategory/list', {
-      params: { sortKey: 'sortNo', sortType: 'asc' },
-    }),
-  );
+  const [, res] = await tryit(api.get)('/api/v1/resourceCategory/list', {
+    params: { sortKey: 'sortNo', sortType: 'asc' },
+  });
 
   if (res && res.errorCode === 0) {
     sideList.value = [
